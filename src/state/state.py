@@ -15,4 +15,5 @@ class GraphState(TypedDict):
     retrieval_retry_count: int
     generation_hallucination_retry_count: int
     generation_satisfaction_retry_count: int
+    query_type: Optional[str]
     audit_logs: Annotated[List[Dict[str, Any]], add]

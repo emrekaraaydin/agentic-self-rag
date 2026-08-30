@@ -14,7 +14,9 @@ async def transform_query_node(state: GraphState) -> Dict[str, Any]:
     # Her zaman asil niyeti korumak adina original_question oncelikli alinir
     question: str = state.get("original_question") or state.get("question", "")
     retrieval_retries: int = state.get("retrieval_retry_count", 0)
-    satisfaction_retries: int = state.get("generation_satisfaction_retry_count", 0)
+    satisfaction_retries: int = state.get(
+        "generation_satisfaction_retry_count", 0
+    )
 
     # State'e geri yazilmak uzere deneme sayacini bir artiriyoruz
     current_retry_count: int = retrieval_retries + 1
@@ -27,16 +29,26 @@ async def transform_query_node(state: GraphState) -> Dict[str, Any]:
     )
 
     transformed_query: str = question
+    query_type: str = "conceptual"
 
     try:
-        rewriter_chain = create_query_rewriter_chain(temperature=dynamic_temperature)
+        rewriter_chain = create_query_rewriter_chain(
+            temperature=dynamic_temperature
+        )
         result = await rewriter_chain.ainvoke({"question": question})
-        if result and result.strip():
-            transformed_query = result.strip()
+
+        if (
+            result
+            and hasattr(result, "rewritten_query")
+            and result.rewritten_query.strip()
+        ):
+            transformed_query = result.rewritten_query.strip()
+            query_type = getattr(result, "query_type", "conceptual")
             logger.info(
-                "Query transformed from '%s' to '%s' (temperature: %.2f)",
+                "Query transformed from '%s' to '%s' | Type: '%s' (temperature: %.2f)",
                 question,
                 transformed_query,
+                query_type,
                 dynamic_temperature,
             )
     except Exception as exc:
@@ -46,12 +58,14 @@ async def transform_query_node(state: GraphState) -> Dict[str, Any]:
         "node": "transform_query_node",
         "original_query": question,
         "transformed_query": transformed_query,
+        "query_type": query_type,
         "dynamic_temperature": dynamic_temperature,
         "success": transformed_query != question,
     }
 
     return {
         "question": transformed_query,
+        "query_type": query_type,
         "retrieval_retry_count": current_retry_count,
         "audit_logs": [log_entry],
     }

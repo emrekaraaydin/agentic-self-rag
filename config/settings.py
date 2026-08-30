@@ -1,5 +1,5 @@
 import os
-from typing import Final
+from typing import Final , Dict
 from dotenv import load_dotenv
 
 # .env dosyasindaki degiskenleri yukleme
@@ -20,8 +20,14 @@ SLM_MIN_TEMPERATURE: Final[float] = float(os.getenv("SLM_MIN_TEMPERATURE", "0.0"
 SLM_MAX_TEMPERATURE: Final[float] = float(os.getenv("SLM_MAX_TEMPERATURE", "0.2"))
 
 REQUEST_TIMEOUT: Final[float] = float(os.getenv("REQUEST_TIMEOUT", "60.0"))
-RERANK_TOP_N: Final[int] = int(os.getenv("RERANK_TOP_N", "5"))
-RERANK_SCORE_THRESHOLD: Final[float] = float(os.getenv("RERANK_SCORE_THRESHOLD", "0.02"))
+RERANK_TOP_N: Final[int] = 5
+
+RERANK_DEFAULT_THRESHOLD: Final[float] = 0.45
+RERANK_THRESHOLD_MAP: Final[Dict[str, float]] = {
+    "factoid": 0.70,
+    "conceptual": 0.45,
+    "tabular": 0.35,
+}
 
 # Vektor veritabani parametreleri
 QDRANT_HOST: Final[str] = os.getenv("QDRANT_HOST", "localhost")

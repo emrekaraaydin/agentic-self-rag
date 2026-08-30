@@ -1,17 +1,7 @@
 from typing import Final
-REWRITER_SYSTEM_PROMPT: Final[str] = """ACT AS a semantic query reformulation engine. 
-Your sole task is to rewrite the input user question into a clear, standalone, and keyword-rich search query optimized for text embedding models.
-
-<instructions>
-1. Resolve any conversational ambiguity and strip unnecessary phrasing.
-2. Formulate a direct, semantically dense query that captures the exact intent.
-3. Output ONLY the rewritten text query.
-</instructions>
-
-<constraints>
-- Return ONLY the raw string.
-- Do NOT include quotes, explanations, prefixes, or preamble.
-</constraints>
+REWRITER_SYSTEM_PROMPT: Final[str] = """<role>
+You are an expert query transformation and intent routing engine for a vector retrieval system.
+</role>
 """
 
 GENERATOR_SYSTEM_PROMPT: Final[str] = """ACT AS an internal knowledge base synthesis engine. 

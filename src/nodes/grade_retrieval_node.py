@@ -1,23 +1,38 @@
+import asyncio
 import logging
 from typing import Any, Dict, List
 from flashrank import Ranker, RerankRequest
 from langchain_core.documents import Document
-from config.settings import RERANK_SCORE_THRESHOLD, RERANK_TOP_N
+from config.settings import (
+    RERANK_DEFAULT_THRESHOLD,
+    RERANK_THRESHOLD_MAP,
+    RERANK_TOP_N,
+)
 from src.state.state import GraphState
 
 logger = logging.getLogger(__name__)
 
-# FlashRank modelini process basinda tek seferlik yukler (default: ms-marco-TinyBERT-L-2-v2 veya MiniLM)
+# FlashRank modelini process basinda tek seferlik yukler
 ranker_instance = Ranker()
 
 
 async def grade_retrieval_node(state: GraphState) -> Dict[str, Any]:
-    # Aday dokumanlari Cross-Encoder ile puanlayip esik ustundeki en iyi dokumanlari secer
+    # Aday dokumanlari Cross-Encoder ile puanlayip dinamik esik ustundeki en iyi dokumanlari secer
     query: str = state["question"]
     documents: List[Document] = state.get("documents", [])
+    query_type: str = state.get("query_type") or "conceptual"
+
+    # Sorgu tipine gore dinamik esik secimi
+    active_threshold: float = RERANK_THRESHOLD_MAP.get(
+        query_type, RERANK_DEFAULT_THRESHOLD
+    )
 
     logger.info(
-        f"Grading {len(documents)} documents with Cross-Encoder for query: '{query}'"
+        "Grading %d documents | Query Type: '%s' | Active Threshold: %.2f | Query: '%s'",
+        len(documents),
+        query_type,
+        active_threshold,
+        query,
     )
 
     # Retrieval bos donmusse rewrite dongusunu tetiklemek icin is_relevant False donulur
@@ -28,7 +43,9 @@ async def grade_retrieval_node(state: GraphState) -> Dict[str, Any]:
             "is_relevant": False,
             "audit_logs": [
                 {
-                    "node": "grade_documents_node",
+                    "node": "grade_retrieval_node",
+                    "query_type": query_type,
+                    "applied_threshold": active_threshold,
                     "graded_doc_count": 0,
                     "passed_doc_count": 0,
                     "is_relevant": False,
@@ -43,7 +60,12 @@ async def grade_retrieval_node(state: GraphState) -> Dict[str, Any]:
     ]
 
     rerank_request = RerankRequest(query=query, passages=passages)
-    rerank_results = ranker_instance.rerank(rerank_request)
+
+    # CPU-bound senkron inference islemini ayri bir thread'e alarak event loop bloklamasini onleme
+    rerank_results = await asyncio.to_thread(
+        ranker_instance.rerank, rerank_request
+    )
+
     logger.info("--- Top 5 FlashRank Scores ---")
     for idx, item in enumerate(rerank_results[:5]):
         raw_score: float = float(item["score"])
@@ -61,9 +83,9 @@ async def grade_retrieval_node(state: GraphState) -> Dict[str, Any]:
     filtered_documents: List[Document] = []
     for item in rerank_results:
         score: float = float(item["score"])
-        # Belirlenen esik uzerindeki dokumanlar kabul edilir
-        if score >= RERANK_SCORE_THRESHOLD:
-            doc_metadata = item.get("metadata", {})
+        # Dinamik esik uzerindeki dokumanlar kabul edilir
+        if score >= active_threshold:
+            doc_metadata = item.get("metadata", {}).copy()
             doc_metadata["rerank_score"] = score
 
             doc = Document(page_content=item["text"], metadata=doc_metadata)
@@ -74,11 +96,16 @@ async def grade_retrieval_node(state: GraphState) -> Dict[str, Any]:
     is_relevant: bool = len(selected_documents) > 0
 
     logger.info(
-        f"Cross-Encoder grading completed. {len(selected_documents)}/{len(documents)} passed the threshold ({RERANK_SCORE_THRESHOLD})."
+        "Cross-Encoder grading completed. %d/%d passed the threshold (%.2f).",
+        len(selected_documents),
+        len(documents),
+        active_threshold,
     )
 
     log_entry: Dict[str, Any] = {
-        "node": "grade_documents_node",
+        "node": "grade_retrieval_node",
+        "query_type": query_type,
+        "applied_threshold": active_threshold,
         "graded_doc_count": len(documents),
         "passed_doc_count": len(selected_documents),
         "is_relevant": is_relevant,

@@ -24,3 +24,20 @@ class GradeAnswer(BaseModel):
         default=None,
         description="Specific critique or missing points to guide query reformulation if the answer is unsatisfactory.",
     )
+    
+class QueryTransformation(BaseModel):
+    reasoning: str = Field(
+        description="Analyze the input in 1 sentence: What specific information or data format is the user looking for?"
+    )
+    rewritten_query: str = Field(
+        description="Search-optimized keyword query with typos and conversational filler removed."
+    )
+    query_type: Literal["factoid", "tabular", "conceptual"] = Field(
+        default="conceptual",
+        description=(
+            "Classification: "
+            "'factoid' for discrete metrics/numbers/names; "
+            "'tabular' for matrices/tables/checklists; "
+            "'conceptual' for processes/explanations or ambiguous intents."
+        ),
+    )
