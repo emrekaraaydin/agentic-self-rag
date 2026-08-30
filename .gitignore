@@ -1,0 +1,29 @@
+# Python sanal ortam
+.venv/
+venv/
+ENV/
+env/
+
+# Ortam değişkenleri ve gizli anahtarlar
+.env
+.env.local
+
+# Qdrant yerel veri tabanı depolama alanı
+qdrant_storage/
+qdrant_local_store/
+qdrant_local_storage/
+qdrant_storage/
+*.sqlite
+*.lock
+# Derleme ve önbellek dosyaları
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.coverage
+
+# IDE yapılandırmaları
+.vscode/
+.idea/
+.DS_Store
+data/*pdf
