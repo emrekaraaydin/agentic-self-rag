@@ -1,43 +1,60 @@
 import logging
 from pathlib import Path
-from typing import List
-import fitz  # PyMuPDF
+from typing import List, Union
+import pymupdf4llm
 from langchain_core.documents import Document
 
 logger = logging.getLogger(__name__)
 
 
-def load_pdf_file(file_path: Path) -> List[Document]:
-    # PyMuPDF ile tek bir PDF dosyasını okuma
+def load_pdf_file(file_path: Union[str, Path]) -> List[Document]:
+    # PyMuPDF4LLM ile PDF'i sayfa bazlı Markdown formatında okuma
+    target_path = Path(file_path)
     docs: List[Document] = []
+    
     try:
-        doc = fitz.open(file_path)
-        for page_num in range(len(doc)):
-            page = doc[page_num]
-            text = page.get_text()
+        # page_chunks=True her sayfayı ayrı bir sözlük olarak döndürür
+        page_data_list = pymupdf4llm.to_markdown(
+            doc=str(target_path),
+            page_chunks=True
+        )
+
+        for page_idx, page_data in enumerate(page_data_list):
+            text = page_data.get("text", "")
+            
+            # Sayfa numarası kütüphane çıktısında yoksa index üzerinden 1 tabanlı hesaplanır
+            page_number = page_data.get("page", page_idx + 1)
+            
             if text.strip():
                 docs.append(
                     Document(
                         page_content=text,
                         metadata={
-                            "source": str(file_path.name),
-                            "page": page_num + 1,
+                            "source": str(target_path.name),
+                            "page": page_number,
                         },
                     )
                 )
         return docs
     except Exception as exc:
-        logger.error(f"Error reading PDF file {file_path.name}: {exc}")
+        logger.error("Error reading PDF file %s: %s", target_path.name, exc)
         raise exc
-def load_all_pdfs(data_dir: Path) -> List[Document]:
+
+
+def load_all_pdfs(data_dir: Union[str, Path]) -> List[Document]:
     # Belirtilen dizindeki tüm PDF dosyalarını tarar ve toplu doküman listesi döner
+    target_dir = Path(data_dir)
     all_docs: List[Document] = []
     successful_files: List[str] = []
     failed_files: List[str] = []
 
-    pdf_files = list(data_dir.glob("*.pdf"))
+    if not target_dir.exists() or not target_dir.is_dir():
+        logger.warning("Data directory does not exist or is not a directory: %s", target_dir)
+        return all_docs
+
+    pdf_files = list(target_dir.glob("*.pdf"))
     if not pdf_files:
-        logger.warning(f"No PDF files found in directory: {data_dir}")
+        logger.warning("No PDF files found in directory: %s", target_dir)
         return all_docs
 
     for pdf_path in pdf_files:
@@ -45,13 +62,15 @@ def load_all_pdfs(data_dir: Path) -> List[Document]:
             docs = load_pdf_file(pdf_path)
             all_docs.extend(docs)
             successful_files.append(pdf_path.name)
-            logger.info(f"Loaded {len(docs)} page(s) from {pdf_path.name}")
+            logger.info("Loaded %d page(s) from %s", len(docs), pdf_path.name)
         except Exception as exc:
             failed_files.append(pdf_path.name)
-            logger.error(f"Skipping corrupt or unreadable file {pdf_path.name}: {exc}")
+            logger.error("Skipping corrupt or unreadable file %s: %s", pdf_path.name, exc)
 
     logger.info(
-        f"PDF ingestion completed: {len(successful_files)} succeeded, "
-        f"{len(failed_files)} failed out of {len(pdf_files)} total files."
+        "PDF ingestion completed: %d succeeded, %d failed out of %d total files.",
+        len(successful_files),
+        len(failed_files),
+        len(pdf_files),
     )
     return all_docs
