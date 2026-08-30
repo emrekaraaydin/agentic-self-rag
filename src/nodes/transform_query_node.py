@@ -30,6 +30,7 @@ async def transform_query_node(state: GraphState) -> Dict[str, Any]:
 
     transformed_query: str = question
     query_type: str = "conceptual"
+    reasoning:str = ""
 
     try:
         rewriter_chain = create_query_rewriter_chain(
@@ -44,12 +45,14 @@ async def transform_query_node(state: GraphState) -> Dict[str, Any]:
         ):
             transformed_query = result.rewritten_query.strip()
             query_type = getattr(result, "query_type", "conceptual")
+            reasoning = getattr(result, "reasoning", "No reasoning provided.")
             logger.info(
                 "Query transformed from '%s' to '%s' | Type: '%s' (temperature: %.2f)",
                 question,
                 transformed_query,
                 query_type,
                 dynamic_temperature,
+                
             )
     except Exception as exc:
         logger.error("Query transformation failed: %s", exc, exc_info=True)
@@ -59,6 +62,7 @@ async def transform_query_node(state: GraphState) -> Dict[str, Any]:
         "original_query": question,
         "transformed_query": transformed_query,
         "query_type": query_type,
+        "reasoning": reasoning,
         "dynamic_temperature": dynamic_temperature,
         "success": transformed_query != question,
     }

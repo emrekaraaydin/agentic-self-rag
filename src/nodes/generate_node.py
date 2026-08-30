@@ -33,7 +33,7 @@ async def generate_node(state: GraphState) -> Dict[str, Any]:
     # Kullanicinin orijinal niyetini ve format taleplerini koruyarak dogrulanmis baglamdan yanit uretir
     logger.info("Executing async response generation...")
 
-    question: str = state["original_question"]
+    question: str = state["question"]
     documents: List[Document] = state.get("documents", [])
 
     # Dokuman parcalarini ayiricilar ile tek bir temiz metin bloguna donusturme

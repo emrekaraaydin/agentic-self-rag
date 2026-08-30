@@ -1,3 +1,6 @@
+import os
+os.environ["ORT_DISABLE_TELEMETRY"] = "1"
+
 import asyncio
 import logging
 from src.graph import build_graph
@@ -16,7 +19,7 @@ async def run_test():
 
     # 2. Başlangıç State'ini hazırla
     # Soru olarak bilerek eksik/belirsiz veya veri tabanında olan bir konu ver
-    test_question = "who is the boromir"
+    test_question = "frodonun arkadaşları kimler"
     
     initial_state = {
         "original_question": test_question,
