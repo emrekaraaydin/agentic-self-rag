@@ -4,43 +4,34 @@ from pydantic import BaseModel, Field
 class GradeHallucinations(BaseModel):
     reasoning: str = Field(
         ...,
-        description="Concise step-by-step reasoning evaluating factual grounding against context.",
+        description="Check if the response makes factual claims about the real world that are absent from the context. Note: Statements explicitly stating that the context lacks information, or that information is unknown, are NOT hallucinations.",
     )
     binary_score: Literal["yes", "no"] = Field(
         ...,
-        description="'yes' if all claims are strictly grounded in context, 'no' if there is any hallucinated or unsupported claim.",
-    )
-
+        description="'yes' ONLY if the response invents real-world facts, numbers, or features not supported by context. 'no' if the response is fully grounded OR if the response simply states that information was not found / missing in context.")
+    
 class GradeAnswer(BaseModel):
     reasoning: str = Field(
         ...,
-        description="Step-by-step evaluation of the answer against the user's question, identifying resolved aspects and gaps.",
+        description="Brief verification checking ONLY two failure conditions: (1) Does the response state that information is missing/unknown/unfound? (2) Is the response about a completely different entity or topic than asked?",
     )
     is_satisfactory: bool = Field(
         ...,
-        description="True if the answer directly and adequately resolves the question, False if essential information is missing or unresolved.",
+        description="Default to True. Set to False ONLY if the response states information is unavailable or is completely off-topic. Set to True for any response that provides relevant facts, technical details, or partial information about the requested topic.",
     )
-    feedback: Optional[str] = Field(
-        default=None,
-        description="Specific critique or missing points to guide query reformulation if the answer is unsatisfactory.",
+    feedback: str = Field(
+        ...,
+        description="If unsatisfactory, provide 1 concise sentence explaining what specific topic needs retrieval. If satisfactory, write 'N/A'.",
     )
+#class GenerationResult(BaseModel):
+    # 1. Model önce cevabı üretir (veya bilginin olmadığını açıklar)
+   #  answer: str = Field(
+    #     ...,
+    #     description="The detailed answer based on context, or a statement explaining that the context lacks the required information.",
+    # )
 
-class QueryTransformation(BaseModel):
-    reasoning: str = Field(
-        ...,
-        description="Analyze the input in 1 sentence: What specific information or data format is the user looking for?"
-    )
-    rewritten_query: str = Field(
-        #description="Search-optimized keyword query with typos and conversational filler removed."
-        ...,
-        description="Search-optimized keyword query in English, stripped of conversational filler."
-    )
-    query_type: Literal["factoid", "tabular", "conceptual"] = Field(
-        ...,
-        description=(
-            "Classification: "
-            "'factoid' for exact single data points (numbers, measurements, units, dates, constants, specific entity names, codes); "
-            "'tabular' for structured multi-variable data (matrices, tables, comparison grids, checklists, lists); "
-            "'conceptual' for processes, mechanisms, procedural workflows, reasons, or broad explanations."
-        ),
-    )
+    # 2. Ürettiği cevaba bakarak kararı en son verir
+   #  has_sufficient_context: bool = Field(
+    #     ...,
+   #     description="Set to False if you stated above that context lacks info. Set to True if you provided the actual answer from context.",
+    # 

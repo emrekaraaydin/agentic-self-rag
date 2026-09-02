@@ -20,20 +20,15 @@ SLM_MIN_TEMPERATURE: Final[float] = float(os.getenv("SLM_MIN_TEMPERATURE", "0.0"
 SLM_MAX_TEMPERATURE: Final[float] = float(os.getenv("SLM_MAX_TEMPERATURE", "0.2"))
 
 REQUEST_TIMEOUT: Final[float] = float(os.getenv("REQUEST_TIMEOUT", "60.0"))
-RERANK_TOP_N: Final[int] = 5
+RERANK_TOP_N: Final[int] = 8
 
-RERANK_DEFAULT_THRESHOLD: Final[float] = 0.45
-RERANK_THRESHOLD_MAP: Final[Dict[str, float]] = {
-    "factoid": 0.70,
-    "conceptual": 0.45,
-    "tabular": 0.35,
-}
+RERANK_DEFAULT_THRESHOLD: Final[float] = 0.05
 
 # Vektor veritabani parametreleri
 QDRANT_HOST: Final[str] = os.getenv("QDRANT_HOST", "localhost")
 QDRANT_PORT: Final[int] = int(os.getenv("QDRANT_PORT", "6333"))
 QDRANT_COLLECTION_NAME: Final[str] = os.getenv("COLLECTION_NAME", "RAW_DOCUMENTS")
-RETRIEVAL_TOP_K: Final[int] = int(os.getenv("RETRIEVAL_TOP_K", "30"))
+RETRIEVAL_TOP_K: Final[int] = int(os.getenv("RETRIEVAL_TOP_K", "50"))
 
 
 HALLUCINATION_MAX_RETRY: Final[int] = 2

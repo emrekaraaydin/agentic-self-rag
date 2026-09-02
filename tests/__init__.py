@@ -1,0 +1,1 @@
+#original queryi değiştiriyor gibi oldu 31.07 23.46

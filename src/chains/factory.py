@@ -8,7 +8,6 @@ from config import settings
 from src.chains.models import (
     GradeAnswer,
     GradeHallucinations,
-    QueryTransformation,
 )
 from src.prompts.system_prompts import (
     ANSWER_GRADER_SYSTEM_PROMPT,
@@ -79,14 +78,13 @@ def create_generator_chain() -> RunnableSerializable[Dict[str, Any], str]:
     return prompt | llm | StrOutputParser()
 
 
-def create_query_rewriter_chain(temperature: Optional[float] = None) -> RunnableSerializable[Dict[str, Any], QueryTransformation]:
+def create_query_rewriter_chain(temperature: Optional[float] = None) -> RunnableSerializable[Dict[str, Any],str]:
     # Dinamik sicaklik ve yapilandirilmis cikti (Pydantic) ile sorgu donusturme zinciri
     slm = get_base_slm(temperature=temperature)
-    structured_slm = slm.with_structured_output(QueryTransformation)
     prompt = ChatPromptTemplate.from_messages(
         [
             ("system", REWRITER_SYSTEM_PROMPT),
             ("human", "User question:\n\n{question}"),
         ]
     )
-    return prompt | structured_slm
+    return prompt | slm | StrOutputParser()

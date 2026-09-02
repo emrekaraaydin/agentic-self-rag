@@ -19,7 +19,7 @@ async def run_test():
 
     # 2. Başlangıç State'ini hazırla
     # Soru olarak bilerek eksik/belirsiz veya veri tabanında olan bir konu ver
-    test_question = "frodonun arkadaşları kimler"
+    test_question = "can you describe hobbits"
     
     initial_state = {
         "original_question": test_question,
@@ -51,4 +51,10 @@ async def run_test():
 
 
 if __name__ == "__main__":
+    print(f"""
+          *********************************************************************************
+          *********************************************************************************
+          *********************************************************************************
+          *********************************************************************************
+          """)
     asyncio.run(run_test())

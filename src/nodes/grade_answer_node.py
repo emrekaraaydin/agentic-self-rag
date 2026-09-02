@@ -31,7 +31,7 @@ async def grade_answer_node(state: GraphState) -> Dict[str, Any]:
     # Uretilen ve halusinasyondan arinmis yanitin soruyu dogrudan cozup cozmedigini denetler
     logger.info("Executing async answer resolution evaluation...")
 
-    question: str = state.get("original_question") or state.get("question", "")
+    question: str = state.get("question", "")
     generation: str = state.get("generation") or ""
     current_retry_count: int = state.get("generation_satisfaction_retry_count", 0)
 

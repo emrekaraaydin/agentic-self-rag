@@ -5,7 +5,6 @@ from flashrank import Ranker, RerankRequest
 from langchain_core.documents import Document
 from config.settings import (
     RERANK_DEFAULT_THRESHOLD,
-    RERANK_THRESHOLD_MAP,
     RERANK_TOP_N,
 )
 from src.state.state import GraphState
@@ -23,9 +22,9 @@ async def grade_retrieval_node(state: GraphState) -> Dict[str, Any]:
     query_type: str = state.get("query_type") or "conceptual"
 
     # Sorgu tipine gore dinamik esik secimi
-    active_threshold: float = RERANK_THRESHOLD_MAP.get(
-        query_type, RERANK_DEFAULT_THRESHOLD
-    )
+    active_threshold: float = RERANK_DEFAULT_THRESHOLD
+
+    
 
     logger.info(
         "Grading %d documents | Query Type: '%s' | Active Threshold: %.2f | Query: '%s'",
