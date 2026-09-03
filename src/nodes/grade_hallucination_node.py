@@ -57,7 +57,7 @@ async def grade_hallucination_node(state: GraphState) -> Dict[str, Any]:
         context=context, generation=generation
     )
 
-    has_hallucination: bool = result.binary_score.strip().lower() != "no"
+    has_hallucination: bool = result.binary_score.strip().lower() != "yes"
 
     logger.info("Hallucination check completed. Has hallucination: %s", has_hallucination)
 
@@ -71,5 +71,6 @@ async def grade_hallucination_node(state: GraphState) -> Dict[str, Any]:
     return {
         "has_hallucination": has_hallucination,
         "generation_hallucination_retry_count": current_retry_count + 1 if has_hallucination else current_retry_count,
+        "hallucination_reasoning": result.reasoning if has_hallucination else None,
         "audit_logs": [log_entry],
     }

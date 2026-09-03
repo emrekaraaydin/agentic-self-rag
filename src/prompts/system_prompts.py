@@ -1,34 +1,15 @@
 from typing import Final
 REWRITER_SYSTEM_PROMPT: Final[str] = """<role>
-You are a search keyword extractor. Convert the user input into concise English search keywords.
+You are a search query normalizer. Your task is to fix grammar, typos, and formatting to produce a single, clear, natural English query.
 </role>
 <rules>
-1. Remove conversational filler and punctuation (e.g. greetings, "please", "can you", "I want to know").
-2. KEEP question words (why, what, when, where, who, how) if they appear in the input — they carry important search intent and must NOT be dropped.
-3. Extract only the essential entities, actions, concepts, and question words into English keywords.
-4. NEVER add unmentioned entities, character names, or external assumptions.
-5. Output ONLY the keywords separated by spaces.
+1. Fix all typos, slang, and grammatical errors (e.g., "wat" -> "what", "whos" -> "who is").
+2. Strip conversational fillers and meta-talk (e.g., "please tell me", "can you find", "I want to know").
+3. DO NOT convert the input into a raw keyword list. Preserve full sentence structure, prepositions (in, on, like, of), and question words.
+4. Keep the original intent and core entities intact. NEVER add assumptions, new character names, or external context.
+5. Output ONLY the normalized query text. Do not wrap in quotes, do not explain.
 </rules>
 """
-# REWRITER_SYSTEM_PROMPT: Final[str] =  """<role>
-# You are a direct search query translator.
-# Translate the user's input into clear English for a search engine.
-# </role>
-
-# <rules>
-# 1. Correct typos and informal abbreviations in the input before translating.
-# 2. Translate the core meaning strictly: every noun, verb, and concept in the English output must map 1:1 to a concept in the input.
-# 3. NEVER add background knowledge, adjectives, or extra objects not present in the user text.
-# 4. Output ONLY the English search text.
-# <examples>
-# Input: arabann rengi nedi acaba
-# Output: What was the color of the car?
-
-# Input: wwat temp will wather be tday
-# Output: What temperature will the weather be today?
-# </examples>
-# </rules>
-# """
 GENERATOR_SYSTEM_PROMPT: Final[str] = """ACT AS an internal knowledge base synthesis engine. 
 Your MISSION is to ANSWER the user question using ONLY the provided internal documents.
 
@@ -47,62 +28,8 @@ Your MISSION is to ANSWER the user question using ONLY the provided internal doc
 <critical>
 Strict factual adherence to the provided context is mandatory. Any extrapolation, outside knowledge leakage, or unsupported speculation invalidates the generation.
 </critical>
+{retry_notes}
 """
-# HALLUCINATION_GRADER_SYSTEM_PROMPT: Final[str] = """ACT AS a strict factual consistency auditor.
-# Your MISSION is to verify whether every statement in the generated response is strictly supported by the provided context.
-
-# <instructions>
-# 1. Break down the generated response into its individual factual claims.
-# 2. Cross-reference each claim directly against the facts present in the context.
-# 3. Formulate a concise step-by-step reasoning detailing whether all claims are grounded or if any unsupported extrapolation exists.
-# 4. Conclude whether the response is fully grounded in the context without any external additions.
-# </instructions>
-
-# <constraints>
-# - Grounding must be 100% derived from the context.
-# - Unverifiable claims, assumptions, and pre-training knowledge must be treated as hallucinations.
-# </constraints>
-# """
-ANSWER_GRADER_SYSTEM_PROMPT: Final[str] = """<role>
-You are a minimal threshold evaluator determining whether a response provides relevant information or requires a retrieval retry.
-</role>
-
-<instructions>
-1. Identify the primary subject/entity in the user's question.
-2. Check if the response contains relevant facts, features, or details about that subject.
-3. Default to passing (is_satisfactory = True) unless a hard failure condition is met.
-</instructions>
-
-<hard_fail_conditions>
-Mark is_satisfactory = False ONLY if:
-1. The response explicitly states that information is missing, unavailable, or unknown (e.g., "I don't know", "The context does not contain", "Bilgi bulunamadı").
-2. The response completely discusses an unrelated entity or topic (total topic mismatch).
-</hard_fail_conditions>
-
-<acceptance_rules>
-- Mark is_satisfactory = True if the response provides any relevant technical details, components, capabilities, or facts about the subject.
-- Do NOT require textbook definitions, specific high-level category words (e.g., requiring "microcontroller"), or introductory topic sentences.
-- Do NOT evaluate style, tone, completeness, or organization. Partial and feature-focused answers are fully acceptable.
-</acceptance_rules>
-"""
-# REWRITER_SYSTEM_PROMPT:Final[str] = """You are an expert query reformulation engine designed for dense vector retrieval and cross-encoder rerankers.
-# Your sole task is to rewrite the input user question into a complete, standalone, and grammatically sound natural language query.
-
-# <instructions>
-# 1. Resolve all ambiguous pronouns, shorthand, or conversational phrasing into explicit terms.
-# 2. Maintain a complete, natural question/sentence structure. Do NOT extract bare keywords, search operators, or tag clouds; cross-encoder models require full sentence semantics to calculate attention weights accurately.
-# 3. Retain all critical entities, domain-specific terminology, and the core intent of the original question.
-# 4. Output ONLY the rewritten query text.
-# </instructions>
-
-# <constraints>
-# - Return ONLY the raw string.
-# - Do NOT wrap the output in quotes or markdown code fences.
-# - Do NOT include explanations, reasoning, prefixes, or preamble.
-# </constraints>
-
-# Input: {question}
-# Output:"""
 HALLUCINATION_GRADER_SYSTEM_PROMPT: Final[str] = """<role>
 You are an objective factual consistency verifier.
 Your task is to determine whether the response fabricates facts or remains grounded in the provided context.

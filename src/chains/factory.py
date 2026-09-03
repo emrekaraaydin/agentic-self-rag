@@ -6,11 +6,9 @@ from langchain_core.runnables import RunnableSerializable
 from langchain_ollama import ChatOllama
 from config import settings
 from src.chains.models import (
-    GradeAnswer,
     GradeHallucinations,
 )
 from src.prompts.system_prompts import (
-    ANSWER_GRADER_SYSTEM_PROMPT,
     GENERATOR_SYSTEM_PROMPT,
     HALLUCINATION_GRADER_SYSTEM_PROMPT,
     REWRITER_SYSTEM_PROMPT,
@@ -49,19 +47,6 @@ def create_hallucination_grader_chain() -> RunnableSerializable[Dict[str, Any], 
         [
             ("system", HALLUCINATION_GRADER_SYSTEM_PROMPT),
             ("human", "Set of facts:\n\n{documents}\n\nLLM generation: {generation}"),
-        ]
-    )
-    return prompt | structured_llm
-
-
-def create_answer_grader_chain() -> RunnableSerializable[Dict[str, Any], GradeAnswer]:
-    # Uretilen yanitin soruyu karsilayip karsilamadigini denetleyen zincir
-    llm = get_base_llm()
-    structured_llm = llm.with_structured_output(GradeAnswer)
-    prompt = ChatPromptTemplate.from_messages(
-        [
-            ("system", ANSWER_GRADER_SYSTEM_PROMPT),
-            ("human", "User question:\n\n{question}\n\nLLM generation: {generation}"),
         ]
     )
     return prompt | structured_llm

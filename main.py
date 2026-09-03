@@ -19,7 +19,7 @@ async def run_test():
 
     # 2. Başlangıç State'ini hazırla
     # Soru olarak bilerek eksik/belirsiz veya veri tabanında olan bir konu ver
-    test_question = "can you describe hobbits"
+    test_question = "whose broke sword was use to cut the ring from sauron"
     
     initial_state = {
         "original_question": test_question,
@@ -29,9 +29,9 @@ async def run_test():
         "is_relevant": None,
         "has_hallucination": None,
         "is_answer_satisfactory": None,
+        "hallucination_reasoning": None,
         "retrieval_retry_count": 0,
         "generation_hallucination_retry_count": 0,
-        "generation_satisfaction_retry_count": 0,
         "audit_logs": [],
     }
 
