@@ -35,13 +35,23 @@ def _build_retry_notes(state: GraphState) -> str:
 
     hallucination_reasoning: Optional[str] = state.get("hallucination_reasoning")
     if hallucination_reasoning:
-        notes.append(hallucination_reasoning)
+      
+       
+      constraint_message = (
+            "DATA VALIDATION CONSTRAINT:\n"
+            f"- Fact-check finding: {hallucination_reasoning}\n"
+            "- Prohibited: Do NOT assert, assume, or reference the invalid claim cited above.\n"
+            "- Required: Rely strictly on facts explicitly written in the context. "
+            "If the text does not contain the answer, state that the information is missing. "
+            "Do NOT explain this constraint, do NOT mention errors, and avoid background meta-talk."
+        )
+      notes.append(constraint_message)
+        
 
     if not notes:
         return ""
 
     return "<retry_notes>\n" + "\n".join(f"- {note}" for note in notes) + "\n</retry_notes>"
-
 
 async def generate_node(state: GraphState) -> Dict[str, Any]:
     logger.info("Executing async response generation...")

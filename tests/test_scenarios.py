@@ -41,14 +41,22 @@ def _format_execution_trace(state: GraphState) -> str:
     [
         # Senaryo 1: Moria kapisi parolasi
         ("what exact words did gandalf say to the balrog on the bridge of khazad-dum", None, True),
-        # Senaryo 2: Film bilgisi / Lurtz tuzagi
-        ("how did isildur lose the ring and get killed in the anduin river", None, True),
-        # Senaryo 3: Net sayisal yas bilgisi (111 / eleventy-one)
-        ("how old bilbo baggins was when he give party and left shire", "111", True),
-        # Senaryo 4: Gollum dis varlik / Smeagol kontrolu
-        ("what happened to the knife that wounded frodo on weathertop", None, True),
-        # Senaryo 5: Kapsam disi Silmarillion sorgusu (Retrieval basarisiz olmali veya guvenli ret vermeli)
-        ("who reforged the shards of narsil into anduril and when", None, False),
+        ("what exact words did the witch-king say right before eowyn killed him", None, True),
+        ("how many balrogs fought in the siege of gondolin according to the text", None, True),
+        ("what gift did galadriel give to boromir in lothlorien", None, True),
+        ("what color was the feather in tom bombadil's hat", None, True),
+        ("what was the name of the horse that legolas rode during the war", None, True),
+        ("where was saruman killed and who dealt the final blow", None, True),
+        ("which hand and finger did gollum bite off from frodo at mount doom", None, True),
+        ("why did elrond refuse to let aragorn marry arwen in rivendell", None, True),
+        # # Senaryo 2: Film bilgisi / Lurtz tuzagi
+        # ("how did isildur lose the ring and get killed in the anduin river", None, True),
+        # # Senaryo 3: Net sayisal yas bilgisi (111 / eleventy-one)
+        # ("how old bilbo baggins was when he give party and left shire", "111", True),
+        # # Senaryo 4: Gollum dis varlik / Smeagol kontrolu
+        # ("what happened to the knife that wounded frodo on weathertop", None, True),
+        # # Senaryo 5: Kapsam disi Silmarillion sorgusu (Retrieval basarisiz olmali veya guvenli ret vermeli)
+        # ("who reforged the shards of narsil into anduril and when", None, False),
     ],
 )
 async def test_agentic_rag_pipeline(

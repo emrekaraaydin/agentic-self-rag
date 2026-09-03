@@ -57,7 +57,7 @@ def create_generator_chain() -> RunnableSerializable[Dict[str, Any], str]:
     prompt = ChatPromptTemplate.from_messages(
         [
             ("system", GENERATOR_SYSTEM_PROMPT),
-            ("human", "Context:\n{context}\n\nQuestion: {question}"),
+            ("human", "Context:\n{context}\n\nQuestion: {question}\n\n{retry_notes}"),
         ]
     )
     return prompt | llm | StrOutputParser()
