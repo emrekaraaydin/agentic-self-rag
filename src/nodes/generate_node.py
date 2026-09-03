@@ -73,6 +73,7 @@ async def generate_node(state: GraphState) -> Dict[str, Any]:
         "input_question": question,
         "context_doc_count": len(documents),
         "generated_char_length": len(generation),
+        "generated_text": generation,
         "used_retry_notes": is_retry,
         "success": True,
     }

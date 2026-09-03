@@ -32,5 +32,3 @@ RETRIEVAL_TOP_K: Final[int] = int(os.getenv("RETRIEVAL_TOP_K", "50"))
 
 
 HALLUCINATION_MAX_RETRY: Final[int] = 2
-SATISFACTION_MAX_RETRY:Final[int] = 2
-RETRIEVAL_MAX_RETRY:Final[int] = 2
