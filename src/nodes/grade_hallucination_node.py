@@ -57,7 +57,7 @@ async def grade_hallucination_node(state: GraphState) -> Dict[str, Any]:
         context=context, generation=generation
     )
 
-    has_hallucination: bool = result.binary_score.strip().lower() == "yes"
+    has_hallucination: bool = result.verdict == "hallucinated" and not result.is_refusal
 
     logger.info("Hallucination check completed. Has hallucination: %s", has_hallucination)
 

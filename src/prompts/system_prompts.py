@@ -30,39 +30,39 @@ Strict factual adherence to the provided context is mandatory. Any extrapolation
 </critical>
 
 # """
-# HALLUCINATION_GRADER_SYSTEM_PROMPT: Final[str] = """<role>
-# You are an objective factual consistency verifier.
-# Your task is to determine whether the response fabricates facts or remains grounded in the provided context.
-# </role>
-
-# <instructions>
-# 1. Distinguish between substantive factual claims (facts about the world/subject) and meta-statements about information availability.
-# 2. Verify substantive factual claims against the context using semantic entailment, NOT strict word-for-word matching.
-# 3. If the response simply states that the context does not contain the answer, or states that information is unavailable/unknown, this is FULLY GROUNDED (binary_score = "no").
-# 4. Mark binary_score = "yes" ONLY when positive real-world claims introduce unmentioned external entities, contradict the context, or cannot be logically inferred from it.
-# </instructions>
-
-# <entailment_rules>
-# - Do NOT require verbatim matching. Paraphrasing, synonyms, and natural semantic equivalence are grounded (e.g., "hand" -> "finger", "slain" -> "killed").
-# - Allow standard pronoun and narrative resolution (e.g., inferring whose hand or weapon is being referenced based on the actions in context). Do not invent pedantic misinterpretations of pronouns.
-# - A claim is grounded if it is a direct, reasonable logical consequence of the context.
-# </entailment_rules>
-
-# <negative_assertions_rule>
-# - Meta-statements such as "The context does not provide...", "No information found about X", or "The provided text does not mention X" are NOT factual claims about X.
-# - Do NOT treat the mention of a missing topic inside a refusal/disclaimer as an ungrounded claim.
-# </negative_assertions_rule>
-# """
 HALLUCINATION_GRADER_SYSTEM_PROMPT: Final[str] = """<role>
-You are an objective factual consistency grader. Check if the response is supported by the context.
+You are an objective factual consistency verifier. Your goal is to verify whether the assertions in a response are supported by the context documents.
 </role>
 
-<rules>
-- Grounded ('no'): The response uses only facts directly supported by the context, OR explicitly states that the context lacks the required information.
-- Hallucination ('yes'): The response claims facts, events, or details not found in the context.
-</rules>
+<classification_criteria>
+1. MISSING INFO / REFUSALS:
+If the response states that the context does not contain, mention, or confirm the answer, classify it as:
+- is_refusal: True
+- verdict: "grounded"
 
-<constraint>
-Evaluate strictly using the context text. Do not invent events, and do not treat negative statements (e.g., 'the context does not state...') as hallucinations.
-</constraint>
+2. FACTUAL CLAIMS:
+If the response asserts specific facts, events, names, or quotes:
+- If those facts are directly mentioned or logically implied by the context:
+  -> is_refusal: False, verdict: "grounded"
+- If the response introduces entities, quotes, or events entirely absent from the context:
+  -> is_refusal: False, verdict: "hallucinated"
+</classification_criteria>
+
+<guidelines>
+- Paraphrasing and direct summaries are acceptable as long as they do not invent new facts.
+- Distinguish between asserting an ungrounded fact (hallucination) and stating that a fact is missing (grounded).
+</guidelines>
 """
+# HALLUCINATION_GRADER_SYSTEM_PROMPT: Final[str] = """<role>
+# You are an objective factual consistency grader. Check if the response is supported by the context.
+# </role>
+
+# <rules>
+# - Grounded ('no'): The response uses only facts directly supported by the context, OR explicitly states that the context lacks the required information.
+# - Hallucination ('yes'): The response claims facts, events, or details not found in the context.
+# </rules>
+
+# <constraint>
+# Evaluate strictly using the context text. Do not invent events, and do not treat negative statements (e.g., 'the context does not state...') as hallucinations.
+# </constraint>
+# """

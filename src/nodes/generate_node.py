@@ -32,20 +32,16 @@ async def _invoke_generator_chain_with_retry(
 
 def _build_retry_notes(state: GraphState) -> str:
     notes: List[str] = []
-
-    hallucination_reasoning: Optional[str] = state.get("hallucination_reasoning")
-    if hallucination_reasoning:
-      
-       
-      constraint_message = (
-            "DATA VALIDATION CONSTRAINT:\n"
-            f"- Fact-check finding: {hallucination_reasoning}\n"
-            "- Prohibited: Do NOT assert, assume, or reference the invalid claim cited above.\n"
-            "- Required: Rely strictly on facts explicitly written in the context. "
-            "If the text does not contain the answer, state that the information is missing. "
-            "Do NOT explain this constraint, do NOT mention errors, and avoid background meta-talk."
+    
+    if state.get("hallucination_reasoning"):
+        constraint_message = (
+            "STRICT DATA CONSTRAINT ACTIVATED:\n"
+            "- You MUST rely EXCLUSIVELY on facts explicitly written in the provided context.\n"
+            "- Do NOT invent, assume, or bring in outside knowledge.\n"
+            "- If the exact answer is not clearly stated in the text, you MUST output ONLY this exact sentence: 'The context does not provide information about this topic.'\n"
+            "- Do NOT add any extra explanation, introductory phrases, or commentary."
         )
-      notes.append(constraint_message)
+        notes.append(constraint_message)
         
 
     if not notes:
