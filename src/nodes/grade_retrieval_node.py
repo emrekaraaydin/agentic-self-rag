@@ -93,7 +93,15 @@ async def grade_retrieval_node(state: GraphState) -> Dict[str, Any]:
     # En yuksek skorlu ilk N dokuman secilir
     selected_documents = filtered_documents[:RERANK_TOP_N]
     is_relevant: bool = len(selected_documents) > 0
-
+    sources: List[Dict[str, Any]] = [
+        {
+            "chunk_id": doc.metadata.get("chunk_id") or doc.metadata.get("id") or f"doc_{idx}",
+            "source": doc.metadata.get("source", "unknown"),
+            "page": doc.metadata.get("page"),
+            "rerank_score": doc.metadata.get("rerank_score"),
+        }
+        for idx, doc in enumerate(selected_documents)
+    ]
     logger.info(
         "Cross-Encoder grading completed. %d/%d passed the threshold (%.2f).",
         len(selected_documents),
@@ -115,6 +123,7 @@ async def grade_retrieval_node(state: GraphState) -> Dict[str, Any]:
 
     return {
         "documents": selected_documents,
+        "sources": sources,
         "is_relevant": is_relevant,
         "audit_logs": [log_entry],
     }

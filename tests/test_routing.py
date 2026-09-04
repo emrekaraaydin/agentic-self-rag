@@ -10,6 +10,7 @@ def test_route_after_retrieval_success():
         "question": "test",
         "is_relevant": True,
         "documents": [],
+        "sources": [],
         "generation": None,
         "has_hallucination": None,
         "retrieval_retry_count": 1,
@@ -21,12 +22,13 @@ def test_route_after_retrieval_success():
 
 
 def test_route_after_retrieval_failure():
-    # Dokuman bulunamadiginda sonlanma kontrolu
+    # Dokuman bulunamadiginda fallback_node yonlendirme kontrolu
     mock_state: GraphState = {
         "original_question": "test",
         "question": "test",
         "is_relevant": False,
         "documents": [],
+        "sources": [],
         "generation": None,
         "has_hallucination": None,
         "retrieval_retry_count": 1,
@@ -34,7 +36,7 @@ def test_route_after_retrieval_failure():
         "hallucination_reasoning": None,
         "audit_logs": [],
     }
-    assert route_after_retrieval(mock_state) == "__end__"
+    assert route_after_retrieval(mock_state) == "fallback_node"
 
 
 @pytest.mark.parametrize(
@@ -43,16 +45,19 @@ def test_route_after_retrieval_failure():
         (False, 0, "__end__"),
         (True, 0, "generate_node"),
         (True, 1, "generate_node"),
-        (True, 2, "__end__"),
+        (True, 2, "fallback_node"),
     ],
 )
-def test_route_after_hallucination_matrix(has_hallucination, retry_count, expected_route):
+def test_route_after_hallucination_matrix(
+    has_hallucination: bool, retry_count: int, expected_route: str
+):
     # Halusinasyon ve tekrar deneme sayaci matrisi kontrolu
     mock_state: GraphState = {
         "original_question": "test",
         "question": "test",
         "is_relevant": True,
         "documents": [],
+        "sources": [],
         "generation": "sample response",
         "has_hallucination": has_hallucination,
         "retrieval_retry_count": 1,

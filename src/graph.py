@@ -5,6 +5,7 @@ from src.nodes.grade_hallucination_node import grade_hallucination_node
 from src.nodes.grade_retrieval_node import grade_retrieval_node
 from src.nodes.retrieve_node import retrieve_node
 from src.nodes.transform_query_node import transform_query_node
+from src.nodes.fallback_node import fallback_node
 from src.edges.routing import (
     route_after_hallucination,
     route_after_retrieval,
@@ -26,6 +27,7 @@ def build_graph():
     workflow.add_node("grade_retrieval_node", grade_retrieval_node)
     workflow.add_node("generate_node", generate_node)
     workflow.add_node("grade_hallucination_node", grade_hallucination_node)
+    workflow.add_node("fallback_node", fallback_node)
 
     # 2. Giris Noktasi (Entry Point)
     workflow.set_entry_point("transform_query_node")
@@ -34,28 +36,30 @@ def build_graph():
     workflow.add_edge("transform_query_node", "retrieve_node")
     workflow.add_edge("retrieve_node", "grade_retrieval_node")
     workflow.add_edge("generate_node", "grade_hallucination_node")
+    workflow.add_edge("fallback_node", END)
 
     # 4. Kosullu Yonlendirmeler (Conditional Edges)
-
+    
     # Reranker sonrasi dokuman yeterliligi kontrolu
     workflow.add_conditional_edges(
-        "grade_retrieval_node",
-        route_after_retrieval,
-        {
-            "generate_node": "generate_node",
-            "__end__": END,
-        },
-    )
+    "grade_retrieval_node",
+    route_after_retrieval,
+    {
+        "generate_node": "generate_node",
+        "fallback_node": "fallback_node",
+    },
+)
 
     # Halusinasyon denetimi kontrolu
     workflow.add_conditional_edges(
-        "grade_hallucination_node",
-        route_after_hallucination,
-        {
-            "generate_node": "generate_node",
-            "__end__": END,
-        },
-    )
+    "grade_hallucination_node",
+    route_after_hallucination,
+    {
+        "generate_node": "generate_node",
+        "fallback_node": "fallback_node",
+        "__end__": END,
+    },
+)
 
     # 5. Grafigin Derlenmesi
     app = workflow.compile()

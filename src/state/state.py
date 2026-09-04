@@ -15,3 +15,4 @@ class GraphState(TypedDict):
     generation_hallucination_retry_count: int
     hallucination_reasoning: Optional[str]
     audit_logs: Annotated[List[Dict[str, Any]], add]
+    sources: List[Dict[str, Any]]

@@ -7,14 +7,19 @@ env/
 # Ortam değişkenleri ve gizli anahtarlar
 .env
 .env.local
+.env.*
+
+# Chainlit önbellek ve yüklenen geçici dosyalar
+.files/
 
 # Qdrant yerel veri tabanı depolama alanı
 qdrant_storage/
 qdrant_local_store/
 qdrant_local_storage/
-qdrant_storage/
+qdrant_local_s*/
 *.sqlite
 *.lock
+
 # Derleme ve önbellek dosyaları
 __pycache__/
 *.py[cod]
@@ -22,8 +27,11 @@ __pycache__/
 .pytest_cache/
 .coverage
 
-# IDE yapılandırmaları
+# IDE yapılandırmaları ve işletim sistemi dosyaları
 .vscode/
 .idea/
 .DS_Store
-data/*pdf
+Thumbs.db
+
+# Dokümanlar ve PDF'ler
+data/*.pdf
