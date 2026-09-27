@@ -1,5 +1,5 @@
 import logging
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.runnables import RunnableSerializable
@@ -17,23 +17,23 @@ from src.prompts.system_prompts import (
 logger = logging.getLogger(__name__)
 
 
-def get_base_llm(temperature: Optional[float] = None) -> ChatOllama:
+def get_base_llm() -> ChatOllama:
     # 16k Baglam penceresi ve Apple Silicon icin optimize edilmis ChatOllama ornegi
     return ChatOllama(
         model=settings.LLM_MODEL,
         base_url=settings.OLLAMA_BASE_URL,
-        temperature=temperature if temperature is not None else settings.LLM_TEMPERATURE,
+        temperature=settings.LLM_TEMPERATURE,
         num_ctx=settings.LLM_NUM_CTX,
         client_kwargs={"timeout": settings.REQUEST_TIMEOUT},
     )
 
 
-def get_base_slm(temperature: Optional[float] = None) -> ChatOllama:
+def get_base_slm() -> ChatOllama:
     # Sorgu donusturme ve hafif islemler icin kucuk baglamli SLM istemcisi
     return ChatOllama(
         model=settings.SLM_MODEL,
         base_url=settings.OLLAMA_BASE_URL,
-        temperature=temperature if temperature is not None else settings.SLM_MIN_TEMPERATURE,
+        temperature=settings.SLM_MIN_TEMPERATURE,
         num_ctx=settings.SLM_NUM_CTX,
         client_kwargs={"timeout": settings.REQUEST_TIMEOUT},
     )
@@ -63,9 +63,9 @@ def create_generator_chain() -> RunnableSerializable[Dict[str, Any], str]:
     return prompt | llm | StrOutputParser()
 
 
-def create_query_rewriter_chain(temperature: Optional[float] = None) -> RunnableSerializable[Dict[str, Any],str]:
+def create_query_rewriter_chain() -> RunnableSerializable[Dict[str, Any],str]:
     # Dinamik sicaklik ve yapilandirilmis cikti (Pydantic) ile sorgu donusturme zinciri
-    slm = get_base_slm(temperature=temperature)
+    slm = get_base_slm()
     prompt = ChatPromptTemplate.from_messages(
         [
             ("system", REWRITER_SYSTEM_PROMPT),

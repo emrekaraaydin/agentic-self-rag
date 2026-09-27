@@ -1,5 +1,5 @@
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 from langchain_core.documents import Document
 from tenacity import (
     before_sleep_log,
@@ -21,9 +21,7 @@ logger = logging.getLogger(__name__)
     retry=retry_if_exception_type(Exception),
     before_sleep=before_sleep_log(logger, logging.WARNING),
 )
-async def _invoke_generator_chain_with_retry(
-    context: str, question: str, retry_notes: str
-) -> str:
+async def _invoke_generator_chain_with_retry(context: str, question: str, retry_notes: str) -> str:
     generator_chain = create_generator_chain()
     return await generator_chain.ainvoke(
         {"context": context, "question": question, "retry_notes": retry_notes}

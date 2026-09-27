@@ -53,16 +53,3 @@ If the response asserts specific facts, events, names, or quotes:
 - Distinguish between asserting an ungrounded fact (hallucination) and stating that a fact is missing (grounded).
 </guidelines>
 """
-# HALLUCINATION_GRADER_SYSTEM_PROMPT: Final[str] = """<role>
-# You are an objective factual consistency grader. Check if the response is supported by the context.
-# </role>
-
-# <rules>
-# - Grounded ('no'): The response uses only facts directly supported by the context, OR explicitly states that the context lacks the required information.
-# - Hallucination ('yes'): The response claims facts, events, or details not found in the context.
-# </rules>
-
-# <constraint>
-# Evaluate strictly using the context text. Do not invent events, and do not treat negative statements (e.g., 'the context does not state...') as hallucinations.
-# </constraint>
-# """

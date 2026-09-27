@@ -39,8 +39,7 @@ def load_pdf_file(file_path: Union[str, Path]) -> List[Document]:
     except Exception as exc:
         logger.error("Error reading PDF file %s: %s", target_path.name, exc)
         raise exc
-
-
+    
 def load_all_pdfs(data_dir: Union[str, Path]) -> List[Document]:
     # Belirtilen dizindeki tüm PDF dosyalarını tarar ve toplu doküman listesi döner
     target_dir = Path(data_dir)

@@ -25,7 +25,6 @@ def get_markdown_header_splitter() -> MarkdownHeaderTextSplitter:
         strip_headers=False,
     )
 
-
 def get_recursive_text_splitter() -> RecursiveCharacterTextSplitter:
     return RecursiveCharacterTextSplitter(
         chunk_size=CHUNK_SIZE,
@@ -66,6 +65,22 @@ def chunk_documents(documents: List[Document]) -> List[Document]:
         for idx, chunk in enumerate(sub_chunks):
             chunk.metadata["chunk_id"] = str(uuid.uuid4())
             chunk.metadata["chunk_index"] = idx
+
+            # 3. Aşama: Metadata'daki başlık zincirini metin gövdesine ön ek olarak enjekte et
+            active_headers = [
+                str(chunk.metadata[header_key]).strip()
+                for _, header_key in HEADERS_TO_SPLIT_ON
+                if header_key in chunk.metadata and chunk.metadata[header_key]
+            ]
+
+            if active_headers:
+                header_context = " > ".join(active_headers)
+                deepest_header = active_headers[-1]
+
+                # Parça zaten en alt başlıkla başlamıyorsa başlık bağlamını metnin tepesine ekle
+                if not chunk.page_content.lstrip().startswith(deepest_header):
+                    chunk.page_content = f"[{header_context}]\n{chunk.page_content}"
+
             processed_chunks.append(chunk)
 
     logger.info("Split %d document(s) into %d chunk(s).", len(documents), len(processed_chunks))

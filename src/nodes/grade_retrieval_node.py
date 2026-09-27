@@ -4,15 +4,14 @@ from typing import Any, Dict, List
 from flashrank import Ranker, RerankRequest
 from langchain_core.documents import Document
 from config.settings import (
+    FLASHRANK_CACHE_DIR,
     RERANK_DEFAULT_THRESHOLD,
     RERANK_TOP_N,
 )
 from src.state.state import GraphState
 
 logger = logging.getLogger(__name__)
-
-# FlashRank modelini process basinda tek seferlik yukler
-ranker_instance = Ranker()
+ranker_instance = Ranker(cache_dir=str(FLASHRANK_CACHE_DIR))
 
 
 async def grade_retrieval_node(state: GraphState) -> Dict[str, Any]:
@@ -21,10 +20,7 @@ async def grade_retrieval_node(state: GraphState) -> Dict[str, Any]:
     documents: List[Document] = state.get("documents", [])
     query_type: str = state.get("query_type") or "conceptual"
 
-    # Sorgu tipine gore dinamik esik secimi
     active_threshold: float = RERANK_DEFAULT_THRESHOLD
-
-    
 
     logger.info(
         "Grading %d documents | Query Type: '%s' | Active Threshold: %.2f | Query: '%s'",
@@ -34,7 +30,6 @@ async def grade_retrieval_node(state: GraphState) -> Dict[str, Any]:
         query,
     )
 
-    # Retrieval bos donmusse rewrite dongusunu tetiklemek icin is_relevant False donulur
     if not documents:
         logger.warning("No input documents to grade.")
         return {

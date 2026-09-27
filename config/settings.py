@@ -1,9 +1,15 @@
 import os
-from typing import Final , Dict
+from pathlib import Path
+from typing import Dict, Final
 from dotenv import load_dotenv
 
 # .env dosyasindaki degiskenleri yukleme
 load_dotenv()
+
+# Proje kok dizini ve model onbellek yollari
+BASE_DIR: Final[Path] = Path(__file__).resolve().parent.parent
+FLASHRANK_CACHE_DIR: Final[Path] = BASE_DIR / ".cache" / "flashrank"
+FLASHRANK_CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
 # Ollama ve model parametreleri
 OLLAMA_BASE_URL: Final[str] = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434")
@@ -29,6 +35,5 @@ QDRANT_HOST: Final[str] = os.getenv("QDRANT_HOST", "localhost")
 QDRANT_PORT: Final[int] = int(os.getenv("QDRANT_PORT", "6333"))
 QDRANT_COLLECTION_NAME: Final[str] = os.getenv("COLLECTION_NAME", "RAW_DOCUMENTS")
 RETRIEVAL_TOP_K: Final[int] = int(os.getenv("RETRIEVAL_TOP_K", "50"))
-
 
 HALLUCINATION_MAX_RETRY: Final[int] = 2

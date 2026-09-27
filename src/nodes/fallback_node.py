@@ -21,7 +21,7 @@ async def fallback_node(state: GraphState) -> Dict[str, Any]:
 
     return {
         "generation": message,
-        "has_hallucination": False,  # Deterministik ret mesaji artik halusinasyon sayilmaz
+        "has_hallucination": False,  
         "audit_logs": [
             {
                 "node": "fallback_node",
