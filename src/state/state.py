@@ -12,6 +12,7 @@ class GraphState(TypedDict):
     generation: Optional[str]
     has_hallucination: Optional[bool]
     generation_hallucination_retry_count: int
+    query_rewrite_retry_count: int
     hallucination_reasoning: Optional[str]
     audit_logs: Annotated[List[Dict[str, Any]], add]
     sources: List[Dict[str, Any]]

@@ -11,7 +11,11 @@ from config.settings import (
 from src.state.state import GraphState
 
 logger = logging.getLogger(__name__)
-ranker_instance = Ranker(cache_dir=str(FLASHRANK_CACHE_DIR))
+ranker_instance = Ranker(
+    model_name="ms-marco-MiniLM-L-12-v2",  # 12 katmanlı gerçek Cross-Encoder (~34MB)
+    max_length=1024,                       # 1600 karakterlik chunk'ların tamamını okuması için!
+    cache_dir=str(FLASHRANK_CACHE_DIR)
+)
 
 
 async def grade_retrieval_node(state: GraphState) -> Dict[str, Any]:

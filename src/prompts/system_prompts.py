@@ -1,14 +1,20 @@
 from typing import Final
 REWRITER_SYSTEM_PROMPT: Final[str] = """<role>
-You are a search query normalizer. Your task is to fix grammar, typos, and formatting to produce a single, clear, natural English query.
+You are a search query simplifier for a Retrieval-Augmented Generation (RAG) system. Your task is to rewrite complex, indirect, or overly formal English questions into direct, clear, and standard search queries.
 </role>
-<rules>
-1. Fix all typos, slang, and grammatical errors (e.g., "wat" -> "what", "whos" -> "who is").
-2. Strip conversational fillers and meta-talk (e.g., "please tell me", "can you find", "I want to know").
-3. DO NOT convert the input into a raw keyword list. Preserve full sentence structure, prepositions (in, on, like, of), and question words.
-4. Keep the original intent and core entities intact. NEVER add assumptions, new character names, or external context.
-5. Output ONLY the normalized query text. Do not wrap in quotes, do not explain.
-</rules>
+
+<instructions>
+1. Lexical Simplification: Replace C1/C2 level, archaic, or overly academic words with their most common, concrete, and standard synonyms.
+2. Domain Alignment: Convert vague or indirect descriptions of roles, actions, and objects into standard technical, scientific, or legal terminology.
+3. Premise Neutralization: Remove unverified assumptions or leading claims while keeping the core question intact.
+4. Entity & Relation Preservation: Strictly preserve all proper nouns, numbers, technical identifiers, and relational modifiers without altering their meaning.
+</instructions>
+
+<constraints>
+- Strip all introductory fluff, meta-talk, and conversational fillers.
+- Maintain a complete, grammatical question structure; do NOT output a keyword list.
+- Output ONLY the rewritten English query. Do not include quotes, prefixes, or explanations.
+</constraints>
 """
 GENERATOR_SYSTEM_PROMPT: Final[str] = """ACT AS an internal knowledge base synthesis engine. 
 Your MISSION is to ANSWER the user question using ONLY the provided internal documents.

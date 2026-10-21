@@ -30,7 +30,7 @@ def build_graph():
     workflow.add_node("fallback_node", fallback_node)
 
     # 2. Giris Noktasi (Entry Point)
-    workflow.set_entry_point("transform_query_node")
+    workflow.set_entry_point("retrieve_node")
 
     # 3. Deterministik / Dogrusal Gecisler (Direct Edges)
     workflow.add_edge("transform_query_node", "retrieve_node")
@@ -46,6 +46,7 @@ def build_graph():
     route_after_retrieval,
     {
         "generate_node": "generate_node",
+        "transform_query_node": "transform_query_node",
         "fallback_node": "fallback_node",
     },
 )

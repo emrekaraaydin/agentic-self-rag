@@ -35,5 +35,5 @@ QDRANT_HOST: Final[str] = os.getenv("QDRANT_HOST", "localhost")
 QDRANT_PORT: Final[int] = int(os.getenv("QDRANT_PORT", "6333"))
 QDRANT_COLLECTION_NAME: Final[str] = os.getenv("COLLECTION_NAME", "RAW_DOCUMENTS")
 RETRIEVAL_TOP_K: Final[int] = int(os.getenv("RETRIEVAL_TOP_K", "50"))
-
+QUERY_REWRITE_MAX_RETRY: Final[int] = 1
 HALLUCINATION_MAX_RETRY: Final[int] = 2

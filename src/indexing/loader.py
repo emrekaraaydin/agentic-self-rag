@@ -3,26 +3,31 @@ from pathlib import Path
 from typing import List, Union
 import pymupdf4llm
 from langchain_core.documents import Document
-
+import re
 logger = logging.getLogger(__name__)
-
+def clean_markdown_artifacts(text: str) -> str:
+    """Markdown tablolarını ve başlıklarını korur; HTML ve OCR etiketlerini temizler."""
+    text = re.sub(r"<!--.*?-->", " ", text, flags=re.DOTALL)
+    text = re.sub(r"<[^>]+>", " ", text)
+    text = re.sub(r"[ \t]+", " ", text)
+    return text.strip()
 
 def load_pdf_file(file_path: Union[str, Path]) -> List[Document]:
-    # PyMuPDF4LLM ile PDF'i sayfa bazlı Markdown formatında okuma
     target_path = Path(file_path)
     docs: List[Document] = []
     
     try:
-        # page_chunks=True her sayfayı ayrı bir sözlük olarak döndürür
         page_data_list = pymupdf4llm.to_markdown(
             doc=str(target_path),
             page_chunks=True
         )
 
         for page_idx, page_data in enumerate(page_data_list):
-            text = page_data.get("text", "")
+            raw_text = page_data.get("text", "")
             
-            # Sayfa numarası kütüphane çıktısında yoksa index üzerinden 1 tabanlı hesaplanır
+            # ---> BURAYI ÇAĞIRIYORUZ <---
+            text = clean_markdown_artifacts(raw_text)
+            
             page_number = page_data.get("page", page_idx + 1)
             
             if text.strip():

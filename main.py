@@ -19,7 +19,7 @@ async def run_test():
 
     # 2. Başlangıç State'ini hazırla
     # Soru olarak bilerek eksik/belirsiz veya veri tabanında olan bir konu ver
-    test_question = "Within what timeframe must a personal data breach be notified to the supervisory authority?"
+    test_question = "According to ancient records, what physical stature did the famous son of Isumbras the Third reach that enabled him to mount an equine?"
     
     initial_state = {
         "original_question": test_question,

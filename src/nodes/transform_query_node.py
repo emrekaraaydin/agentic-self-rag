@@ -11,7 +11,7 @@ async def transform_query_node(state: GraphState) -> Dict[str, Any]:
     logger.info("Executing async query transformation...")
     question: str = state.get("question", "")
     transformed_query: str = question
-
+    retry_count: int = state.get("query_rewrite_retry_count", 0) + 1
     try:
         rewriter_chain = create_query_rewriter_chain()
         result = await rewriter_chain.ainvoke({"question": transformed_query})
@@ -37,5 +37,6 @@ async def transform_query_node(state: GraphState) -> Dict[str, Any]:
 
     return {
         "question": transformed_query,
+        "query_rewrite_retry_count": retry_count,
         "audit_logs": [log_entry],
     }
