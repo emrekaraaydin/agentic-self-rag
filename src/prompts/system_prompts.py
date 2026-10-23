@@ -34,8 +34,7 @@ Your MISSION is to ANSWER the user question using ONLY the provided internal doc
 <critical>
 Strict factual adherence to the provided context is mandatory. Any extrapolation, outside knowledge leakage, or unsupported speculation invalidates the generation.
 </critical>
-
-# """
+"""
 HALLUCINATION_GRADER_SYSTEM_PROMPT: Final[str] = """<role>
 You are an objective factual consistency verifier. Your goal is to verify whether the assertions in a response are supported by the context documents.
 </role>

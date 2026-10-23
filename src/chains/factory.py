@@ -64,7 +64,7 @@ def create_generator_chain() -> RunnableSerializable[Dict[str, Any], str]:
 
 
 def create_query_rewriter_chain() -> RunnableSerializable[Dict[str, Any],str]:
-    # Dinamik sicaklik ve yapilandirilmis cikti (Pydantic) ile sorgu donusturme zinciri
+    # SLM ile sorgu sadelestirme ve donusturme zinciri
     slm = get_base_slm()
     prompt = ChatPromptTemplate.from_messages(
         [

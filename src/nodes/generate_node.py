@@ -29,23 +29,17 @@ async def _invoke_generator_chain_with_retry(context: str, question: str, retry_
 
 
 def _build_retry_notes(state: GraphState) -> str:
-    notes: List[str] = []
-    
-    if state.get("hallucination_reasoning"):
-        constraint_message = (
-            "STRICT DATA CONSTRAINT ACTIVATED:\n"
-            "- You MUST rely EXCLUSIVELY on facts explicitly written in the provided context.\n"
-            "- Do NOT invent, assume, or bring in outside knowledge.\n"
-            "- If the exact answer is not clearly stated in the text, you MUST output ONLY this exact sentence: 'The context does not provide information about this topic.'\n"
-            "- Do NOT add any extra explanation, introductory phrases, or commentary."
-        )
-        notes.append(constraint_message)
-        
-
-    if not notes:
+    if not state.get("hallucination_reasoning"):
         return ""
 
-    return "<retry_notes>\n" + "\n".join(f"- {note}" for note in notes) + "\n</retry_notes>"
+    constraint_message = (
+        "STRICT DATA CONSTRAINT ACTIVATED:\n"
+        "- You MUST rely EXCLUSIVELY on facts explicitly written in the provided context.\n"
+        "- Do NOT invent, assume, or bring in outside knowledge.\n"
+        "- If the exact answer is not clearly stated in the text, you MUST output ONLY this exact sentence: 'The context does not provide information about this topic.'\n"
+        "- Do NOT add any extra explanation, introductory phrases, or commentary."
+    )
+    return f"<retry_notes>\n- {constraint_message}\n</retry_notes>"
 
 async def generate_node(state: GraphState) -> Dict[str, Any]:
     logger.info("Executing async response generation...")

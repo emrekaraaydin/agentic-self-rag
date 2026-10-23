@@ -54,7 +54,7 @@ async def on_message(message: cl.Message) -> None:
         "generation": None,
         "is_relevant": None,
         "has_hallucination": None,
-        "retrieval_retry_count": 0,
+        "query_rewrite_retry_count": 0,
         "generation_hallucination_retry_count": 0,
         "hallucination_reasoning": None,
         "audit_logs": [],

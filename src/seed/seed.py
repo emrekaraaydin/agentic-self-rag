@@ -3,7 +3,6 @@ import logging
 from pathlib import Path
 from typing import List
 
-from langchain_community.embeddings import OllamaEmbeddings
 from langchain_core.documents import Document
 from qdrant_client import AsyncQdrantClient
 from qdrant_client.http import models as rest_models
@@ -11,7 +10,7 @@ from qdrant_client.http import models as rest_models
 import config.settings
 from src.indexing.loader import load_all_pdfs
 from src.indexing.splitter import chunk_documents
-from src.indexing.vector_store import get_async_qdrant_client
+from src.indexing.vector_store import get_async_qdrant_client, get_embedding_model
 
 logging.basicConfig(
     level=logging.INFO,
@@ -61,10 +60,7 @@ async def seed_vector_store() -> None:
 
     # 3. Nomic asimetrik indeksleme için ön ek ekleme ve embedding üretimi
     logger.info("Generating embeddings via Ollama ('%s')...", config.settings.EMBEDDING_MODEL)
-    embedding_client = OllamaEmbeddings(
-        model=config.settings.EMBEDDING_MODEL,
-        base_url=config.settings.OLLAMA_BASE_URL,
-    )
+    embedding_client = get_embedding_model()
 
     # Nomic-embed-text asimetrik arama için doküman ön eki
     texts_to_embed = [f"search_document: {doc.page_content}" for doc in chunked_documents]
