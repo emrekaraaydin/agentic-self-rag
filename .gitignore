@@ -11,6 +11,7 @@ env/
 
 # Chainlit önbellek ve yüklenen geçici dosyalar
 .files/
+.cache/highlighted_pdfs/
 
 # Qdrant yerel veri tabanı depolama alanı
 qdrant_storage/
