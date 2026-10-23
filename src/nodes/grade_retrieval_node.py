@@ -92,18 +92,9 @@ async def grade_retrieval_node(state: GraphState) -> Dict[str, Any]:
     sources: List[Dict[str, Any]] = [
         {
             "chunk_id": doc.metadata.get("chunk_id") or doc.metadata.get("id") or f"doc_{idx}",
-            "chunk_index": doc.metadata.get("chunk_index", idx),
             "source": doc.metadata.get("source", "unknown"),
             "page": doc.metadata.get("page"),
             "rerank_score": doc.metadata.get("rerank_score"),
-            "retrieval_score": doc.metadata.get("retrieval_score"),
-            "threshold": active_threshold,
-            "content": doc.page_content,
-            "headers": [
-                str(doc.metadata[h]).strip()
-                for h in ("header_1", "header_2", "header_3")
-                if doc.metadata.get(h)
-            ],
         }
         for idx, doc in enumerate(selected_documents)
     ]
