@@ -17,7 +17,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger("batch_evaluator")
 
-DATASET_PATH = Path("golden_dataset.json")
+DATASET_PATH = Path("golden_dataset_90.json")
 OUTPUT_PATH = Path("evaluation_results.json")
 
 FALLBACK_MSG_NO_DOCS = (

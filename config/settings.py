@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from typing import Dict, Final
+from typing import Final
 from dotenv import load_dotenv
 
 # .env dosyasindaki degiskenleri yukleme
@@ -28,7 +28,7 @@ SLM_MAX_TEMPERATURE: Final[float] = float(os.getenv("SLM_MAX_TEMPERATURE", "0.2"
 REQUEST_TIMEOUT: Final[float] = float(os.getenv("REQUEST_TIMEOUT", "60.0"))
 RERANK_TOP_N: Final[int] = 8
 
-RERANK_DEFAULT_THRESHOLD: Final[float] = 0.05
+RERANK_DEFAULT_THRESHOLD: Final[float] = 0.03
 
 # Vektor veritabani parametreleri
 QDRANT_HOST: Final[str] = os.getenv("QDRANT_HOST", "localhost")
