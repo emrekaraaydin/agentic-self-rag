@@ -22,14 +22,12 @@ async def grade_retrieval_node(state: GraphState) -> Dict[str, Any]:
     # Aday dokumanlari Cross-Encoder ile puanlayip dinamik esik ustundeki en iyi dokumanlari secer
     query: str = state["question"]
     documents: List[Document] = state.get("documents", [])
-    query_type: str = state.get("query_type") or "conceptual"
 
     active_threshold: float = RERANK_DEFAULT_THRESHOLD
 
     logger.info(
-        "Grading %d documents | Query Type: '%s' | Active Threshold: %.2f | Query: '%s'",
+        "Grading %d documents | Active Threshold: %.2f | Query: '%s'",
         len(documents),
-        query_type,
         active_threshold,
         query,
     )
@@ -42,7 +40,6 @@ async def grade_retrieval_node(state: GraphState) -> Dict[str, Any]:
             "audit_logs": [
                 {
                     "node": "grade_retrieval_node",
-                    "query_type": query_type,
                     "applied_threshold": active_threshold,
                     "graded_doc_count": 0,
                     "passed_doc_count": 0,
@@ -110,7 +107,6 @@ async def grade_retrieval_node(state: GraphState) -> Dict[str, Any]:
 
     log_entry: Dict[str, Any] = {
         "node": "grade_retrieval_node",
-        "query_type": query_type,
         "applied_threshold": active_threshold,
         "graded_doc_count": len(documents),
         "passed_doc_count": len(selected_documents),

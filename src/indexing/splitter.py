@@ -62,9 +62,8 @@ def chunk_documents(documents: List[Document]) -> List[Document]:
         # 2. Aşama: Başlık bloklarını CHUNK_SIZE sınırına göre alt parçalara böl
         sub_chunks = text_splitter.split_documents(header_splits)
 
-        for idx, chunk in enumerate(sub_chunks):
+        for chunk in sub_chunks:
             chunk.metadata["chunk_id"] = str(uuid.uuid4())
-            chunk.metadata["chunk_index"] = idx
 
             # 3. Aşama: Metadata'daki başlık zincirini metin gövdesine ön ek olarak enjekte et
             active_headers = [

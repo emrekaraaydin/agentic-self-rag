@@ -40,26 +40,25 @@ def _format_execution_trace(state: GraphState) -> str:
 
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
-    "raw_query, expected_must_contain_keyword, expect_retrieval_success",
+    "raw_query, expect_retrieval_success",
     [
         # Senaryo 1: Bilgi korpusta var (Grounded uretim)
-        ("what exact words did gandalf say to the balrog on the bridge of khazad-dum", None, True),
-        ("what color was the feather in tom bombadil's hat", None, True),
+        ("what exact words did gandalf say to the balrog on the bridge of khazad-dum", True),
+        ("what color was the feather in tom bombadil's hat", True),
         # Senaryo 2: Dokuman korpusta yok / esigi gecemiyor (Retrieval failure -> Fallback)
-        ("what exact words did the witch-king say right before eowyn killed him", None, False),
-        ("how many balrogs fought in the siege of gondolin according to the text", None, False),
-        ("what was the name of the horse that legolas rode during the war", None, False),
+        ("what exact words did the witch-king say right before eowyn killed him", False),
+        ("how many balrogs fought in the siege of gondolin according to the text", False),
+        ("what was the name of the horse that legolas rode during the war", False),
         # Senaryo 3: Dokuman donuyor ama aranan bilgi yok (Clean refusal)
-        ("what gift did galadriel give to boromir in lothlorien", None, True),
-        ("where was saruman killed and who dealt the final blow", None, True),
-        ("which hand and finger did gollum bite off from frodo at mount doom", None, True),
-        ("why did elrond refuse to let aragorn marry arwen in rivendell", None, True),
+        ("what gift did galadriel give to boromir in lothlorien", True),
+        ("where was saruman killed and who dealt the final blow", True),
+        ("which hand and finger did gollum bite off from frodo at mount doom", True),
+        ("why did elrond refuse to let aragorn marry arwen in rivendell", True),
     ],
 )
 async def test_agentic_rag_pipeline(
     graph_app,
     raw_query: str,
-    expected_must_contain_keyword: str,
     expect_retrieval_success: bool,
 ):
     initial_state: GraphState = {
@@ -70,7 +69,7 @@ async def test_agentic_rag_pipeline(
         "generation": None,
         "is_relevant": None,
         "has_hallucination": None,
-        "retrieval_retry_count": 0,
+        "query_rewrite_retry_count": 0,
         "generation_hallucination_retry_count": 0,
         "hallucination_reasoning": None,
         "audit_logs": [],
@@ -100,9 +99,3 @@ async def test_agentic_rag_pipeline(
     assert final_state["has_hallucination"] is False, (
         f"Pipeline ended with ungrounded/hallucinated answer!\nTrace:{trace_dump}"
     )
-
-    # 5. Anahtar kelime kontrolu
-    if expected_must_contain_keyword:
-        assert expected_must_contain_keyword.lower() in final_state["generation"].lower(), (
-            f"Expected keyword '{expected_must_contain_keyword}' missing.\nTrace:{trace_dump}"
-        )

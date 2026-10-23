@@ -23,7 +23,6 @@ LLM_TEMPERATURE: Final[float] = float(os.getenv("LLM_TEMPERATURE", "0.0"))
 SLM_MODEL: Final[str] = os.getenv("SLM_MODEL", "qwen2.5:3b-instruct")
 SLM_NUM_CTX: Final[int] = int(os.getenv("SLM_NUM_CTX", "2048"))
 SLM_MIN_TEMPERATURE: Final[float] = float(os.getenv("SLM_MIN_TEMPERATURE", "0.0"))
-SLM_MAX_TEMPERATURE: Final[float] = float(os.getenv("SLM_MAX_TEMPERATURE", "0.2"))
 
 REQUEST_TIMEOUT: Final[float] = float(os.getenv("REQUEST_TIMEOUT", "60.0"))
 RERANK_TOP_N: Final[int] = 8
