@@ -46,3 +46,6 @@ data/*.pdf
 *.ses
 *.app/
 *.command
+
+# Local social/portfolio post draft
+linkedin_post.md

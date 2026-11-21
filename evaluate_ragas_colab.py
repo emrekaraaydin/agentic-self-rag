@@ -20,7 +20,7 @@ Colab üzerinde çalıştırma adımları:
    !ollama pull qwen2.5:32b
    !ollama pull bge-m3
 
-4. evaluation_results_ragas_80.json dosyasını yükleyip çalıştırın:
+4. evaluation_results_v2_ragas_80.json dosyasını yükleyip çalıştırın:
    !python evaluate_ragas_colab.py
 """
 import json
@@ -46,9 +46,9 @@ except ImportError:
     from ragas.metrics import AnswerRelevancy as RelevancyMetric
 
 
-INPUT_PATH = Path(os.getenv("RAGAS_INPUT_PATH", "evaluation_results_ragas_80.json"))
-OUTPUT_CSV = Path(os.getenv("RAGAS_OUTPUT_CSV", "ragas_results_80.csv"))
-OUTPUT_SUMMARY = Path(os.getenv("RAGAS_OUTPUT_SUMMARY", "ragas_summary.json"))
+INPUT_PATH = Path(os.getenv("RAGAS_INPUT_PATH", "evaluation_results_v2_ragas_80.json"))
+OUTPUT_CSV = Path(os.getenv("RAGAS_OUTPUT_CSV", "ragas_results_v2_80.csv"))
+OUTPUT_SUMMARY = Path(os.getenv("RAGAS_OUTPUT_SUMMARY", "ragas_summary_v2_80.json"))
 
 OLLAMA_BASE_URL = os.getenv("OLLAMA_BASE_URL", "http://127.0.0.1:11434")
 JUDGE_MODEL = os.getenv("RAGAS_JUDGE_MODEL", "qwen2.5:32b")
