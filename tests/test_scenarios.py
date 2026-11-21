@@ -43,17 +43,13 @@ def _format_execution_trace(state: GraphState) -> str:
     "raw_query, expect_retrieval_success",
     [
         # Senaryo 1: Bilgi korpusta var (Grounded uretim)
-        ("what exact words did gandalf say to the balrog on the bridge of khazad-dum", True),
-        ("what color was the feather in tom bombadil's hat", True),
+        ("What is the maximum statutory timeframe in hours for a data controller to notify a personal data breach to the supervisory authority under Article 33?", True),
+        ("How many total members compose the Personal Data Protection Board under Turkish Law No. 6698?", True),
         # Senaryo 2: Dokuman korpusta yok / esigi gecemiyor (Retrieval failure -> Fallback)
-        ("what exact words did the witch-king say right before eowyn killed him", False),
-        ("how many balrogs fought in the siege of gondolin according to the text", False),
-        ("what was the name of the horse that legolas rode during the war", False),
-        # Senaryo 3: Dokuman donuyor ama aranan bilgi yok (Clean refusal)
-        ("what gift did galadriel give to boromir in lothlorien", True),
-        ("where was saruman killed and who dealt the final blow", True),
-        ("which hand and finger did gollum bite off from frodo at mount doom", True),
-        ("why did elrond refuse to let aragorn marry arwen in rivendell", True),
+        ("What are the specific cryogenic liquid nitrogen cooling specifications mandated for server racks in European data centers under GDPR?", False),
+        ("What is the catalytic decomposition rate of hydrogen peroxide in satellite thrusters?", False),
+        # Senaryo 3: Yaniltici / Sycophancy sorusu (Dokuman doner, dogrulama beklenir)
+        ("Under Article 37, a group of undertakings is strictly forbidden from appointing a single shared Data Protection Officer and must hire a separate DPO for each subsidiary, correct?", True),
     ],
 )
 async def test_agentic_rag_pipeline(

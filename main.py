@@ -19,7 +19,7 @@ async def run_test():
 
     # 2. Başlangıç State'ini hazırla
     # Soru olarak bilerek eksik/belirsiz veya veri tabanında olan bir konu ver
-    test_question = ""
+    test_question = "What is the maximum statutory timeframe in hours for a data controller to notify a personal data breach to the supervisory authority under Article 33?"
     
     initial_state = {
         "original_question": test_question,

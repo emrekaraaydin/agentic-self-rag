@@ -33,11 +33,7 @@ def _build_retry_notes(state: GraphState) -> str:
         return ""
 
     constraint_message = (
-        "STRICT DATA CONSTRAINT ACTIVATED:\n"
-        "- You MUST rely EXCLUSIVELY on facts explicitly written in the provided context.\n"
-        "- Do NOT invent, assume, or bring in outside knowledge.\n"
-        "- If the exact answer is not clearly stated in the text, you MUST output ONLY this exact sentence: 'The context does not provide information about this topic.'\n"
-        "- Do NOT add any extra explanation, introductory phrases, or commentary."
+        "\nYour previous response contradicted / was not supported by the context; stick strictly to the context.\n"
     )
     return f"<retry_notes>\n- {constraint_message}\n</retry_notes>"
 
@@ -48,7 +44,7 @@ async def generate_node(state: GraphState) -> Dict[str, Any]:
     documents: List[Document] = state.get("documents", [])
 
     formatted_context: str = "\n\n---\n\n".join(
-        f"Document [{idx + 1}]:\n{doc.page_content}"
+        f"Document [{idx + 1}] (Source: {doc.metadata.get('source', 'unknown')}):\n{doc.page_content}"
         for idx, doc in enumerate(documents)
     )
 

@@ -19,6 +19,10 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
+EMBED_BATCH_SIZE = 64
+UPSERT_BATCH_SIZE = 200
+
+
 async def seed_vector_store() -> None:
     # Qdrant koleksiyonunu sıfırlar, markdown belgeleri yükler, Nomic önekiyle gömer ve Qdrant'a yazar.
     client: AsyncQdrantClient = get_async_qdrant_client()
@@ -58,13 +62,19 @@ async def seed_vector_store() -> None:
 
     chunked_documents: List[Document] = chunk_documents(raw_documents)
 
-    # 3. Nomic asimetrik indeksleme için ön ek ekleme ve embedding üretimi
-    logger.info("Generating embeddings via Ollama ('%s')...", config.settings.EMBEDDING_MODEL)
+    # 3. Nomic asimetrik indeksleme için ön ek ekleme ve toplu embedding üretimi
+    logger.info("Generating embeddings via Ollama ('%s') in batches of %d...", config.settings.EMBEDDING_MODEL, EMBED_BATCH_SIZE)
     embedding_client = get_embedding_model()
 
     # Nomic-embed-text asimetrik arama için doküman ön eki
     texts_to_embed = [f"search_document: {doc.page_content}" for doc in chunked_documents]
-    vectors = await embedding_client.aembed_documents(texts_to_embed)
+    vectors: List[List[float]] = []
+    total_chunks = len(texts_to_embed)
+    for start_idx in range(0, total_chunks, EMBED_BATCH_SIZE):
+        batch_texts = texts_to_embed[start_idx : start_idx + EMBED_BATCH_SIZE]
+        batch_vectors = await embedding_client.aembed_documents(batch_texts)
+        vectors.extend(batch_vectors)
+        logger.info("Embedded %d/%d chunks...", min(start_idx + len(batch_texts), total_chunks), total_chunks)
 
     # 4. Qdrant Points hazırlama (Metadata alanları doğrudan payload köküne açılır)
     points = [
@@ -80,13 +90,17 @@ async def seed_vector_store() -> None:
         for doc, vector in zip(chunked_documents, vectors)
     ]
 
-    # 5. Toplu yükleme (Upsert)
-    logger.info("Upserting %d points into Qdrant...", len(points))
-    await client.upsert(
-        collection_name=collection_name,
-        points=points,
-    )
-    logger.info("Seeding completed successfully! Total points inserted: %d", len(points))
+    # 5. Toplu yükleme (Batched Upsert)
+    total_points = len(points)
+    logger.info("Upserting %d points into Qdrant in batches of %d...", total_points, UPSERT_BATCH_SIZE)
+    for start_idx in range(0, total_points, UPSERT_BATCH_SIZE):
+        batch_points = points[start_idx : start_idx + UPSERT_BATCH_SIZE]
+        await client.upsert(
+            collection_name=collection_name,
+            points=batch_points,
+        )
+        logger.info("Upserted %d/%d points...", min(start_idx + len(batch_points), total_points), total_points)
+    logger.info("Seeding completed successfully! Total points inserted: %d", total_points)
 
 
 if __name__ == "__main__":

@@ -8,9 +8,14 @@ env/
 .env
 .env.local
 .env.*
+!.env.example
 
 # Chainlit önbellek ve yüklenen geçici dosyalar
 .files/
+*.log
+
+# Eski değerlendirme çıktıları
+legacy_outputs/
 
 # Qdrant yerel veri tabanı depolama alanı
 qdrant_storage/
@@ -35,3 +40,9 @@ Thumbs.db
 
 # Dokümanlar ve PDF'ler
 data/*.pdf
+
+# Local caches, macOS launchers, and stray session files
+.cache/
+*.ses
+*.app/
+*.command

@@ -1,8 +1,10 @@
 import logging
 from langgraph.graph import END, StateGraph
+from src.nodes.decompose_query_node import decompose_query_node
 from src.nodes.generate_node import generate_node
 from src.nodes.grade_hallucination_node import grade_hallucination_node
 from src.nodes.grade_retrieval_node import grade_retrieval_node
+from src.nodes.reflect_missing_context_node import reflect_missing_context_node
 from src.nodes.retrieve_node import retrieve_node
 from src.nodes.transform_query_node import transform_query_node
 from src.nodes.fallback_node import fallback_node
@@ -22,7 +24,9 @@ def build_graph():
     workflow = StateGraph(GraphState)
 
     # 1. Dugumlerin (Nodes) Eklenmesi
+    workflow.add_node("decompose_query_node", decompose_query_node)
     workflow.add_node("transform_query_node", transform_query_node)
+    workflow.add_node("reflect_missing_context_node", reflect_missing_context_node)
     workflow.add_node("retrieve_node", retrieve_node)
     workflow.add_node("grade_retrieval_node", grade_retrieval_node)
     workflow.add_node("generate_node", generate_node)
@@ -30,10 +34,12 @@ def build_graph():
     workflow.add_node("fallback_node", fallback_node)
 
     # 2. Giris Noktasi (Entry Point)
-    workflow.set_entry_point("retrieve_node")
+    workflow.set_entry_point("decompose_query_node")
 
     # 3. Deterministik / Dogrusal Gecisler (Direct Edges)
+    workflow.add_edge("decompose_query_node", "retrieve_node")
     workflow.add_edge("transform_query_node", "retrieve_node")
+    workflow.add_edge("reflect_missing_context_node", "retrieve_node")
     workflow.add_edge("retrieve_node", "grade_retrieval_node")
     workflow.add_edge("generate_node", "grade_hallucination_node")
     workflow.add_edge("fallback_node", END)
@@ -51,11 +57,12 @@ def build_graph():
     },
 )
 
-    # Halusinasyon denetimi kontrolu
+    # Halusinasyon ve eksik-baglam yansitma denetimi kontrolu
     workflow.add_conditional_edges(
     "grade_hallucination_node",
     route_after_hallucination,
     {
+        "reflect_missing_context_node": "reflect_missing_context_node",
         "generate_node": "generate_node",
         "fallback_node": "fallback_node",
         "__end__": END,

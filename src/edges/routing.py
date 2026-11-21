@@ -28,7 +28,17 @@ def route_after_retrieval(state: GraphState,) -> Literal["generate_node", "trans
     return "transform_query_node"
 
 
-def route_after_hallucination(state: GraphState,) -> Literal["generate_node", "fallback_node", "__end__"]:
+def route_after_hallucination(
+    state: GraphState,
+) -> Literal["reflect_missing_context_node", "generate_node", "fallback_node", "__end__"]:
+    # Eksik mevzuat / kismi ret durumunda yeniden arama kontrolu
+    if (
+        state.get("needs_additional_retrieval", False)
+        and state.get("retrieval_reflection_retry_count", 0) < settings.RETRIEVAL_REFLECTION_MAX_RETRY
+    ):
+        logger.info("Missing context detected in multi-part response. Routing to reflect_missing_context_node.")
+        return "reflect_missing_context_node"
+
     # Halusinasyon denetimi
     has_hallucination: bool = state.get("has_hallucination", False)
     generation_hallucination_retry_count: int = state.get(

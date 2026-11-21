@@ -1,5 +1,7 @@
-from typing import Literal
+from typing import List, Literal
 from pydantic import BaseModel, Field
+
+
 class GradeHallucinations(BaseModel):
     is_refusal: bool = Field(
         ...,
@@ -20,5 +22,32 @@ class GradeHallucinations(BaseModel):
         description=(
             "'grounded': If is_refusal is True OR if all factual claims are explicitly found in the context. "
             "'hallucinated': If the response invents facts, names, or events not present in the context."
+        ),
+    )
+
+
+class QueryPlan(BaseModel):
+    is_multi_part: bool = Field(
+        ...,
+        description=(
+            "True if the question compares two or more distinct statutes, regulations, or separate articles/sections "
+            "requiring independent retrieval; False for a single focused question."
+        ),
+    )
+    sub_queries: List[str] = Field(
+        ...,
+        description=(
+            "1 to 3 concise, self-contained English search queries. Return 1 query if is_multi_part is False; "
+            "return 2 to 3 standalone queries if is_multi_part is True, each targeting one specific statute/article/topic."
+        ),
+    )
+
+
+class MissingContextPlan(BaseModel):
+    missing_sub_queries: List[str] = Field(
+        ...,
+        description=(
+            "1 to 2 targeted standalone English search queries specifically aimed at retrieving the missing "
+            "statute, article, or facts reported as absent in the draft answer (empty list if nothing more to search)."
         ),
     )
