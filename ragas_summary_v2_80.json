@@ -1,0 +1,42 @@
+{
+  "judge_model": "qwen2.5:32b",
+  "embed_model": "bge-m3",
+  "evaluated_count": 79,
+  "skipped_empty_context": [
+    "gdpr_lm02"
+  ],
+  "overall": {
+    "latency_sec": 64.7126,
+    "faithfulness": 0.7645,
+    "answer_correctness": 0.5495,
+    "context_recall": 0.7888,
+    "llm_context_precision_with_reference": 0.5237,
+    "answer_relevancy": 0.6075
+  },
+  "by_category": {
+    "factoid": {
+      "latency_sec": 43.0448,
+      "faithfulness": 0.8448,
+      "answer_correctness": 0.6141,
+      "context_recall": 0.8793,
+      "llm_context_precision_with_reference": 0.674,
+      "answer_relevancy": 0.7327
+    },
+    "multi-hop": {
+      "latency_sec": 90.3293,
+      "faithfulness": 0.6726,
+      "answer_correctness": 0.4744,
+      "context_recall": 0.6757,
+      "llm_context_precision_with_reference": 0.3501,
+      "answer_relevancy": 0.4114
+    },
+    "sycophancy": {
+      "latency_sec": 46.8315,
+      "faithfulness": 0.8233,
+      "answer_correctness": 0.5997,
+      "context_recall": 0.8778,
+      "llm_context_precision_with_reference": 0.6384,
+      "answer_relevancy": 0.8231
+    }
+  }
+}
