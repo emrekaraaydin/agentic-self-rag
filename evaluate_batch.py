@@ -2,12 +2,13 @@ import os
 
 os.environ["ORT_DISABLE_TELEMETRY"] = "1"
 
+import argparse
 import asyncio
 import json
 import logging
 import time
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 from src.graph import build_graph
 
@@ -17,7 +18,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger("batch_evaluator")
 
-DATASET_PATH = Path("golden_dataset_90.json")
+DATASET_PATH = Path("golden_dataset_100.json")
 OUTPUT_PATH = Path("evaluation_results.json")
 
 FALLBACK_MSG_NO_DOCS = (
@@ -83,7 +84,7 @@ def check_fallback_status(
 
 
 def check_target_doc_retrieved(
-    target_doc: str,
+    target_doc: Union[str, List[str]],
     sources: List[Dict[str, Any]],
     documents: List[Any],
 ) -> bool:
@@ -91,25 +92,38 @@ def check_target_doc_retrieved(
     if not target_doc:
         return False
 
+    retrieved_sources_set = set()
     for source_info in sources:
-        if isinstance(source_info, dict) and source_info.get("source") == target_doc:
-            return True
+        if isinstance(source_info, dict) and source_info.get("source"):
+            retrieved_sources_set.add(source_info["source"])
 
     for doc in documents:
         metadata = getattr(doc, "metadata", {}) if not isinstance(doc, dict) else doc.get("metadata", {})
-        if metadata.get("source") == target_doc:
-            return True
+        if metadata.get("source"):
+            retrieved_sources_set.add(metadata["source"])
 
-    return False
+    if isinstance(target_doc, list):
+        return bool(target_doc) and all(doc in retrieved_sources_set for doc in target_doc)
+
+    return target_doc in retrieved_sources_set
 
 
-async def run_batch_evaluation() -> None:
+async def run_batch_evaluation(
+    dataset_path: Path = DATASET_PATH,
+    output_path: Path = OUTPUT_PATH,
+    category_filter: Optional[str] = None,
+    subcategory_filter: Optional[str] = None,
+) -> None:
     # Grafiği derle ve veri setini yükle
     logger.info("Initializing graph application...")
     app = build_graph()
-    dataset = load_dataset(DATASET_PATH)
+    dataset = load_dataset(dataset_path)
+    if category_filter:
+        dataset = [item for item in dataset if item.get("category") == category_filter]
+    if subcategory_filter:
+        dataset = [item for item in dataset if item.get("subcategory") == subcategory_filter]
     total_queries = len(dataset)
-    logger.info("Loaded %d test items from %s", total_queries, DATASET_PATH)
+    logger.info("Loaded %d test items from %s", total_queries, dataset_path)
 
     evaluation_records: List[Dict[str, Any]] = []
 
@@ -145,6 +159,7 @@ async def run_batch_evaluation() -> None:
             "has_hallucination": None,
             "query_rewrite_retry_count": 0,
             "generation_hallucination_retry_count": 0,
+            "retrieval_reflection_retry_count": 0,
             "hallucination_reasoning": None,
             "audit_logs": [],
             "sources": [],
@@ -200,6 +215,8 @@ async def run_batch_evaluation() -> None:
             "id": query_id,
             "domain": item.get("domain", ""),
             "category": category,
+            "subcategory": item.get("subcategory", ""),
+            "literature_dimension": item.get("literature_dimension", ""),
             "original_question": raw_question,
             "transformed_question": transformed_question,
             "ground_truth": ground_truth,
@@ -211,8 +228,11 @@ async def run_batch_evaluation() -> None:
             "target_doc_hit": hit_target_doc if not is_fallback_case else None,
             "source_reference": item.get("source_reference", ""),
             "latency_sec": latency_sec,
+            "is_multi_part": final_state.get("is_multi_part", False),
+            "sub_queries": final_state.get("sub_queries", []),
             "query_rewrite_retry_count": final_state.get("query_rewrite_retry_count", 0),
             "hallucination_retry_count": final_state.get("generation_hallucination_retry_count", 0),
+            "retrieval_reflection_retry_count": final_state.get("retrieval_reflection_retry_count", 0),
             "fallback_status": fallback_data,
             "execution_success": execution_error is None,
             "execution_error": execution_error,
@@ -220,11 +240,15 @@ async def run_batch_evaluation() -> None:
         }
         evaluation_records.append(record)
 
+        if idx % 5 == 0 or idx == total_queries:
+            with open(output_path, "w", encoding="utf-8") as file:
+                json.dump(evaluation_records, file, ensure_ascii=False, indent=2)
+
     # Sonuçları diske yaz
-    with open(OUTPUT_PATH, "w", encoding="utf-8") as file:
+    with open(output_path, "w", encoding="utf-8") as file:
         json.dump(evaluation_records, file, ensure_ascii=False, indent=2)
 
-    logger.info("Batch execution finished. Exported %d records to %s", len(evaluation_records), OUTPUT_PATH)
+    logger.info("Batch execution finished. Exported %d records to %s", len(evaluation_records), output_path)
 
     # Konsol özet raporu
     _print_evaluation_summary(metrics)
@@ -258,5 +282,22 @@ def _print_evaluation_summary(metrics: Dict[str, Any]) -> None:
     print(f"{separator}\n")
 
 
+def _parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description="Agentic RAG batch evaluation")
+    parser.add_argument("--dataset", type=Path, default=DATASET_PATH, help="Dataset JSON path.")
+    parser.add_argument("--output", type=Path, default=OUTPUT_PATH, help="Output JSON path.")
+    parser.add_argument("--category", type=str, default=None, help="Optional category filter.")
+    parser.add_argument("--subcategory", type=str, default=None, help="Optional subcategory filter.")
+    return parser.parse_args()
+
+
 if __name__ == "__main__":
-    asyncio.run(run_batch_evaluation())
+    args = _parse_args()
+    asyncio.run(
+        run_batch_evaluation(
+            dataset_path=args.dataset,
+            output_path=args.output,
+            category_filter=args.category,
+            subcategory_filter=args.subcategory,
+        )
+    )

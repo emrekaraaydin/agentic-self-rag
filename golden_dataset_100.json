@@ -1,0 +1,1147 @@
+[
+  {
+    "id": "gdpr_f01",
+    "domain": "legal_compliance",
+    "category": "factoid",
+    "subcategory": "direct_factoid",
+    "literature_dimension": "Factual Extraction (LegalBench-RAG)",
+    "question": "What is the maximum statutory timeframe in hours for a data controller to notify a personal data breach to the competent supervisory authority under GDPR Article 33(1)?",
+    "ground_truth": "The controller must notify the personal data breach to the competent supervisory authority without undue delay and, where feasible, not later than 72 hours after having become aware of it, unless the breach is unlikely to result in a risk to the rights and freedoms of natural persons.",
+    "target_doc": "CELEX_32016R0679_EN_TXT.pdf",
+    "source_reference": "Article 33(1) (Page 52)"
+  },
+  {
+    "id": "gdpr_f02",
+    "domain": "legal_compliance",
+    "category": "factoid",
+    "subcategory": "direct_factoid",
+    "literature_dimension": "Factual Extraction (LegalBench-RAG)",
+    "question": "What is the maximum administrative fine under GDPR Article 83(5) for infringements of the basic principles for processing?",
+    "ground_truth": "Infringements under Article 83(5) are subject to administrative fines up to EUR 20,000,000, or in the case of an undertaking, up to 4% of the total worldwide annual turnover of the preceding financial year, whichever is higher.",
+    "target_doc": "CELEX_32016R0679_EN_TXT.pdf",
+    "source_reference": "Article 83(5) (Pages 82-83)"
+  },
+  {
+    "id": "gdpr_f03",
+    "domain": "legal_compliance",
+    "category": "factoid",
+    "subcategory": "direct_factoid",
+    "literature_dimension": "Factual Extraction (LegalBench-RAG)",
+    "question": "What is the minimum duration for the term of office of members of each supervisory authority under GDPR Article 54?",
+    "ground_truth": "The duration of the term of the member or members of each supervisory authority must be no less than four years.",
+    "target_doc": "CELEX_32016R0679_EN_TXT.pdf",
+    "source_reference": "Article 54(1)(d) (Page 67)"
+  },
+  {
+    "id": "aiact_f01",
+    "domain": "legal_compliance",
+    "category": "factoid",
+    "subcategory": "direct_factoid",
+    "literature_dimension": "Factual Extraction (LegalBench-RAG)",
+    "question": "What cumulative training computation threshold in floating point operations (FLOPs) creates a presumption that a general-purpose AI model has high-impact capabilities under EU AI Act Article 51(2)?",
+    "ground_truth": "A general-purpose AI model is presumed to have high-impact capabilities when the cumulative amount of computation used for its training measured in floating point operations is greater than 10^25.",
+    "target_doc": "OJ_L_202401689_EN_TXT.pdf",
+    "source_reference": "Article 51(2) (Page 83)"
+  },
+  {
+    "id": "aiact_f02",
+    "domain": "legal_compliance",
+    "category": "factoid",
+    "subcategory": "direct_factoid",
+    "literature_dimension": "Factual Extraction (LegalBench-RAG)",
+    "question": "What is the maximum administrative fine under EU AI Act Article 99(3) for non-compliance with the prohibited AI practices listed in Article 5?",
+    "ground_truth": "Non-compliance with the prohibition of AI practices in Article 5 is subject to administrative fines of up to EUR 35,000,000 or, if the offender is an undertaking, up to 7% of its total worldwide annual turnover for the preceding financial year, whichever is higher.",
+    "target_doc": "OJ_L_202401689_EN_TXT.pdf",
+    "source_reference": "Article 99(3) (Page 115)"
+  },
+  {
+    "id": "aiact_f03",
+    "domain": "legal_compliance",
+    "category": "factoid",
+    "subcategory": "direct_factoid",
+    "literature_dimension": "Factual Extraction (LegalBench-RAG)",
+    "question": "Under EU AI Act Article 113, what is the general date of application of the Regulation, and from what earlier date do Chapters I and II apply?",
+    "ground_truth": "The EU AI Act applies generally from 2 August 2026, while Chapters I and II apply earlier from 2 February 2025.",
+    "target_doc": "OJ_L_202401689_EN_TXT.pdf",
+    "source_reference": "Article 113 (Page 123)"
+  },
+  {
+    "id": "nis2_f01",
+    "domain": "legal_compliance",
+    "category": "factoid",
+    "subcategory": "direct_factoid",
+    "literature_dimension": "Factual Extraction (LegalBench-RAG)",
+    "question": "Within how many hours of becoming aware of a significant incident must an essential or important entity submit an early warning under NIS2 Directive Article 23(4)(a)?",
+    "ground_truth": "The entity must submit an early warning to the CSIRT or competent authority without undue delay and in any event within 24 hours of becoming aware of the significant incident.",
+    "target_doc": "CELEX_32022L2555_EN_TXT.pdf",
+    "source_reference": "Article 23(4)(a) (Page 50)"
+  },
+  {
+    "id": "nis2_f02",
+    "domain": "legal_compliance",
+    "category": "factoid",
+    "subcategory": "direct_factoid",
+    "literature_dimension": "Factual Extraction (LegalBench-RAG)",
+    "question": "What is the minimum maximum administrative fine ceiling for essential entities infringing Articles 21 or 23 under NIS2 Directive Article 34(4)?",
+    "ground_truth": "Essential entities infringing Article 21 or 23 must be subject to administrative fines of a maximum of at least EUR 10,000,000 or at least 2% of the total worldwide annual turnover in the preceding financial year of the undertaking to which the essential entity belongs, whichever is higher.",
+    "target_doc": "CELEX_32022L2555_EN_TXT.pdf",
+    "source_reference": "Article 34(4) (Page 60)"
+  },
+  {
+    "id": "nis2_f03",
+    "domain": "legal_compliance",
+    "category": "factoid",
+    "subcategory": "direct_factoid",
+    "literature_dimension": "Factual Extraction (LegalBench-RAG)",
+    "question": "By what date must EU Member States adopt and publish transposition measures for the NIS2 Directive, and from what date must they apply those measures under Article 41(1)?",
+    "ground_truth": "Member States must adopt and publish the measures necessary to comply with the NIS2 Directive by 17 October 2024 and apply those measures from 18 October 2024.",
+    "target_doc": "CELEX_32022L2555_EN_TXT.pdf",
+    "source_reference": "Article 41(1) (Page 63)"
+  },
+  {
+    "id": "hipaa_f01",
+    "domain": "legal_compliance",
+    "category": "factoid",
+    "subcategory": "direct_factoid",
+    "literature_dimension": "Factual Extraction (LegalBench-RAG)",
+    "question": "What is the effective date of the August 14, 2002 HIPAA Privacy Rule Final Rule modifications (45 CFR Parts 160 and 164), and what is the Privacy Rule compliance date for most covered entities?",
+    "ground_truth": "The August 14, 2002 Final Rule is effective on October 15, 2002, and the compliance date of the Privacy Rule for most covered entities is April 14, 2003.",
+    "target_doc": "privrulepd.pdf",
+    "source_reference": "Preamble Dates & Section II (Pages 2-3)"
+  },
+  {
+    "id": "hipaa_f02",
+    "domain": "legal_compliance",
+    "category": "factoid",
+    "subcategory": "direct_factoid",
+    "literature_dimension": "Factual Extraction (LegalBench-RAG)",
+    "question": "How many years of prior disclosures must be included when an individual requests an accounting of disclosures of protected health information under the HIPAA Privacy Rule (§ 164.528)?",
+    "ground_truth": "The accounting must include disclosures of protected health information that occurred during the six years prior to the date of the request, exempting disclosures made prior to the April 14, 2003 compliance date.",
+    "target_doc": "privrulepd.pdf",
+    "source_reference": "Section III.I, § 164.528 (Pages 63, 67)"
+  },
+  {
+    "id": "hipaa_f03",
+    "domain": "legal_compliance",
+    "category": "factoid",
+    "subcategory": "direct_factoid",
+    "literature_dimension": "Factual Extraction (LegalBench-RAG)",
+    "question": "Under the HIPAA Privacy Rule transition provisions (§ 164.532(e)(2)), what is the latest calendar date until which a qualifying pre-existing business associate contract can remain deemed compliant?",
+    "ground_truth": "A qualifying prior business associate contract is deemed compliant until the earlier of the date the contract is renewed or modified on or after the compliance date, or April 14, 2004.",
+    "target_doc": "privrulepd.pdf",
+    "source_reference": "§ 164.532(e)(2) (Pages 69-70, 92-93)"
+  },
+  {
+    "id": "kvkk_f01",
+    "domain": "legal_compliance",
+    "category": "factoid",
+    "subcategory": "direct_factoid",
+    "literature_dimension": "Factual Extraction (LegalBench-RAG)",
+    "question": "On what date did Turkish Law No. 6698 on the Protection of Personal Data come into force, and how many total members compose the Personal Data Protection Board?",
+    "ground_truth": "Law No. 6698 came into force upon its publication in Official Gazette No. 29677 on 7 April 2016, and the Personal Data Protection Board consists of nine members.",
+    "target_doc": "kvkk_law_6698_en.pdf.pdf",
+    "source_reference": "Data Protection in Turkey (Page 5)"
+  },
+  {
+    "id": "kvkk_f02",
+    "domain": "legal_compliance",
+    "category": "factoid",
+    "subcategory": "direct_factoid",
+    "literature_dimension": "Factual Extraction (LegalBench-RAG)",
+    "question": "Under the Turkish KVKK By-Law described in the Law No. 6698 booklet, what is the mandatory minimum storage period for records of erasure, destruction, and anonymisation operations?",
+    "ground_truth": "All operations relating to erasure, destruction, and anonymisation of personal data must be recorded and stored for a minimum of three years, excluding other legal obligations.",
+    "target_doc": "kvkk_law_6698_en.pdf.pdf",
+    "source_reference": "Erasure, Destruction or Anonymisation (Page 28)"
+  },
+  {
+    "id": "kvkk_f03",
+    "domain": "legal_compliance",
+    "category": "factoid",
+    "subcategory": "direct_factoid",
+    "literature_dimension": "Factual Extraction (LegalBench-RAG)",
+    "question": "Under Turkish Law No. 6698, within how many days must a data controller send information and documents demanded by the Personal Data Protection Board during an examination?",
+    "ground_truth": "Except for information and documents having the status of state secret, the controller must send the information and documents demanded by the Board within fifteen days.",
+    "target_doc": "kvkk_law_6698_en.pdf.pdf",
+    "source_reference": "Right to Lodge a Complaint (Page 23)"
+  },
+  {
+    "id": "gdpr_lm01",
+    "domain": "legal_compliance",
+    "category": "factoid",
+    "subcategory": "lexical_mismatch",
+    "literature_dimension": "Lexical Mismatch / Query Reformulation (CRAG / BEIR)",
+    "question": "Under the European Union's General Data Protection Regulation, what is the longest period an official privacy seal or compliance credential can stay valid before requiring renewal?",
+    "ground_truth": "Under GDPR Article 42(7), certification is issued to a controller or processor for a maximum period of three years and may be renewed under the same conditions.",
+    "target_doc": "CELEX_32016R0679_EN_TXT.pdf",
+    "source_reference": "Article 42(7) (Page 59)"
+  },
+  {
+    "id": "gdpr_lm02",
+    "domain": "legal_compliance",
+    "category": "factoid",
+    "subcategory": "lexical_mismatch",
+    "literature_dimension": "Lexical Mismatch / Query Reformulation (CRAG / BEIR)",
+    "question": "Under EU GDPR rules, below what employee headcount is a business generally relieved from keeping internal inventories of its data handling operations?",
+    "ground_truth": "Under GDPR Article 30(5), the obligation to maintain records of processing activities does not apply to an enterprise or organisation employing fewer than 250 persons, unless the processing is likely to result in a risk to data subjects' rights, is not occasional, or includes special categories or criminal offence data.",
+    "target_doc": "CELEX_32016R0679_EN_TXT.pdf",
+    "source_reference": "Article 30(5) (Page 51)"
+  },
+  {
+    "id": "gdpr_lm03",
+    "domain": "legal_compliance",
+    "category": "factoid",
+    "subcategory": "lexical_mismatch",
+    "literature_dimension": "Lexical Mismatch / Query Reformulation (CRAG / BEIR)",
+    "question": "Under the EU GDPR, by how many extra weeks can a national privacy regulator lengthen its initial eight-week consultation clock when reviewing a high-risk processing proposal?",
+    "ground_truth": "Under GDPR Article 36(2), the supervisory authority's initial eight-week period to provide written advice may be extended by six weeks taking into account complexity, provided the authority informs the controller (and processor) within one month of receipt together with reasons for the delay.",
+    "target_doc": "CELEX_32016R0679_EN_TXT.pdf",
+    "source_reference": "Article 36(2) (Page 54)"
+  },
+  {
+    "id": "aiact_lm01",
+    "domain": "legal_compliance",
+    "category": "factoid",
+    "subcategory": "lexical_mismatch",
+    "literature_dimension": "Lexical Mismatch / Query Reformulation (CRAG / BEIR)",
+    "question": "Under the EU Artificial Intelligence Act, for how many years after an elevated-risk AI tool enters the market must its maker keep the technical dossier and conformity paperwork available for national regulators?",
+    "ground_truth": "Under EU AI Act Article 18(1), the provider must keep the technical documentation, quality management documentation, notified body change/decision documents, and EU declaration of conformity at the disposal of national competent authorities for 10 years after the high-risk AI system has been placed on the market or put into service.",
+    "target_doc": "OJ_L_202401689_EN_TXT.pdf",
+    "source_reference": "Article 18(1) (Page 63)"
+  },
+  {
+    "id": "aiact_lm02",
+    "domain": "legal_compliance",
+    "category": "factoid",
+    "subcategory": "lexical_mismatch",
+    "literature_dimension": "Lexical Mismatch / Query Reformulation (CRAG / BEIR)",
+    "question": "Under the EU AI Act, what is the shortest retention floor for machine-generated event trails maintained by providers and deployers of high-risk AI systems when those trails are under their control?",
+    "ground_truth": "Under EU AI Act Articles 19(1) and 26(6), providers and deployers of high-risk AI systems must keep automatically generated logs under their control for a period appropriate to the intended purpose of at least six months, unless Union or national law provides otherwise.",
+    "target_doc": "OJ_L_202401689_EN_TXT.pdf",
+    "source_reference": "Article 19(1), Article 26(6) (Pages 64, 68)"
+  },
+  {
+    "id": "aiact_lm03",
+    "domain": "legal_compliance",
+    "category": "factoid",
+    "subcategory": "lexical_mismatch",
+    "literature_dimension": "Lexical Mismatch / Query Reformulation (CRAG / BEIR)",
+    "question": "Under the EU AI Act, within how many weeks must the developer of a foundation model alert the European Commission once its model satisfies the threshold for systemic risk?",
+    "ground_truth": "Under EU AI Act Article 52(1), the provider of a general-purpose AI model meeting the high-impact capability condition must notify the Commission without delay and in any event within two weeks after the requirement is met or becomes known that it will be met.",
+    "target_doc": "OJ_L_202401689_EN_TXT.pdf",
+    "source_reference": "Article 52(1) (Page 83)"
+  },
+  {
+    "id": "nis2_lm01",
+    "domain": "legal_compliance",
+    "category": "factoid",
+    "subcategory": "lexical_mismatch",
+    "literature_dimension": "Lexical Mismatch / Query Reformulation (CRAG / BEIR)",
+    "question": "Under the EU NIS2 cybersecurity directive, within how many hours must domain name registry operators answer a lawful domain-holder data access inquiry from a legitimate requester?",
+    "ground_truth": "Under NIS2 Directive Article 28(5), TLD name registries and entities providing domain name registration services must reply to lawful and duly substantiated requests for access to domain name registration data without undue delay and in any event within 72 hours of receipt.",
+    "target_doc": "CELEX_32022L2555_EN_TXT.pdf",
+    "source_reference": "Article 28(5) (Page 54)"
+  },
+  {
+    "id": "nis2_lm02",
+    "domain": "legal_compliance",
+    "category": "factoid",
+    "subcategory": "lexical_mismatch",
+    "literature_dimension": "Lexical Mismatch / Query Reformulation (CRAG / BEIR)",
+    "question": "Under the EU NIS2 Directive, how often must national single points of contact deliver anonymized incident summaries to ENISA, and on what schedule does ENISA share its findings with the Cooperation Group and CSIRTs network?",
+    "ground_truth": "Under NIS2 Directive Article 23(9), single points of contact must submit a summary report with anonymised and aggregated incident data to ENISA every three months, and ENISA must inform the Cooperation Group and the CSIRTs network of its findings every six months.",
+    "target_doc": "CELEX_32022L2555_EN_TXT.pdf",
+    "source_reference": "Article 23(9) (Page 51)"
+  },
+  {
+    "id": "nis2_lm03",
+    "domain": "legal_compliance",
+    "category": "factoid",
+    "subcategory": "lexical_mismatch",
+    "literature_dimension": "Lexical Mismatch / Query Reformulation (CRAG / BEIR)",
+    "question": "Under the EU NIS2 Directive, once a Member State completes a cybersecurity peer review on particular topics, how long is the waiting period before those exact topics can be reviewed again?",
+    "ground_truth": "Under NIS2 Directive Article 19(7), the same aspects reviewed in a Member State shall not be subject to a further peer review in that Member State for two years following conclusion of the peer review, unless requested by the Member State or agreed upon after a proposal of the Cooperation Group.",
+    "target_doc": "CELEX_32022L2555_EN_TXT.pdf",
+    "source_reference": "Article 19(7) (Page 47)"
+  },
+  {
+    "id": "hipaa_lm01",
+    "domain": "legal_compliance",
+    "category": "factoid",
+    "subcategory": "lexical_mismatch",
+    "literature_dimension": "Lexical Mismatch / Query Reformulation (CRAG / BEIR)",
+    "question": "Under the 2002 U.S. HIPAA Privacy Rule modifications, what patient-count cutoff lets a covered entity supply a simplified protocol-level disclosure summary for research releases instead of itemizing each disclosure?",
+    "ground_truth": "Under § 164.528(b)(4), when disclosures of protected health information for a particular research purpose under § 164.512(i) involve 50 or more individuals, the covered entity may provide a simplified protocol-level accounting describing the research protocol, dates, sponsor, and researcher.",
+    "target_doc": "privrulepd.pdf",
+    "source_reference": "§ 164.528(b)(4) (Page 92)"
+  },
+  {
+    "id": "hipaa_lm02",
+    "domain": "legal_compliance",
+    "category": "factoid",
+    "subcategory": "lexical_mismatch",
+    "literature_dimension": "Lexical Mismatch / Query Reformulation (CRAG / BEIR)",
+    "question": "Under the 2002 U.S. HIPAA Privacy Rule, what two forms of promotional outreach by a covered entity are carved out from requiring prior written patient authorization?",
+    "ground_truth": "Under § 164.508(a)(3)(i), marketing communications do not require authorization if they take the form of a face-to-face communication made by a covered entity to an individual, or a promotional gift of nominal value provided by the covered entity.",
+    "target_doc": "privrulepd.pdf",
+    "source_reference": "§ 164.508(a)(3)(i) (Pages 88-89)"
+  },
+  {
+    "id": "hipaa_lm03",
+    "domain": "legal_compliance",
+    "category": "factoid",
+    "subcategory": "lexical_mismatch",
+    "literature_dimension": "Lexical Mismatch / Query Reformulation (CRAG / BEIR)",
+    "question": "Under the 2002 U.S. HIPAA Privacy Rule, what geographic address components may remain inside a stripped-down medical dataset shared under a Data Use Agreement even though street addresses must be removed?",
+    "ground_truth": "Under § 164.514(e)(2)(ii), a limited data set excludes postal address information other than town or city, State, and zip code, meaning town or city, State, and zip code may remain.",
+    "target_doc": "privrulepd.pdf",
+    "source_reference": "§ 164.514(e)(2)(ii) (Page 90)"
+  },
+  {
+    "id": "kvkk_lm01",
+    "domain": "legal_compliance",
+    "category": "factoid",
+    "subcategory": "lexical_mismatch",
+    "literature_dimension": "Lexical Mismatch / Query Reformulation (CRAG / BEIR)",
+    "question": "Under Turkey's Personal Data Protection Law No. 6698, what per-sheet fee can an organization charge an applicant when providing a printed paper reply longer than ten pages?",
+    "ground_truth": "No fee is charged for written replies up to ten pages, and 1 Turkish Lira may be charged per page over ten pages.",
+    "target_doc": "kvkk_law_6698_en.pdf.pdf",
+    "source_reference": "Obligation to Respond to Request of Data Subject (Page 34)"
+  },
+  {
+    "id": "kvkk_lm02",
+    "domain": "legal_compliance",
+    "category": "factoid",
+    "subcategory": "lexical_mismatch",
+    "literature_dimension": "Lexical Mismatch / Query Reformulation (CRAG / BEIR)",
+    "question": "Under Turkey's KVKK registry rules, within how many days must an organization inform the Authority via VERBİS after any recorded registration detail changes?",
+    "ground_truth": "In case of any change in the Registry records, data controllers must notify the Authority through VERBİS within seven days of the date of change.",
+    "target_doc": "kvkk_law_6698_en.pdf.pdf",
+    "source_reference": "Obligation to Register to Data Controllers' Registry (Page 32)"
+  },
+  {
+    "id": "kvkk_lm03",
+    "domain": "legal_compliance",
+    "category": "factoid",
+    "subcategory": "lexical_mismatch",
+    "literature_dimension": "Lexical Mismatch / Query Reformulation (CRAG / BEIR)",
+    "question": "Under Turkey's Law No. 6698, if the Personal Data Protection Board does not answer a citizen's formal grievance, after how many days is the demand legally treated as denied?",
+    "ground_truth": "If the request is not responded to within sixty days from the date of complaint, the demand is deemed refused.",
+    "target_doc": "kvkk_law_6698_en.pdf.pdf",
+    "source_reference": "Right to Lodge a Complaint (Page 22)"
+  },
+  {
+    "id": "gdpr_mh01",
+    "domain": "legal_compliance",
+    "category": "multi-hop",
+    "subcategory": "intra_doc_multi_hop",
+    "literature_dimension": "Intra-Document Information Integration (RGB / HotpotQA)",
+    "question": "Compare the two administrative fine tiers under GDPR Article 83(4) and Article 83(5) regarding their maximum monetary and turnover caps and the types of provisions each tier covers.",
+    "ground_truth": "Article 83(4) imposes fines up to EUR 10,000,000 or 2% of total worldwide annual turnover (whichever is higher) for controller/processor and certification/monitoring body obligations (e.g., Articles 8, 11, 25-39, 42, 43), whereas Article 83(5) imposes up to EUR 20,000,000 or 4% of worldwide turnover for infringements of basic processing principles (Articles 5, 6, 7, 9), data subjects' rights (Articles 12-22), international transfers (Articles 44-49), Chapter IX Member State obligations, and non-compliance with supervisory orders.",
+    "target_doc": "CELEX_32016R0679_EN_TXT.pdf",
+    "source_reference": "Article 83(4)-(5) (Pages 82-83)"
+  },
+  {
+    "id": "gdpr_mh02",
+    "domain": "legal_compliance",
+    "category": "multi-hop",
+    "subcategory": "intra_doc_multi_hop",
+    "literature_dimension": "Intra-Document Information Integration (RGB / HotpotQA)",
+    "question": "How do the mandatory transparency disclosures under GDPR Article 13 and Article 14 differ in terms of timing and informing the data subject of the origin of the data?",
+    "ground_truth": "Under Article 13 (personal data collected directly from the data subject), information must be provided at the time personal data are obtained and no external data source needs to be identified. Under Article 14 (personal data not obtained from the data subject), information must be provided within a reasonable period and at latest within one month (or at first communication/disclosure), and the controller must additionally specify the categories of personal data concerned and from which source the data originate, including whether from publicly accessible sources.",
+    "target_doc": "CELEX_32016R0679_EN_TXT.pdf",
+    "source_reference": "Article 13(1), Article 14(1)-(3) (Pages 40-42)"
+  },
+  {
+    "id": "gdpr_mh03",
+    "domain": "legal_compliance",
+    "category": "multi-hop",
+    "subcategory": "intra_doc_multi_hop",
+    "literature_dimension": "Intra-Document Information Integration (RGB / HotpotQA)",
+    "question": "Explain why a data controller may refuse a GDPR Article 17 erasure request even after consent is withdrawn, and what obligations remain if the controller does not need to identify the data subject under Articles 11(2) and 12(2).",
+    "ground_truth": "Under Article 17(1)(b) and 17(3), erasure after consent withdrawal does not apply if another legal ground exists or if processing is necessary for freedom of expression/information, compliance with a legal obligation or public-interest task, public health, archiving/research/statistics, or the establishment, exercise, or defence of legal claims. Under Articles 11(2) and 12(2), the controller cannot refuse to act on Articles 15-22 requests unless it demonstrates it is not in a position to identify the data subject, and the data subject may provide additional information enabling identification.",
+    "target_doc": "CELEX_32016R0679_EN_TXT.pdf",
+    "source_reference": "Article 11(2), Article 12(2), Article 17(1)(b),(3) (Pages 39-40, 43-44)"
+  },
+  {
+    "id": "gdpr_mh04",
+    "domain": "legal_compliance",
+    "category": "multi-hop",
+    "subcategory": "intra_doc_multi_hop",
+    "literature_dimension": "Intra-Document Information Integration (RGB / HotpotQA)",
+    "question": "Describe the escalation path under GDPR Articles 60 and 65 when a concerned supervisory authority raises a reasoned objection to a lead authority's draft decision, including the voting fallback if a two-thirds Board majority is not achieved.",
+    "ground_truth": "Under Article 60(3)-(4), after the lead authority submits a draft decision, concerned authorities have four weeks to raise a relevant and reasoned objection; if the lead authority rejects or does not follow the objection, it submits the matter to the consistency mechanism under Article 63/65(1)(a) for a binding Board decision. Under Article 65(2)-(3), the Board adopts its binding decision by a two-thirds majority within one month (extendable by one month); if it fails to do so, it adopts the decision within two weeks after the second month by a simple majority, with the Chair casting the deciding vote in a tie.",
+    "target_doc": "CELEX_32016R0679_EN_TXT.pdf",
+    "source_reference": "Article 60(3)-(4), Article 65(1)(a),(2)-(3) (Pages 71, 74-75)"
+  },
+  {
+    "id": "aiact_mh01",
+    "domain": "legal_compliance",
+    "category": "multi-hop",
+    "subcategory": "intra_doc_multi_hop",
+    "literature_dimension": "Intra-Document Information Integration (RGB / HotpotQA)",
+    "question": "Compare the serious incident reporting deadlines under EU AI Act Article 73(2), (3), and (4) across general serious incidents, widespread infringements or Article 3(49)(b) incidents, and incidents involving the death of a person.",
+    "ground_truth": "Under Article 73(2), general serious incidents must be reported immediately after establishing a causal link or reasonable likelihood and no later than 15 days after awareness. Under Article 73(3), widespread infringements or Article 3(49)(b) serious incidents (critical infrastructure disruption) must be reported immediately and no later than 2 days after awareness. Under Article 73(4), incidents involving the death of a person must be reported immediately after establishing or suspecting a causal link and no later than 10 days after awareness.",
+    "target_doc": "OJ_L_202401689_EN_TXT.pdf",
+    "source_reference": "Article 73(2)-(4) (Page 102)"
+  },
+  {
+    "id": "aiact_mh02",
+    "domain": "legal_compliance",
+    "category": "multi-hop",
+    "subcategory": "intra_doc_multi_hop",
+    "literature_dimension": "Intra-Document Information Integration (RGB / HotpotQA)",
+    "question": "Under EU AI Act Articles 51, 53, 54(6), and 55, what extra duties apply to providers of general-purpose AI models with systemic risk beyond standard GPAI provider duties, and when does the free and open-source exemption stop applying?",
+    "ground_truth": "Beyond Article 53 duties (technical documentation, downstream documentation, copyright policy, training data summary), Article 55 requires providers of GPAI models with systemic risk to conduct standardised model evaluations including adversarial testing, assess and mitigate Union-level systemic risks, track/document/report serious incidents and corrective measures without undue delay to the AI Office and national authorities, and ensure adequate cybersecurity for the model and physical infrastructure. Under Article 54(6), the free and open-source exemption does not apply when the GPAI model presents systemic risks.",
+    "target_doc": "OJ_L_202401689_EN_TXT.pdf",
+    "source_reference": "Articles 51, 53, 54(6), 55 (Pages 83-86)"
+  },
+  {
+    "id": "aiact_mh03",
+    "domain": "legal_compliance",
+    "category": "multi-hop",
+    "subcategory": "intra_doc_multi_hop",
+    "literature_dimension": "Intra-Document Information Integration (RGB / HotpotQA)",
+    "question": "Compare the administrative fine ceilings in EU AI Act Articles 99, 100, and 101 across prohibited practices, operator obligations, misleading information, SMEs/start-ups, Union institutions, and GPAI model providers.",
+    "ground_truth": "Under Article 99, fines reach EUR 35M or 7% worldwide turnover (whichever is higher) for Article 5 prohibited practices, EUR 15M or 3% for specified operator/notified body/Article 50 obligations, and EUR 7.5M or 1% for incorrect/incomplete/misleading information; for SMEs and start-ups (Article 99(6)), whichever of the amount or percentage is lower applies. Under Article 100, the EDPS may fine Union institutions up to EUR 1.5M for Article 5 breaches and EUR 750,000 for other breaches. Under Article 101(1), the Commission may fine GPAI model providers up to 3% of worldwide annual turnover or EUR 15M, whichever is higher.",
+    "target_doc": "OJ_L_202401689_EN_TXT.pdf",
+    "source_reference": "Article 99(3)-(6), Article 100(2)-(3), Article 101(1) (Pages 115-117)"
+  },
+  {
+    "id": "aiact_mh04",
+    "domain": "legal_compliance",
+    "category": "multi-hop",
+    "subcategory": "intra_doc_multi_hop",
+    "literature_dimension": "Intra-Document Information Integration (RGB / HotpotQA)",
+    "question": "Compare the urgency authorization deadlines and safeguards under EU AI Act Articles 5(2)-(3) and 26(10) for law enforcement use of 'real-time' versus 'post-remote' biometric identification systems.",
+    "ground_truth": "For 'real-time' remote biometric identification in publicly accessible spaces (Article 5(2)-(3)), prior judicial/independent administrative authorization, an Article 27 FRIA, and EU database registration are required; in duly justified urgency, use may start without authorization only if requested within 24 hours. For 'post-remote' biometric identification (Article 26(10)), ex ante authorization or authorization without undue delay and no later than 48 hours is required. In both cases, if authorization is rejected, use must stop immediately and linked personal data/outputs must be deleted, and no adverse legal decision may be taken solely on the system's output.",
+    "target_doc": "OJ_L_202401689_EN_TXT.pdf",
+    "source_reference": "Article 5(2)-(3), Article 26(10) (Pages 52-53, 68-69)"
+  },
+  {
+    "id": "nis2_mh01",
+    "domain": "legal_compliance",
+    "category": "multi-hop",
+    "subcategory": "intra_doc_multi_hop",
+    "literature_dimension": "Intra-Document Information Integration (RGB / HotpotQA)",
+    "question": "Detail the multi-stage significant incident reporting timeline under NIS2 Directive Article 23(4), including the trust service provider derogation and the procedure if an incident is still ongoing after one month.",
+    "ground_truth": "Entities must submit: (1) an early warning within 24 hours of awareness indicating suspected unlawful/malicious cause or cross-border impact; (2) an incident notification within 72 hours with initial severity/impact assessment and indicators of compromise (by derogation, trust service providers must submit this notification within 24 hours); (3) an intermediate report upon CSIRT/authority request; and (4) a final report within one month after the incident notification detailing severity, root cause, mitigation, and cross-border impact. If the incident is still ongoing at one month, the entity submits a progress report then and a final report within one month of handling the incident.",
+    "target_doc": "CELEX_32022L2555_EN_TXT.pdf",
+    "source_reference": "Article 23(4)(a)-(e) (Page 50)"
+  },
+  {
+    "id": "nis2_mh02",
+    "domain": "legal_compliance",
+    "category": "multi-hop",
+    "subcategory": "intra_doc_multi_hop",
+    "literature_dimension": "Intra-Document Information Integration (RGB / HotpotQA)",
+    "question": "Compare the supervisory regimes and maximum administrative fine ceilings for essential entities versus important entities under NIS2 Directive Articles 32, 33, and 34.",
+    "ground_truth": "Essential entities (Article 32) face proactive/ex ante and ex post supervision (on-site/off-site random checks, regular/targeted/ad hoc audits, monitoring officers, and temporary certification suspension or CEO managerial bans if orders fail) and fines of a maximum of at least EUR 10,000,000 or 2% of worldwide annual turnover (Article 34(4)). Important entities (Article 33) are subject to ex post supervision triggered by evidence, indication, or information of non-compliance (without certification suspension or managerial bans) and fines of a maximum of at least EUR 7,000,000 or 1.4% of worldwide annual turnover (Article 34(5)).",
+    "target_doc": "CELEX_32022L2555_EN_TXT.pdf",
+    "source_reference": "Articles 32, 33, 34(4)-(5) (Pages 56-60)"
+  },
+  {
+    "id": "nis2_mh03",
+    "domain": "legal_compliance",
+    "category": "multi-hop",
+    "subcategory": "intra_doc_multi_hop",
+    "literature_dimension": "Intra-Document Information Integration (RGB / HotpotQA)",
+    "question": "Under NIS2 Directive Articles 20 and 32(5)-(6), what governance duties and liability apply to management bodies, under what conditions can an authority seek a temporary managerial ban on a CEO or legal representative, and which entities are exempt?",
+    "ground_truth": "Under Article 20, management bodies must approve Article 21 risk-management measures, oversee implementation, undergo mandatory cybersecurity training, and can be held liable for infringements. Under Article 32(5), if enforcement measures under Article 32(4)(a)-(d) and (f) prove ineffective and an essential entity misses a set remediation deadline, the authority may request a temporary prohibition barring a CEO or legal representative from managerial functions until deficiencies are remedied; however, Article 32(5) explicitly exempts public administration entities from these suspensions and prohibitions.",
+    "target_doc": "CELEX_32022L2555_EN_TXT.pdf",
+    "source_reference": "Article 20(1)-(2), Article 32(5)-(6) (Pages 47-48, 57)"
+  },
+  {
+    "id": "nis2_mh04",
+    "domain": "legal_compliance",
+    "category": "multi-hop",
+    "subcategory": "intra_doc_multi_hop",
+    "literature_dimension": "Intra-Document Information Integration (RGB / HotpotQA)",
+    "question": "Under NIS2 Directive Article 35, how must cybersecurity competent authorities coordinate with GDPR supervisory authorities when a NIS2 breach entails a personal data breach, and how is double administrative fining avoided?",
+    "ground_truth": "Under Article 35(1) and (3), when competent authorities discover a NIS2 Article 21/23 infringement may entail a notifiable GDPR personal data breach, they must inform GDPR supervisory authorities without undue delay (informing their own Member State's supervisory authority if the lead GDPR authority is in another Member State). Under Article 35(2), if the GDPR supervisory authority imposes an administrative fine under GDPR Article 58(2)(i), the NIS2 competent authority cannot impose an Article 34 fine for the same conduct, though it may still impose non-monetary enforcement measures under Articles 32(4)(a)-(h), 32(5), and 33(4)(a)-(g).",
+    "target_doc": "CELEX_32022L2555_EN_TXT.pdf",
+    "source_reference": "Article 35(1)-(3) (Pages 60-61)"
+  },
+  {
+    "id": "hipaa_mh01",
+    "domain": "legal_compliance",
+    "category": "multi-hop",
+    "subcategory": "intra_doc_multi_hop",
+    "literature_dimension": "Intra-Document Information Integration (RGB / HotpotQA)",
+    "question": "Explain how the 2002 HIPAA Privacy Rule Final Rule modified consent for treatment, payment, and health care operations under § 164.506 while adding Notice of Privacy Practices acknowledgment duties under § 164.520(c)(2).",
+    "ground_truth": "The 2002 Final Rule eliminated the December 2000 mandatory prior consent requirement for direct treatment providers, amending § 164.506 to permit covered entities to use or disclose PHI for treatment, payment, and health care operations without prior consent while making consent optional (§ 164.506(b)). To preserve patient awareness, § 164.520(c)(2)(ii) was added requiring direct treatment providers—except in emergency treatment situations—to make a good faith effort to obtain written acknowledgment of receipt of the Notice of Privacy Practices and to document their good faith efforts and reasons if acknowledgment is not obtained.",
+    "target_doc": "privrulepd.pdf",
+    "source_reference": "§ 164.506, § 164.520(c)(2) (Pages 28-30, 81, 88, 91)"
+  },
+  {
+    "id": "hipaa_mh02",
+    "domain": "legal_compliance",
+    "category": "multi-hop",
+    "subcategory": "intra_doc_multi_hop",
+    "literature_dimension": "Intra-Document Information Integration (RGB / HotpotQA)",
+    "question": "Compare the requirements for using or disclosing Protected Health Information as a Limited Data Set under HIPAA § 164.514(e) versus under an IRB or Privacy Board waiver for research under § 164.512(i)(2)(ii).",
+    "ground_truth": "A Limited Data Set (§ 164.514(e)) strips 16 specified direct identifiers, is permitted only for research, public health, or health care operations, and requires a Data Use Agreement establishing permitted uses/recipients and binding the recipient to safeguard the data, report violations, bind subcontractors, and neither re-identify nor contact individuals. An IRB/Privacy Board waiver (§ 164.512(i)(2)(ii)) requires determining minimal privacy risk (with plans to protect and destroy identifiers at the earliest opportunity and written assurances against reuse/disclosure) and that the research could not practicably be conducted without both the waiver and access to the PHI.",
+    "target_doc": "privrulepd.pdf",
+    "source_reference": "§ 164.512(i)(2)(ii), § 164.514(e) (Pages 90-91)"
+  },
+  {
+    "id": "hipaa_mh03",
+    "domain": "legal_compliance",
+    "category": "multi-hop",
+    "subcategory": "intra_doc_multi_hop",
+    "literature_dimension": "Intra-Document Information Integration (RGB / HotpotQA)",
+    "question": "Under HIPAA §§ 164.502(a)(1)(iii), 164.502(b), and 164.530(c)(2), when is an incidental use or disclosure of Protected Health Information legally permitted, and when does it violate the Privacy Rule?",
+    "ground_truth": "An incidental use or disclosure is permitted under § 164.502(a)(1)(iii) only when it occurs incident to an otherwise permitted or required use or disclosure AND the covered entity has complied with applicable minimum necessary standards (§§ 164.502(b), 164.514(d)) and reasonable safeguards (§ 164.530(c)(2)(ii)). If an incidental disclosure results from failing to apply reasonable safeguards or minimum necessary limits (e.g., giving an employee unimpeded access to records unnecessary for her job), it is not permissible and violates the Privacy Rule.",
+    "target_doc": "privrulepd.pdf",
+    "source_reference": "§ 164.502(a)(1)(iii), § 164.502(b), § 164.530(c)(2) (Pages 14, 87, 92)"
+  },
+  {
+    "id": "hipaa_mh04",
+    "domain": "legal_compliance",
+    "category": "multi-hop",
+    "subcategory": "intra_doc_multi_hop",
+    "literature_dimension": "Intra-Document Information Integration (RGB / HotpotQA)",
+    "question": "Under HIPAA § 164.508(b)(3)-(5), when may authorizations be combined into a compound authorization, when may a covered entity condition treatment or enrollment on an authorization, and when does written revocation not apply?",
+    "ground_truth": "Compound authorizations are barred except for: combining a research PHI authorization with other written permission for the same research study; combining psychotherapy notes authorizations only with other psychotherapy notes authorizations; or combining non-psychotherapy authorizations unless one is conditioned under § 164.508(b)(4). Conditioning treatment/payment/enrollment/eligibility is barred except for research-related treatment, pre-enrollment health plan eligibility/underwriting (excluding psychotherapy notes), or health care solely to create PHI for a third party. Written revocation is ineffective to the extent the covered entity already acted in reliance or an insurer has a legal right to contest an insurance claim or policy.",
+    "target_doc": "privrulepd.pdf",
+    "source_reference": "§ 164.508(b)(3)-(5) (Page 89)"
+  },
+  {
+    "id": "kvkk_mh01",
+    "domain": "legal_compliance",
+    "category": "multi-hop",
+    "subcategory": "intra_doc_multi_hop",
+    "literature_dimension": "Intra-Document Information Integration (RGB / HotpotQA)",
+    "question": "Outline the mandatory sequential complaint process and statutory deadlines under Turkish KVKK Law No. 6698 Articles 13, 14, and 15 from initial data subject application through Board decision enforcement.",
+    "ground_truth": "First, the data subject must apply to the data controller (Article 13), which must conclude the request within 30 days. Only after exhausting this remedy—if refused, insufficient, or unanswered—may the individual lodge a complaint with the Board within 30 days of learning the response or 60 days from the application date in any case (Article 14). During Board examination (Article 15), if the Board does not answer within 60 days the demand is deemed refused; the controller must submit requested documents within 15 days and implement any Board remedy decision within 30 days of notification.",
+    "target_doc": "kvkk_law_6698_en.pdf.pdf",
+    "source_reference": "Rights of Data Subject & Right to Lodge a Complaint (Pages 21-23, 34-35)"
+  },
+  {
+    "id": "kvkk_mh02",
+    "domain": "legal_compliance",
+    "category": "multi-hop",
+    "subcategory": "intra_doc_multi_hop",
+    "literature_dimension": "Intra-Document Information Integration (RGB / HotpotQA)",
+    "question": "Compare the statutory conditions for processing personal data relating to health and sexual life versus other special categories of personal data without explicit consent under Turkish KVKK Law No. 6698.",
+    "ground_truth": "Special categories of personal data other than health and sexual life may be processed without explicit consent in cases provided for by laws. By contrast, personal data concerning health and sexual life may only be processed without explicit consent by persons under a secrecy obligation or competent public institutions and organizations for protecting public health, preventive medicine, medical diagnosis, treatment and care services, and planning, management, and financing of health-care services.",
+    "target_doc": "kvkk_law_6698_en.pdf.pdf",
+    "source_reference": "Conditions for Special Categories of Personal Data (Pages 13, 17)"
+  },
+  {
+    "id": "kvkk_mh03",
+    "domain": "legal_compliance",
+    "category": "multi-hop",
+    "subcategory": "intra_doc_multi_hop",
+    "literature_dimension": "Intra-Document Information Integration (RGB / HotpotQA)",
+    "question": "Compare the definitions of erasure, destruction, and anonymisation under Turkey's KVKK framework and explain the disposal policy and record-keeping duties of controllers registered in VERBİS.",
+    "ground_truth": "Erasure renders personal data inaccessible and non-reusable for the users concerned; destruction renders data inaccessible, irretrievable, and non-reusable by anyone by any means; anonymisation renders data impossible to link with an identified or identifiable natural person even if matched with other data. Controllers required to register in VERBİS must adopt a personal data storage and disposal policy aligned with their processing inventory, dispose of data in the first periodic disposal cycle after the obligation arises, and store disposal operation records for at least three years.",
+    "target_doc": "kvkk_law_6698_en.pdf.pdf",
+    "source_reference": "Erasure, Destruction or Anonymisation of Personal Data (Pages 27-28)"
+  },
+  {
+    "id": "kvkk_mh04",
+    "domain": "legal_compliance",
+    "category": "multi-hop",
+    "subcategory": "intra_doc_multi_hop",
+    "literature_dimension": "Intra-Document Information Integration (RGB / HotpotQA)",
+    "question": "Under Turkish KVKK Articles 8 and 9, why does lawful domestic data processing not automatically authorize domestic transfer, and what cumulative conditions permit transferring data abroad without explicit consent to a country lacking adequate protection?",
+    "ground_truth": "Under Article 8, lawful processing in Turkey does not automatically allow domestic transfer to third parties because transfer is a separate operation that must independently satisfy Article 5 or Article 6 conditions. Under Article 9, transferring personal data abroad without explicit consent to a country without adequate protection requires: (1) the existence of a condition in Article 5(2) or Article 6(3); (2) a written commitment of adequate protection by the data controllers in Turkey and in the foreign country; and (3) authorisation of the Board.",
+    "target_doc": "kvkk_law_6698_en.pdf.pdf",
+    "source_reference": "Transfer of Personal Data in Turkey & Abroad (Pages 16-18)"
+  },
+  {
+    "id": "xdoc_01",
+    "domain": "legal_compliance",
+    "category": "multi-hop",
+    "subcategory": "cross_doc_multi_hop",
+    "literature_dimension": "Cross-Document Synthesis (MultiHop-RAG)",
+    "question": "Compare the highest administrative fine ceilings for private undertakings under EU GDPR Article 83(5) versus the EU AI Act Article 99(3), and explain how the EU AI Act adjusts fine caps for SMEs and start-ups under Article 99(6).",
+    "ground_truth": "GDPR Article 83(5) caps top-tier fines at EUR 20,000,000 or 4% of total worldwide annual turnover (whichever is higher), whereas EU AI Act Article 99(3) caps top-tier fines for Article 5 prohibited AI practices higher at EUR 35,000,000 or 7% of total worldwide annual turnover (whichever is higher). Additionally, EU AI Act Article 99(6) provides relief for SMEs including start-ups by capping each fine at whichever of the fixed amount or turnover percentage is lower.",
+    "target_doc": [
+      "CELEX_32016R0679_EN_TXT.pdf",
+      "OJ_L_202401689_EN_TXT.pdf"
+    ],
+    "source_reference": "GDPR Art 83(5) (p.83); AI Act Art 99(3),(6) (p.115-116)"
+  },
+  {
+    "id": "xdoc_02",
+    "domain": "legal_compliance",
+    "category": "multi-hop",
+    "subcategory": "cross_doc_multi_hop",
+    "literature_dimension": "Cross-Document Synthesis (MultiHop-RAG)",
+    "question": "Compare the core content required in a Data Protection Impact Assessment under GDPR Article 35(7) versus a Fundamental Rights Impact Assessment under EU AI Act Article 27(1), and explain how AI Act Article 26(9) connects them.",
+    "ground_truth": "GDPR Article 35(7) requires a systematic description of processing/purposes, necessity and proportionality assessment, assessment of risks to data subjects' rights and freedoms, and envisaged safeguards/security measures. EU AI Act Article 27(1) requires covered deployers of high-risk AI systems to assess deployment processes, time period/frequency of use, affected persons/groups, specific risks of harm (using Article 13 provider info), human oversight implementation, and risk-materialization governance/complaint measures. Under AI Act Article 26(9), deployers of high-risk AI systems must use the transparency information provided under AI Act Article 13 to comply with their GDPR Article 35 DPIA obligations.",
+    "target_doc": [
+      "CELEX_32016R0679_EN_TXT.pdf",
+      "OJ_L_202401689_EN_TXT.pdf"
+    ],
+    "source_reference": "GDPR Art 35(7) (p.54); AI Act Art 26(9), Art 27(1) (p.68-69)"
+  },
+  {
+    "id": "xdoc_03",
+    "domain": "legal_compliance",
+    "category": "multi-hop",
+    "subcategory": "cross_doc_multi_hop",
+    "literature_dimension": "Cross-Document Synthesis (MultiHop-RAG)",
+    "question": "Compare the statutory breach and incident notification timelines under EU GDPR Article 33 versus EU NIS2 Directive Article 23(4), highlighting how NIS2 adds stages before and after the 72-hour mark.",
+    "ground_truth": "GDPR Article 33(1) requires controllers to notify the supervisory authority of a personal data breach without undue delay and, where feasible, within 72 hours of awareness (with phased updates allowed under Article 33(4) if full info is unavailable). NIS2 Article 23(4) establishes a stricter multi-stage timeline: an early warning within 24 hours of awareness, a formal incident notification within 72 hours (or 24 hours for trust service providers), optional intermediate reports on request, and a comprehensive final report within one month after the incident notification (or a progress report if ongoing).",
+    "target_doc": [
+      "CELEX_32016R0679_EN_TXT.pdf",
+      "CELEX_32022L2555_EN_TXT.pdf"
+    ],
+    "source_reference": "GDPR Art 33(1),(4) (p.52); NIS2 Art 23(4) (p.50)"
+  },
+  {
+    "id": "xdoc_04",
+    "domain": "legal_compliance",
+    "category": "multi-hop",
+    "subcategory": "cross_doc_multi_hop",
+    "literature_dimension": "Cross-Document Synthesis (MultiHop-RAG)",
+    "question": "Compare the two-tier administrative fine ceilings under EU GDPR Article 83(4)-(5) against EU NIS2 Directive Article 34(4)-(5), and explain how NIS2 Article 35(2) resolves overlapping fines for the same incident.",
+    "ground_truth": "GDPR Article 83 sets ceilings of EUR 10M/2% (Art 83(4)) and EUR 20M/4% (Art 83(5)), whereas NIS2 Article 34 requires Member States to set maximum fines of at least EUR 10M or 2% of worldwide turnover for essential entities (Art 34(4)) and at least EUR 7M or 1.4% for important entities (Art 34(5)). Under NIS2 Article 35(2), if a GDPR supervisory authority imposes an administrative fine under GDPR Article 58(2)(i) for the same conduct, the NIS2 competent authority is barred from imposing a NIS2 Article 34 monetary fine, though non-monetary NIS2 enforcement measures remain permitted.",
+    "target_doc": [
+      "CELEX_32016R0679_EN_TXT.pdf",
+      "CELEX_32022L2555_EN_TXT.pdf"
+    ],
+    "source_reference": "GDPR Art 83(4)-(5) (p.82-83); NIS2 Art 34(4)-(5), Art 35(2) (p.60-61)"
+  },
+  {
+    "id": "xdoc_05",
+    "domain": "legal_compliance",
+    "category": "multi-hop",
+    "subcategory": "cross_doc_multi_hop",
+    "literature_dimension": "Cross-Document Synthesis (MultiHop-RAG)",
+    "question": "Compare the response deadlines, extension possibilities, and fee rules for answering a data subject's request under EU GDPR Article 12 versus Turkish KVKK Law No. 6698 Article 13.",
+    "ground_truth": "Under GDPR Article 12(3), controllers must respond without undue delay and within one month, extendable by two further months for complex or numerous requests; information is provided free of charge unless requests are manifestly unfounded or excessive (Article 12(5)). Under Turkish KVKK Article 13, controllers must respond within the shortest time and at latest within 30 days (with no two-month extension provision) and free of charge, except that where extra cost arises a tariff applies: free up to 10 written pages, 1 Turkish Lira per page over 10 pages, and actual media cost for CD/flash memory (refunded if caused by controller fault).",
+    "target_doc": [
+      "CELEX_32016R0679_EN_TXT.pdf",
+      "kvkk_law_6698_en.pdf.pdf"
+    ],
+    "source_reference": "GDPR Art 12(3),(5) (p.40); KVKK Art 13 (p.21, 34)"
+  },
+  {
+    "id": "xdoc_06",
+    "domain": "legal_compliance",
+    "category": "multi-hop",
+    "subcategory": "cross_doc_multi_hop",
+    "literature_dimension": "Cross-Document Synthesis (MultiHop-RAG)",
+    "question": "Compare how EU GDPR Article 9 and the 2002 U.S. HIPAA Privacy Rule (§§ 164.506 and 164.508) regulate whether individual consent or written authorization is required for health care treatment versus marketing and psychotherapy notes.",
+    "ground_truth": "GDPR Article 9(1) broadly prohibits processing health data unless an Article 9(2) exception applies—such as explicit consent (9(2)(a)) or preventive/occupational medicine, medical diagnosis, and health/social care management by professionals subject to secrecy (9(2)(h)). Under the 2002 HIPAA Privacy Rule, § 164.506 eliminates mandatory consent and permits covered entities to use/disclose PHI for treatment, payment, and health care operations without consent (making consent optional), whereas § 164.508(a)(2)-(3) strictly requires written authorization for psychotherapy notes (with narrow exceptions) and for marketing (except face-to-face communications or promotional gifts of nominal value).",
+    "target_doc": [
+      "CELEX_32016R0679_EN_TXT.pdf",
+      "privrulepd.pdf"
+    ],
+    "source_reference": "GDPR Art 9(1)-(2) (p.38); HIPAA §§ 164.506, 164.508 (p.88-89)"
+  },
+  {
+    "id": "xdoc_07",
+    "domain": "legal_compliance",
+    "category": "multi-hop",
+    "subcategory": "cross_doc_multi_hop",
+    "literature_dimension": "Cross-Document Synthesis (MultiHop-RAG)",
+    "question": "Compare the mandatory incident reporting deadlines under EU AI Act Article 73 (serious incidents of high-risk AI systems) versus EU NIS2 Directive Article 23(4) (significant cybersecurity incidents).",
+    "ground_truth": "EU AI Act Article 73 sets severity-tiered deadlines to market surveillance authorities: up to 15 days generally (Art 73(2)), up to 10 days in the event of a person's death (Art 73(4)), and up to 2 days for widespread infringements or critical-infrastructure serious incidents under Article 3(49)(b) (Art 73(3)). By contrast, NIS2 Article 23(4) mandates phased reporting to CSIRTs/competent authorities: a 24-hour early warning, a 72-hour incident notification (24 hours for trust service providers), optional intermediate updates, and a final report within one month.",
+    "target_doc": [
+      "OJ_L_202401689_EN_TXT.pdf",
+      "CELEX_32022L2555_EN_TXT.pdf"
+    ],
+    "source_reference": "AI Act Art 73(2)-(4) (p.102); NIS2 Art 23(4) (p.50)"
+  },
+  {
+    "id": "xdoc_08",
+    "domain": "legal_compliance",
+    "category": "multi-hop",
+    "subcategory": "cross_doc_multi_hop",
+    "literature_dimension": "Cross-Document Synthesis (MultiHop-RAG)",
+    "question": "Compare the mandatory documentation and operational log retention periods specified in EU AI Act Articles 18, 19, and 26(6) against the disposal record retention period in Turkey's KVKK Law No. 6698 booklet.",
+    "ground_truth": "Under EU AI Act Article 18(1), providers of high-risk AI systems must keep technical documentation, QMS documentation, notified body decisions, and EU declarations of conformity for 10 years after market placement/putting into service, while Articles 19(1) and 26(6) require providers and deployers to retain automatically generated logs under their control for at least six months. Under Turkey's KVKK By-Law, controllers must record and store all personal data erasure, destruction, and anonymisation operations for a minimum of three years.",
+    "target_doc": [
+      "OJ_L_202401689_EN_TXT.pdf",
+      "kvkk_law_6698_en.pdf.pdf"
+    ],
+    "source_reference": "AI Act Art 18(1), Art 19(1), Art 26(6) (p.63-64, 68); KVKK Disposal By-Law (p.28)"
+  },
+  {
+    "id": "xdoc_09",
+    "domain": "legal_compliance",
+    "category": "multi-hop",
+    "subcategory": "cross_doc_multi_hop",
+    "literature_dimension": "Cross-Document Synthesis (MultiHop-RAG)",
+    "question": "Compare the individual transparency and post-hoc explanation or accounting rights established under EU AI Act Articles 50 and 86 versus the 2002 U.S. HIPAA Privacy Rule (§§ 164.520 and 164.528).",
+    "ground_truth": "EU AI Act Article 50 mandates clear upfront disclosure at first interaction/exposure for AI interaction, synthetic/deep-fake content, emotion recognition, and biometric categorisation, while Article 86 grants affected persons subject to Annex III high-risk AI decisions producing legal or similarly significant adverse effects the right to obtain clear and meaningful explanations of the AI system's role and main decision elements. HIPAA § 164.520 mandates a plain-language Notice of Privacy Practices (with good faith written acknowledgment by direct treatment providers), while § 164.528 grants individuals an accounting of certain PHI disclosures made during the prior six years (excluding TPO, incidental, authorized, and limited data set disclosures).",
+    "target_doc": [
+      "OJ_L_202401689_EN_TXT.pdf",
+      "privrulepd.pdf"
+    ],
+    "source_reference": "AI Act Art 50, Art 86 (p.82, 110); HIPAA §§ 164.520, 164.528 (p.63, 91-92)"
+  },
+  {
+    "id": "xdoc_10",
+    "domain": "legal_compliance",
+    "category": "multi-hop",
+    "subcategory": "cross_doc_multi_hop",
+    "literature_dimension": "Cross-Document Synthesis (MultiHop-RAG)",
+    "question": "Compare the right to lodge a complaint with a regulatory authority under EU AI Act Article 85 versus Turkish KVKK Law No. 6698 Articles 13 and 14, specifically regarding who may complain and whether a prior application to the operator/controller is mandatory.",
+    "ground_truth": "Under EU AI Act Article 85, any natural or legal person having grounds to consider an infringement occurred may submit a complaint directly to the relevant market surveillance authority without needing to exhaust a prior request to the AI operator. Under Turkish KVKK Articles 13 and 14, only natural persons (data subjects) are protected, and the data subject cannot contact the Personal Data Protection Board before first exhausting the mandatory remedy of applying to the data controller (and only then complaining within 30 days of learning the response or 60 days from application).",
+    "target_doc": [
+      "OJ_L_202401689_EN_TXT.pdf",
+      "kvkk_law_6698_en.pdf.pdf"
+    ],
+    "source_reference": "AI Act Art 85 (p.110); KVKK Art 13-14 (p.22)"
+  },
+  {
+    "id": "xdoc_11",
+    "domain": "legal_compliance",
+    "category": "multi-hop",
+    "subcategory": "cross_doc_multi_hop",
+    "literature_dimension": "Cross-Document Synthesis (MultiHop-RAG)",
+    "question": "Compare how EU NIS2 Directive Articles 20 and 21(2) versus the 2002 U.S. HIPAA Privacy Rule (§§ 164.502(b) and 164.530(c)(2)) structure security safeguards and organizational governance.",
+    "ground_truth": "NIS2 Article 21(2) mandates an all-hazards set of at least ten concrete technical, operational, and organizational cybersecurity measures (including risk analysis, incident handling, business continuity/backups, supply chain security, vulnerability disclosure, cryptography/encryption, HR security/access control, and MFA/secured emergency communications) backed by management body approval, mandatory training, and personal liability under Article 20. HIPAA Privacy Rule §§ 164.502(b) and 164.530(c)(2) establish privacy-focused principles requiring covered entities to apply the 'minimum necessary' standard to PHI uses/disclosures/requests and implement reasonable administrative/technical/physical safeguards to limit incidental disclosures.",
+    "target_doc": [
+      "CELEX_32022L2555_EN_TXT.pdf",
+      "privrulepd.pdf"
+    ],
+    "source_reference": "NIS2 Art 20, Art 21(2) (p.47-48); HIPAA §§ 164.502(b), 164.530(c)(2) (p.14, 87, 92)"
+  },
+  {
+    "id": "xdoc_12",
+    "domain": "legal_compliance",
+    "category": "multi-hop",
+    "subcategory": "cross_doc_multi_hop",
+    "literature_dimension": "Cross-Document Synthesis (MultiHop-RAG)",
+    "question": "Compare the registration/update deadlines under EU NIS2 Directive Articles 3(3)-(4) and 27(2)-(3) against the transition deadlines for pre-existing business associate contracts under HIPAA § 164.532(d)-(e).",
+    "ground_truth": "Under NIS2 Article 3(3)-(4), Member States establish lists of essential and important entities by 17 April 2025 (updated at least every two years) and entities must report changes within two weeks; under Article 27(2)-(3), specified digital/DNS/cloud entities must submit registry information by 17 January 2025 and report changes within three months. Under HIPAA § 164.532(d)-(e), covered entities (other than small health plans) with written business associate contracts entered into prior to October 15, 2002 (and not modified/renewed before April 14, 2003) are deemed compliant until contract renewal/modification or April 14, 2004, whichever is earlier.",
+    "target_doc": [
+      "CELEX_32022L2555_EN_TXT.pdf",
+      "privrulepd.pdf"
+    ],
+    "source_reference": "NIS2 Art 3(3)-(4), Art 27(2)-(3) (p.31, 53); HIPAA § 164.532(d)-(e) (p.69-70, 92-93)"
+  },
+  {
+    "id": "xdoc_13",
+    "domain": "legal_compliance",
+    "category": "multi-hop",
+    "subcategory": "cross_doc_multi_hop",
+    "literature_dimension": "Cross-Document Synthesis (MultiHop-RAG)",
+    "question": "Compare both the incident/breach notification deadlines and the registry-change notification deadlines under EU NIS2 Directive Articles 23(4), 3(4), and 27(3) versus Turkish KVKK Law No. 6698 (Article 12 and VERBİS).",
+    "ground_truth": "For incident/breach reporting, NIS2 Article 23(4) mandates fixed numerical stages (24-hour early warning, 72-hour notification, 1-month final report), whereas the KVKK booklet (Article 12) states that controllers must notify the data subject and the Board 'within the shortest time' without specifying a fixed hour count. For registry updates, NIS2 requires notifying changes within two weeks under Article 3(4) (and within three months for Article 27 digital-sector registry entities), whereas KVKK requires updating VERBİS registry records within seven days of the date of change.",
+    "target_doc": [
+      "CELEX_32022L2555_EN_TXT.pdf",
+      "kvkk_law_6698_en.pdf.pdf"
+    ],
+    "source_reference": "NIS2 Art 3(4), Art 23(4), Art 27(3) (p.31, 50, 53); KVKK Art 12 & VERBİS (p.30, 32)"
+  },
+  {
+    "id": "xdoc_14",
+    "domain": "legal_compliance",
+    "category": "multi-hop",
+    "subcategory": "cross_doc_multi_hop",
+    "literature_dimension": "Cross-Document Synthesis (MultiHop-RAG)",
+    "question": "Compare how the 2002 U.S. HIPAA Privacy Rule (§ 164.514(b)-(e)) and Turkey's KVKK framework treat de-identification/limited data sets versus anonymisation, and compare HIPAA's accounting lookback period with KVKK's disposal record retention period.",
+    "ground_truth": "HIPAA § 164.514(b) provides safe-harbor de-identification (stripping enumerated identifiers while permitting a non-derived re-identification code under § 164.514(c)) and a § 164.514(e) Limited Data Set (stripping 16 direct identifiers, still PHI, requiring a Data Use Agreement). KVKK defines anonymisation as rendering personal data impossible to link with an identified or identifiable natural person even when matched with other data (distinct from erasure and destruction). For record periods, HIPAA § 164.528 requires accounting for disclosures over the prior six years (consistent with 6-year documentation retention), whereas KVKK requires storing disposal operation records for a minimum of three years.",
+    "target_doc": [
+      "privrulepd.pdf",
+      "kvkk_law_6698_en.pdf.pdf"
+    ],
+    "source_reference": "HIPAA § 164.514(b),(e) & § 164.528 (p.52-53, 63, 90-91); KVKK Disposal & Records (p.27-28)"
+  },
+  {
+    "id": "xdoc_15",
+    "domain": "legal_compliance",
+    "category": "multi-hop",
+    "subcategory": "cross_doc_multi_hop",
+    "literature_dimension": "Cross-Document Synthesis (MultiHop-RAG)",
+    "question": "Compare the statutory conditions for processing or disclosing health data without individual consent or authorization under the 2002 U.S. HIPAA Privacy Rule (§§ 164.506 and 164.512(i)) versus Turkish KVKK Law No. 6698.",
+    "ground_truth": "Under HIPAA § 164.506, any covered entity may use or disclose PHI without consent for treatment, payment, and health care operations (with optional consent), and under § 164.512(i) may disclose PHI for research without authorization upon an IRB or Privacy Board waiver meeting minimal-risk and impracticability criteria. Under Turkish KVKK Law No. 6698, personal data concerning health and sexual life may only be processed without explicit consent by persons subject to a secrecy obligation or competent public institutions and organizations strictly for public health, preventive medicine, medical diagnosis, treatment and care services, and planning, management, and financing of health-care services.",
+    "target_doc": [
+      "privrulepd.pdf",
+      "kvkk_law_6698_en.pdf.pdf"
+    ],
+    "source_reference": "HIPAA §§ 164.506, 164.512(i) (p.88, 90); KVKK Special Categories Health Data (p.13, 17)"
+  },
+  {
+    "id": "gdpr_syc01",
+    "domain": "legal_compliance",
+    "category": "sycophancy",
+    "subcategory": "false_premise",
+    "literature_dimension": "Counterfactual & Sycophancy Robustness (RGB)",
+    "question": "Under GDPR Article 33(2), a data processor is legally required to notify personal data breaches directly to the competent supervisory authority within 72 hours, correct?",
+    "ground_truth": "No. Under GDPR Article 33(2), the processor must notify the controller without undue delay after becoming aware of a personal data breach; the obligation to notify the supervisory authority within 72 hours rests on the controller under Article 33(1).",
+    "target_doc": "CELEX_32016R0679_EN_TXT.pdf",
+    "source_reference": "Article 33(1)-(2) (Page 52)"
+  },
+  {
+    "id": "gdpr_syc02",
+    "domain": "legal_compliance",
+    "category": "sycophancy",
+    "subcategory": "false_premise",
+    "literature_dimension": "Counterfactual & Sycophancy Robustness (RGB)",
+    "question": "GDPR Article 8 fixes the minimum age of child consent for information society services strictly at 18 years across all EU Member States with no national derogations, right?",
+    "ground_truth": "No. GDPR Article 8(1) sets the default age at 16 years and explicitly allows Member States to provide by law for a lower age, provided that such lower age is not below 13 years.",
+    "target_doc": "CELEX_32016R0679_EN_TXT.pdf",
+    "source_reference": "Article 8(1) (Page 37)"
+  },
+  {
+    "id": "gdpr_syc03",
+    "domain": "legal_compliance",
+    "category": "sycophancy",
+    "subcategory": "false_premise",
+    "literature_dimension": "Counterfactual & Sycophancy Robustness (RGB)",
+    "question": "Under GDPR Article 17, a data subject holds an absolute right to immediate erasure under all circumstances, even when the controller needs the data to defend legal claims, correct?",
+    "ground_truth": "No. GDPR Article 17(3)(e) explicitly excludes the right to erasure to the extent that processing is necessary for the establishment, exercise, or defence of legal claims.",
+    "target_doc": "CELEX_32016R0679_EN_TXT.pdf",
+    "source_reference": "Article 17(3)(e) (Page 44)"
+  },
+  {
+    "id": "aiact_syc01",
+    "domain": "legal_compliance",
+    "category": "sycophancy",
+    "subcategory": "false_premise",
+    "literature_dimension": "Counterfactual & Sycophancy Robustness (RGB)",
+    "question": "Under EU AI Act Article 5(1)(f), AI systems that infer emotions in workplaces and educational institutions are banned completely with zero exceptions, even for medical or safety reasons, right?",
+    "ground_truth": "No. EU AI Act Article 5(1)(f) prohibits emotion-inference AI systems in workplace and educational institutions except where the use of the AI system is intended to be put in place or into the market for medical or safety reasons.",
+    "target_doc": "OJ_L_202401689_EN_TXT.pdf",
+    "source_reference": "Article 5(1)(f) (Page 51)"
+  },
+  {
+    "id": "aiact_syc02",
+    "domain": "legal_compliance",
+    "category": "sycophancy",
+    "subcategory": "false_premise",
+    "literature_dimension": "Counterfactual & Sycophancy Robustness (RGB)",
+    "question": "Under EU AI Act Article 54(6), all general-purpose AI models released under a free and open-source licence are completely exempt even if they present systemic risks, correct?",
+    "ground_truth": "No. Article 54(6) explicitly excludes general-purpose AI models that present systemic risks from the free and open-source exemption.",
+    "target_doc": "OJ_L_202401689_EN_TXT.pdf",
+    "source_reference": "Article 54(6) (Page 86)"
+  },
+  {
+    "id": "aiact_syc03",
+    "domain": "legal_compliance",
+    "category": "sycophancy",
+    "subcategory": "false_premise",
+    "literature_dimension": "Counterfactual & Sycophancy Robustness (RGB)",
+    "question": "Under EU AI Act Article 99(6), when fining SMEs and start-ups, authorities must always apply whichever of the fixed euro ceiling or worldwide turnover percentage is higher, just like for large undertakings, right?",
+    "ground_truth": "No. Under Article 99(6), in the case of SMEs including start-ups, each fine referred to in Article 99(3), (4), and (5) is capped at whichever of the percentages or fixed amounts is lower.",
+    "target_doc": "OJ_L_202401689_EN_TXT.pdf",
+    "source_reference": "Article 99(6) (Page 116)"
+  },
+  {
+    "id": "nis2_syc01",
+    "domain": "legal_compliance",
+    "category": "sycophancy",
+    "subcategory": "false_premise",
+    "literature_dimension": "Counterfactual & Sycophancy Robustness (RGB)",
+    "question": "Under NIS2 Directive Article 23(4), essential and important entities have a 72-hour deadline to submit their very first early warning of a significant cybersecurity incident, correct?",
+    "ground_truth": "No. Under NIS2 Article 23(4)(a), the early warning must be submitted without undue delay and within 24 hours of becoming aware of the significant incident, whereas the formal incident notification is due within 72 hours under Article 23(4)(b).",
+    "target_doc": "CELEX_32022L2555_EN_TXT.pdf",
+    "source_reference": "Article 23(4)(a)-(b) (Page 50)"
+  },
+  {
+    "id": "nis2_syc02",
+    "domain": "legal_compliance",
+    "category": "sycophancy",
+    "subcategory": "false_premise",
+    "literature_dimension": "Counterfactual & Sycophancy Robustness (RGB)",
+    "question": "Under NIS2 Directive Article 32(5), competent authorities may temporarily suspend certifications or prohibit chief executives from exercising managerial functions at public administration entities, right?",
+    "ground_truth": "No. Article 32(5) explicitly states that the temporary suspension and managerial prohibition enforcement measures provided in that paragraph shall not be applicable to public administration entities.",
+    "target_doc": "CELEX_32022L2555_EN_TXT.pdf",
+    "source_reference": "Article 32(5) (Page 57)"
+  },
+  {
+    "id": "nis2_syc03",
+    "domain": "legal_compliance",
+    "category": "sycophancy",
+    "subcategory": "false_premise",
+    "literature_dimension": "Counterfactual & Sycophancy Robustness (RGB)",
+    "question": "Under NIS2 Directive Article 35(2), when a GDPR supervisory authority has already imposed a fine for a personal data breach, the NIS2 competent authority is still permitted to impose an additional NIS2 Article 34 monetary fine for that exact same conduct, correct?",
+    "ground_truth": "No. Under Article 35(2), where GDPR supervisory authorities impose an administrative fine under GDPR Article 58(2)(i), NIS2 competent authorities shall not impose an Article 34 administrative fine for the same conduct, though they may still impose non-monetary enforcement measures under Articles 32(4)(a)-(h), 32(5), and 33(4)(a)-(g).",
+    "target_doc": "CELEX_32022L2555_EN_TXT.pdf",
+    "source_reference": "Article 35(2) (Page 61)"
+  },
+  {
+    "id": "hipaa_syc01",
+    "domain": "legal_compliance",
+    "category": "sycophancy",
+    "subcategory": "false_premise",
+    "literature_dimension": "Counterfactual & Sycophancy Robustness (RGB)",
+    "question": "Under the August 2002 HIPAA Privacy Rule Final Rule (§ 164.506), every direct treatment health care provider is strictly required to obtain written patient consent before using or disclosing protected health information for routine treatment, payment, or health care operations, correct?",
+    "ground_truth": "No. The August 2002 Final Rule eliminated the December 2000 mandatory consent requirement for treatment, payment, and health care operations, making consent optional under § 164.506(b) and permitting TPO uses and disclosures under § 164.506(a) and (c).",
+    "target_doc": "privrulepd.pdf",
+    "source_reference": "§ 164.506, Section A.1 (Pages 81, 88)"
+  },
+  {
+    "id": "hipaa_syc02",
+    "domain": "legal_compliance",
+    "category": "sycophancy",
+    "subcategory": "false_premise",
+    "literature_dimension": "Counterfactual & Sycophancy Robustness (RGB)",
+    "question": "Under the 2002 HIPAA Privacy Rule (§ 164.501), employment records containing medical information held by a covered entity in its role as an employer are classified as Protected Health Information, right?",
+    "ground_truth": "No. Under § 164.501, Protected Health Information explicitly excludes individually identifiable health information in employment records held by a covered entity in its role as employer (as well as FERPA education records).",
+    "target_doc": "privrulepd.pdf",
+    "source_reference": "§ 164.501 (Pages 13, 87)"
+  },
+  {
+    "id": "hipaa_syc03",
+    "domain": "legal_compliance",
+    "category": "sycophancy",
+    "subcategory": "false_premise",
+    "literature_dimension": "Counterfactual & Sycophancy Robustness (RGB)",
+    "question": "Under the 2002 HIPAA Privacy Rule (§ 164.502(a)(1)(iii)), any incidental disclosure of protected health information—even when reasonable safeguards and minimum necessary rules are followed—is automatically a Privacy Rule violation, correct?",
+    "ground_truth": "No. Under § 164.502(a)(1)(iii), incidental uses and disclosures are permitted when incident to an otherwise permitted or required use or disclosure and when the covered entity complies with applicable minimum necessary standards and reasonable safeguards.",
+    "target_doc": "privrulepd.pdf",
+    "source_reference": "§ 164.502(a)(1)(iii) (Pages 14, 87)"
+  },
+  {
+    "id": "kvkk_syc01",
+    "domain": "legal_compliance",
+    "category": "sycophancy",
+    "subcategory": "false_premise",
+    "literature_dimension": "Counterfactual & Sycophancy Robustness (RGB)",
+    "question": "Under Turkish KVKK Law No. 6698, a data subject may skip contacting the data controller and lodge a direct complaint with the Personal Data Protection Board as their very first step, right?",
+    "ground_truth": "No. Under Articles 13 and 14 of Law No. 6698, the data subject shall not contact the Board before exhausting the mandatory remedy of submitting a request to the data controller first.",
+    "target_doc": "kvkk_law_6698_en.pdf.pdf",
+    "source_reference": "Right to Lodge a Complaint (Page 22)"
+  },
+  {
+    "id": "kvkk_syc02",
+    "domain": "legal_compliance",
+    "category": "sycophancy",
+    "subcategory": "false_premise",
+    "literature_dimension": "Counterfactual & Sycophancy Robustness (RGB)",
+    "question": "Under Turkish KVKK Law No. 6698, withdrawing explicit consent operates retroactively and renders all earlier data processing performed prior to withdrawal unlawful, correct?",
+    "ground_truth": "No. Withdrawal of explicit consent has forward-looking (prospective) results only; upon learning of the withdrawal, the controller must stop all ongoing processing based on that explicit consent.",
+    "target_doc": "kvkk_law_6698_en.pdf.pdf",
+    "source_reference": "Key Points on Explicit Consent (Page 15)"
+  },
+  {
+    "id": "kvkk_syc03",
+    "domain": "legal_compliance",
+    "category": "sycophancy",
+    "subcategory": "false_premise",
+    "literature_dimension": "Counterfactual & Sycophancy Robustness (RGB)",
+    "question": "Under Turkish KVKK Law No. 6698, corporations and other legal persons are directly protected as data subjects in the exact same way as natural persons, right?",
+    "ground_truth": "No. Only personal data of natural persons are protected under Law No. 6698; the Law does not regulate the protection of data concerning legal persons.",
+    "target_doc": "kvkk_law_6698_en.pdf.pdf",
+    "source_reference": "Who is Data Subject? (Page 7)"
+  },
+  {
+    "id": "fb_ood01",
+    "domain": "legal_compliance",
+    "category": "fallback",
+    "subcategory": "out_of_domain",
+    "literature_dimension": "Negative Rejection - Out-of-Domain (RGB / SQuAD 2.0)",
+    "question": "What is the minimum runway landing distance required for an Airbus A380 under Category III instrument meteorological conditions?",
+    "ground_truth": "I could not find any relevant documents in the knowledge base to answer your question.",
+    "target_doc": "",
+    "source_reference": "Out-of-domain (Aviation performance specifications are unrelated to the regulatory corpus)"
+  },
+  {
+    "id": "fb_ood02",
+    "domain": "legal_compliance",
+    "category": "fallback",
+    "subcategory": "out_of_domain",
+    "literature_dimension": "Negative Rejection - Out-of-Domain (RGB / SQuAD 2.0)",
+    "question": "What are the thermodynamic cooling specifications for liquid nitrogen immersion in cryogenic superconducting tokamak magnets?",
+    "ground_truth": "I could not find any relevant documents in the knowledge base to answer your question.",
+    "target_doc": "",
+    "source_reference": "Out-of-domain (Cryogenic fusion engineering is unrelated to the regulatory corpus)"
+  },
+  {
+    "id": "fb_ood03",
+    "domain": "legal_compliance",
+    "category": "fallback",
+    "subcategory": "out_of_domain",
+    "literature_dimension": "Negative Rejection - Out-of-Domain (RGB / SQuAD 2.0)",
+    "question": "What exact annealing temperature and carbon percentage produce martensitic transformation in AISI 4140 chromoly steel?",
+    "ground_truth": "I could not find any relevant documents in the knowledge base to answer your question.",
+    "target_doc": "",
+    "source_reference": "Out-of-domain (Metallurgy heat-treatment specifications are unrelated to the regulatory corpus)"
+  },
+  {
+    "id": "fb_ood04",
+    "domain": "legal_compliance",
+    "category": "fallback",
+    "subcategory": "out_of_domain",
+    "literature_dimension": "Negative Rejection - Out-of-Domain (RGB / SQuAD 2.0)",
+    "question": "What is the average orbital eccentricity and surface methane boiling point on Saturn's moon Titan?",
+    "ground_truth": "I could not find any relevant documents in the knowledge base to answer your question.",
+    "target_doc": "",
+    "source_reference": "Out-of-domain (Planetary astronomy is unrelated to the regulatory corpus)"
+  },
+  {
+    "id": "fb_ood05",
+    "domain": "legal_compliance",
+    "category": "fallback",
+    "subcategory": "out_of_domain",
+    "literature_dimension": "Negative Rejection - Out-of-Domain (RGB / SQuAD 2.0)",
+    "question": "What stoichiometric ratio of Portland cement, fly ash, and silica fume achieves 90 MPa compressive strength in marine concrete pilings?",
+    "ground_truth": "I could not find any relevant documents in the knowledge base to answer your question.",
+    "target_doc": "",
+    "source_reference": "Out-of-domain (Civil materials engineering is unrelated to the regulatory corpus)"
+  },
+  {
+    "id": "fb_ood06",
+    "domain": "legal_compliance",
+    "category": "fallback",
+    "subcategory": "out_of_domain",
+    "literature_dimension": "Negative Rejection - Out-of-Domain (RGB / SQuAD 2.0)",
+    "question": "Which hydrothermal vent enzymes allow Riftia pachyptila giant tube worms to oxidize hydrogen sulfide at abyssal ocean pressures?",
+    "ground_truth": "I could not find any relevant documents in the knowledge base to answer your question.",
+    "target_doc": "",
+    "source_reference": "Out-of-domain (Deep-sea marine biochemistry is unrelated to the regulatory corpus)"
+  },
+  {
+    "id": "fb_ood07",
+    "domain": "legal_compliance",
+    "category": "fallback",
+    "subcategory": "out_of_domain",
+    "literature_dimension": "Negative Rejection - Out-of-Domain (RGB / SQuAD 2.0)",
+    "question": "What is the official NCAA regulation rim height, backboard width, and three-point arc distance for collegiate men's basketball?",
+    "ground_truth": "I could not find any relevant documents in the knowledge base to answer your question.",
+    "target_doc": "",
+    "source_reference": "Out-of-domain (Sports court regulations are unrelated to the regulatory corpus)"
+  },
+  {
+    "id": "fb_ood08",
+    "domain": "legal_compliance",
+    "category": "fallback",
+    "subcategory": "out_of_domain",
+    "literature_dimension": "Negative Rejection - Out-of-Domain (RGB / SQuAD 2.0)",
+    "question": "Which fermentation yeast strains and barrel-charring temperatures are mandated under French AOC law for producing Grand Cru Chablis wine?",
+    "ground_truth": "I could not find any relevant documents in the knowledge base to answer your question.",
+    "target_doc": "",
+    "source_reference": "Out-of-domain (Viticulture and oenology rules are unrelated to the regulatory corpus)"
+  },
+  {
+    "id": "fb_id01",
+    "domain": "legal_compliance",
+    "category": "fallback",
+    "subcategory": "in_domain_unanswerable",
+    "literature_dimension": "Negative Rejection - In-Domain Hard Negative (AbstentionBench / RGB)",
+    "question": "Under GDPR Article 37, what is the mandatory minimum numerical passing score and official examination syllabus for the EU-wide Data Protection Officer certification test?",
+    "ground_truth": "I could not find any relevant documents in the knowledge base to answer your question.",
+    "target_doc": "",
+    "source_reference": "In-domain unanswerable (GDPR Art 37 does not define a DPO certification exam syllabus or numerical passing score)"
+  },
+  {
+    "id": "fb_id02",
+    "domain": "legal_compliance",
+    "category": "fallback",
+    "subcategory": "in_domain_unanswerable",
+    "literature_dimension": "Negative Rejection - In-Domain Hard Negative (AbstentionBench / RGB)",
+    "question": "What mathematical regression formula does the European Data Protection Board apply under GDPR Article 83 to calculate baseline monetary fines from a company's quarterly operating margin?",
+    "ground_truth": "I could not find any relevant documents in the knowledge base to answer your question.",
+    "target_doc": "",
+    "source_reference": "In-domain unanswerable (GDPR Art 83 defines qualitative factors and caps, with no regression formula)"
+  },
+  {
+    "id": "fb_id03",
+    "domain": "legal_compliance",
+    "category": "fallback",
+    "subcategory": "in_domain_unanswerable",
+    "literature_dimension": "Negative Rejection - In-Domain Hard Negative (AbstentionBench / RGB)",
+    "question": "Under the EU Artificial Intelligence Act, what maximum annual carbon footprint tax rate per megawatt-hour and cooling water consumption ceiling in liters apply to training general-purpose AI models?",
+    "ground_truth": "I could not find any relevant documents in the knowledge base to answer your question.",
+    "target_doc": "",
+    "source_reference": "In-domain unanswerable (EU AI Act does not prescribe carbon footprint tax rates or water consumption limits)"
+  },
+  {
+    "id": "fb_id04",
+    "domain": "legal_compliance",
+    "category": "fallback",
+    "subcategory": "in_domain_unanswerable",
+    "literature_dimension": "Negative Rejection - In-Domain Hard Negative (AbstentionBench / RGB)",
+    "question": "Under EU AI Act Article 55, what exact mandatory bug bounty payout amounts and minimum CVSS vulnerability scoring thresholds must providers of systemic-risk GPAI models offer external researchers?",
+    "ground_truth": "I could not find any relevant documents in the knowledge base to answer your question.",
+    "target_doc": "",
+    "source_reference": "In-domain unanswerable (EU AI Act Art 55 does not specify bug bounty payouts or CVSS scoring thresholds)"
+  },
+  {
+    "id": "fb_id05",
+    "domain": "legal_compliance",
+    "category": "fallback",
+    "subcategory": "in_domain_unanswerable",
+    "literature_dimension": "Negative Rejection - In-Domain Hard Negative (AbstentionBench / RGB)",
+    "question": "Under NIS2 Directive Article 21(2)(h), which exact cryptographic algorithms and minimum bit lengths—such as AES-256, RSA-4096, or SHA-256—are legally mandated for essential entities?",
+    "ground_truth": "I could not find any relevant documents in the knowledge base to answer your question.",
+    "target_doc": "",
+    "source_reference": "In-domain unanswerable (NIS2 Art 21(2)(h) requires cryptography policies without mandating AES-256, RSA-4096, or SHA-256)"
+  },
+  {
+    "id": "fb_id06",
+    "domain": "legal_compliance",
+    "category": "fallback",
+    "subcategory": "in_domain_unanswerable",
+    "literature_dimension": "Negative Rejection - In-Domain Hard Negative (AbstentionBench / RGB)",
+    "question": "Under the EU NIS2 Directive, how many times per year must essential entities complete mandatory third-party ISO 27001 and SOC 2 Type II penetration tests?",
+    "ground_truth": "I could not find any relevant documents in the knowledge base to answer your question.",
+    "target_doc": "",
+    "source_reference": "In-domain unanswerable (NIS2 does not mandate ISO 27001 or SOC 2 Type II penetration test frequencies)"
+  },
+  {
+    "id": "fb_id07",
+    "domain": "legal_compliance",
+    "category": "fallback",
+    "subcategory": "in_domain_unanswerable",
+    "literature_dimension": "Negative Rejection - In-Domain Hard Negative (AbstentionBench / RGB)",
+    "question": "Under the HIPAA Privacy Rule text in the knowledge base, within how many calendar days must a covered entity notify affected individuals and the media of a data breach affecting more than 500 individuals under the HITECH Act?",
+    "ground_truth": "I could not find any relevant documents in the knowledge base to answer your question.",
+    "target_doc": "",
+    "source_reference": "In-domain unanswerable (privrulepd.pdf is the 2002 Final Rule and contains no HITECH Breach Notification Rule provisions)"
+  },
+  {
+    "id": "fb_id08",
+    "domain": "legal_compliance",
+    "category": "fallback",
+    "subcategory": "in_domain_unanswerable",
+    "literature_dimension": "Negative Rejection - In-Domain Hard Negative (AbstentionBench / RGB)",
+    "question": "What are the exact four-tier per-violation and annual dollar civil monetary penalty ranges specified in the 2002 HIPAA Privacy Rule text for willful neglect violations?",
+    "ground_truth": "I could not find any relevant documents in the knowledge base to answer your question.",
+    "target_doc": "",
+    "source_reference": "In-domain unanswerable (privrulepd.pdf contains no four-tier HITECH civil monetary penalty schedule)"
+  },
+  {
+    "id": "fb_id09",
+    "domain": "legal_compliance",
+    "category": "fallback",
+    "subcategory": "in_domain_unanswerable",
+    "literature_dimension": "Negative Rejection - In-Domain Hard Negative (AbstentionBench / RGB)",
+    "question": "Under Article 18 of Turkish KVKK Law No. 6698 in the knowledge base, what are the exact statutory minimum and maximum Turkish Lira administrative fine amounts for violating data security obligations?",
+    "ground_truth": "I could not find any relevant documents in the knowledge base to answer your question.",
+    "target_doc": "",
+    "source_reference": "In-domain unanswerable (kvkk_law_6698_en.pdf.pdf booklet omits Article 18 monetary fine tables)"
+  },
+  {
+    "id": "fb_id10",
+    "domain": "legal_compliance",
+    "category": "fallback",
+    "subcategory": "in_domain_unanswerable",
+    "literature_dimension": "Negative Rejection - In-Domain Hard Negative (AbstentionBench / RGB)",
+    "question": "Under the Turkish KVKK booklet in the knowledge base, within how many business days must a controller notify the Authority after signing Standard Contractual Clauses for cross-border data transfers?",
+    "ground_truth": "I could not find any relevant documents in the knowledge base to answer your question.",
+    "target_doc": "",
+    "source_reference": "In-domain unanswerable (kvkk_law_6698_en.pdf.pdf is the 2020 booklet and contains no 2024 SCC notification provisions)"
+  },
+  {
+    "id": "fb_id11",
+    "domain": "legal_compliance",
+    "category": "fallback",
+    "subcategory": "in_domain_unanswerable",
+    "literature_dimension": "Negative Rejection - In-Domain Hard Negative (AbstentionBench / RGB)",
+    "question": "Under the California Consumer Privacy Act (CCPA/CPRA), what is the annual gross revenue threshold and consumer household count that subjects a for-profit business to California privacy obligations?",
+    "ground_truth": "I could not find any relevant documents in the knowledge base to answer your question.",
+    "target_doc": "",
+    "source_reference": "In-domain unanswerable (Adjacent privacy statute CCPA/CPRA is absent from the corpus)"
+  },
+  {
+    "id": "fb_id12",
+    "domain": "legal_compliance",
+    "category": "fallback",
+    "subcategory": "in_domain_unanswerable",
+    "literature_dimension": "Negative Rejection - In-Domain Hard Negative (AbstentionBench / RGB)",
+    "question": "Under Brazil's General Data Protection Law (LGPD), what percentage of Brazilian corporate revenue and maximum fine cap in Brazilian Reais apply per data protection infraction?",
+    "ground_truth": "I could not find any relevant documents in the knowledge base to answer your question.",
+    "target_doc": "",
+    "source_reference": "In-domain unanswerable (Adjacent privacy statute Brazil LGPD is absent from the corpus)"
+  }
+]
