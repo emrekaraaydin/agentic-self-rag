@@ -49,3 +49,7 @@ data/*.pdf
 
 # Local social/portfolio post draft
 linkedin_post.md
+
+# Local screen recordings & LinkedIn video exports
+*.mov
+assets/ui_demo.mp4

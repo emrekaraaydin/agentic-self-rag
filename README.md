@@ -2,6 +2,13 @@
 
 A 100% local, zero-API-cost **Agentic Corrective / Self-RAG** pipeline built with LangGraph, Qdrant, Ollama (`qwen2.5:7b-instruct`), FlashRank, `ModernBERT-large-nli`, and Chainlit — rigorously evaluated against a controlled Naive RAG baseline across **436 pages** (**2,325 chunks**) of five real legal and regulatory PDFs (**EU GDPR, EU AI Act, EU NIS2 Directive, U.S. HIPAA 2002 Privacy Rule, and Turkish KVKK Law No. 6698**).
 
+<p align="center">
+  <img src="assets/ui_demo.gif" alt="Self-Reflective Agentic RAG Chainlit Demo" width="100%" />
+</p>
+<p align="center">
+  <em>Live Chainlit demo (sped-up waiting intervals): (1) EU AI Act Art. 73 multi-hop query decomposition, ModernBERT-NLI grounding verification, PDF page citations &amp; FlashRank chunk scores; (2) deterministic out-of-domain fallback cutoff (0 chunks passed, zero LLM generation).</em>
+</p>
+
 ## Table of Contents
 
 - [Headline Results](#headline-results-n--100-controlled-benchmark)
@@ -35,6 +42,16 @@ Comparing **Agentic v2** against a controlled single-pass **Naive RAG** baseline
 
 Instead of an unconstrained open-ended ReAct tool-calling loop, this system implements a **bounded, auditable cyclic StateGraph** (`src/graph.py`) tailored for high-stakes legal compliance — combining query planning, cross-encoder filtering, whole-answer NLI grounding, reflective re-retrieval, and deterministic fallback.
 
+<p align="center">
+  <img src="assets/architecture_flow.gif" alt="Self-Reflective Agentic RAG Animated StateGraph Architecture" width="100%" />
+</p>
+<p align="center">
+  <em>Animated <code>StateGraph</code> execution across three paths: (1) green/blue grounded flow through query decomposition, Qdrant Top-50 retrieval, FlashRank filtering, <code>qwen2.5:7b-instruct</code> synthesis, and <code>ModernBERT-large-nli</code> verification; (2) orange/red OOD 0-doc query-rewrite retry and deterministic fallback; and (3) amber/red NLI hallucination retry loop before safe abstention.</em>
+</p>
+
+<details>
+<summary>View static Mermaid StateGraph diagram</summary>
+
 ```mermaid
 flowchart TD
     Q["User Query"] --> DEC["decompose_query_node (qwen2.5:7b-instruct)"]
@@ -52,6 +69,8 @@ flowchart TD
     NLI -->|"grounded or clean refusal"| OUT["End (Verified Response)"]
     FB --> OUT
 ```
+
+</details>
 
 ### Tech Stack
 
@@ -110,6 +129,14 @@ flowchart TD
 │   ├── test_routing.py                   # Offline unit tests for conditional routing & NLI logic
 │   ├── test_scenarios.py                 # Live end-to-end graph tests (facts, OOD fallback, sycophancy)
 │   └── test_ui_helpers.py                # Unit tests for page deduplication & chunk passage bolding
+├── assets/
+│   ├── ui_demo.gif                       # Live Chainlit UI showcase (grounded multi-hop + OOD cutoff)
+│   ├── architecture_flow.gif             # Animated LangGraph StateGraph execution & guardrail flow
+│   ├── benchmark_comparison.png          # Naive RAG vs Agentic v2 controlled benchmark chart (n=100)
+│   └── ragas_comparison.png              # Independent 32B RAGAS comparison (Positive vs Raw fallback effect)
+├── scripts/
+│   ├── generate_architecture_gif.py      # Reproducible generator for assets/architecture_flow.gif
+│   └── generate_charts.py                # Reproducible benchmark & RAGAS chart generator from raw logs
 ├── evaluate_batch.py                     # Full benchmark runner exporting audit logs & contexts
 ├── naive_rag.py                          # Controlled single-pass Naive RAG baseline (shared index & prompt)
 ├── compare_agentic_vs_naive.py           # 100-question comparison generator & RAGAS dataset exporter
@@ -159,6 +186,10 @@ The `100`-question benchmark spans seven stress-test categories:
 
 Every answer across all 100 queries was audited directly against `ground_truth`:
 
+<p align="center">
+  <img src="assets/benchmark_comparison.png" alt="Naive RAG vs Agentic v2 Controlled Benchmark Comparison" width="100%" />
+</p>
+
 | Metric | Naive RAG | Agentic v1 (HHEM-2.1) | **Agentic v2 (ModernBERT-NLI)** |
 | :--- | :---: | :---: | :---: |
 | **Target Doc Hit Rate (`n=80`)** | `73/80` (`91.2%`) | `70/80` (`87.5%`) | **`77/80` (`96.2%`)** |
@@ -178,6 +209,10 @@ Every answer across all 100 queries was audited directly against `ground_truth`:
 ### 2. Independent 32B RAGAS Evaluation (`qwen2.5:32b` + `bge-m3`, Zero NaNs)
 
 Evaluated via `evaluate_ragas_colab.py` on Colab A100 using an independent 32B judge across the 80 in-scope questions (`gdpr_lm02` was automatically skipped in v2 due to empty context, leaving `n=79` vs `Naive n=80`):
+
+<p align="center">
+  <img src="assets/ragas_comparison.png" alt="Independent 32B RAGAS Evaluation: Positive Answers vs Raw Fallback Distortion" width="100%" />
+</p>
 
 | Evaluation Slice | Faithfulness | Answer Correctness | Context Recall | Context Precision | Answer Relevancy |
 | :--- | :---: | :---: | :---: | :---: | :---: |
@@ -319,6 +354,10 @@ python compare_xdoc15.py
 
 # Run independent 32B RAGAS evaluation on GPU / Google Colab A100 (qwen2.5:32b + bge-m3)
 python evaluate_ragas_colab.py
+
+# Regenerate README visuals from raw evaluation outputs & StateGraph spec
+python scripts/generate_architecture_gif.py
+python scripts/generate_charts.py
 ```
 
 ### Detailed Experiment Reports (Detailed Turkish Analysis Notes)
