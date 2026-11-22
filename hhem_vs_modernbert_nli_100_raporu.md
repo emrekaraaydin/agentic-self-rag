@@ -1,8 +1,8 @@
 # 100 Soruluk Tam Karşılaştırma Raporu: Önceki HHEM-2.1 vs Yeni `ModernBERT-large-nli`
 
 > [!NOTE]
-> [evaluation_results.json](file:///Users/emrekaraaydin/Desktop/agentic/rag/evaluation_results.json) (önceki 100 soruluk koşum), **Agentic v1 + Vectara HHEM-2.1** mimarisine aittir (sorgu parçalama/decompose ve reflective yeniden arama olmadan).
-> Yeni [evaluation_results_nli_100.json](file:///Users/emrekaraaydin/Desktop/agentic/rag/evaluation_results_nli_100.json) ise mevcut **Agentic v2 + `tasksource/ModernBERT-large-nli`** mimarisinin 100 soruluk tam canlı koşumudur. Yalnızca doğrulayıcı farkını (HHEM vs NLI) izole görmek için Bölüm 3'te aynı v2 grafiğini kullanan 15 `cross_doc_multi_hop` sorusu ([evaluation_results_xdoc15.json](file:///Users/emrekaraaydin/Desktop/agentic/rag/evaluation_results_xdoc15.json) vs `nli_100`) ayrıca karşılaştırılmıştır.
+> [evaluation_results.json](evaluation_results.json) (önceki 100 soruluk koşum), **Agentic v1 + Vectara HHEM-2.1** mimarisine aittir (sorgu parçalama/decompose ve reflective yeniden arama olmadan).
+> Yeni [evaluation_results_nli_100.json](evaluation_results_nli_100.json) ise mevcut **Agentic v2 + `tasksource/ModernBERT-large-nli`** mimarisinin 100 soruluk tam canlı koşumudur. Yalnızca doğrulayıcı farkını (HHEM vs NLI) izole görmek için Bölüm 3'te aynı v2 grafiğini kullanan 15 `cross_doc_multi_hop` sorusu ([evaluation_results_xdoc15.json](evaluation_results_xdoc15.json) vs `nli_100`) ayrıca karşılaştırılmıştır.
 
 ## 1. 100 Soruluk Genel Karşılaştırma
 

@@ -1,8 +1,8 @@
 # Agentic RAG vs. Naive RAG Karşılaştırmalı Değerlendirme Raporu (100 Soruluk Literatür Benchmarkı)
 
-Bu rapor, [`data/`](file:///Users/emrekaraaydin/Desktop/agentic/rag/data) dizinindeki güncel 5 yasal/regülasyon PDF'i (EU GDPR, EU AI Act, EU NIS2, US HIPAA 2002 Final Rule, Türkiye KVKK 6698) üzerinde [`golden_dataset_100.json`](file:///Users/emrekaraaydin/Desktop/agentic/rag/golden_dataset_100.json) kullanılarak yürütülen **Agentic RAG** ([`evaluate_batch.py`](file:///Users/emrekaraaydin/Desktop/agentic/rag/evaluate_batch.py) → [`evaluation_results.json`](file:///Users/emrekaraaydin/Desktop/agentic/rag/evaluation_results.json)) ve **Naive RAG** ([`naive_rag.py`](file:///Users/emrekaraaydin/Desktop/agentic/rag/naive_rag.py) → [`naive_rag_evaluation_results.json`](file:///Users/emrekaraaydin/Desktop/agentic/rag/naive_rag_evaluation_results.json)) koşularının karşılaştırmalı sonuçlarını sunmaktadır.
+Bu rapor, `data/` dizinindeki güncel 5 yasal/regülasyon PDF'i (EU GDPR, EU AI Act, EU NIS2, US HIPAA 2002 Final Rule, Türkiye KVKK 6698) üzerinde [`golden_dataset_100.json`](golden_dataset_100.json) kullanılarak yürütülen **Agentic RAG** ([`evaluate_batch.py`](evaluate_batch.py) → [`evaluation_results.json`](evaluation_results.json)) ve **Naive RAG** ([`naive_rag.py`](naive_rag.py) → [`naive_rag_evaluation_results.json`](naive_rag_evaluation_results.json)) koşularının karşılaştırmalı sonuçlarını sunmaktadır.
 
-RAGAS dış değerlendirmesi için 80 kapsam içi sorudan oluşan dosyalar dışa aktarılmıştır: [`evaluation_results_ragas_80.json`](file:///Users/emrekaraaydin/Desktop/agentic/rag/evaluation_results_ragas_80.json) ve [`naive_rag_evaluation_results_ragas_80.json`](file:///Users/emrekaraaydin/Desktop/agentic/rag/naive_rag_evaluation_results_ragas_80.json).
+RAGAS dış değerlendirmesi için 80 kapsam içi sorudan oluşan dosyalar dışa aktarılmıştır: `evaluation_results_ragas_80.json` ve [`naive_rag_evaluation_results_ragas_80.json`](naive_rag_evaluation_results_ragas_80.json).
 
 ## 1. Genel Sistem Başarısı ve Güvenlik Karşılaştırması (100 Soru)
 

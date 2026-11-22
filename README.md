@@ -13,6 +13,7 @@ A 100% local, zero-API-cost **Agentic Corrective / Self-RAG** pipeline built wit
 - [Qualitative Case Studies](#qualitative-case-studies)
 - [Known Limitations & Future Work](#known-limitations--future-work)
 - [Quickstart & Reproducibility](#quickstart--reproducibility)
+- [License](#license)
 
 ---
 
@@ -326,3 +327,9 @@ The following repository reports document intermediate runs and error analyses i
 - [`hhem_vs_modernbert_nli_100_raporu.md`](hhem_vs_modernbert_nli_100_raporu.md) — Agentic v1 (`HHEM-2.1`) vs Agentic v2 (`ModernBERT-large-nli`, `n=100`)
 - [`xdoc15_agentic_v2_karsilastirma.md`](xdoc15_agentic_v2_karsilastirma.md) — Cross-document deep dive (`n=15`)
 - [`v3_30_karsilastirma_raporu.md`](v3_30_karsilastirma_raporu.md) — 4-way ablation including v3 Hybrid + BGE-M3 + sentence-NLI (`n=30`)
+
+---
+
+## License
+
+This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.

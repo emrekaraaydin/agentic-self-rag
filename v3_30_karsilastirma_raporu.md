@@ -1,20 +1,20 @@
 # Agentic RAG v3 Değerlendirme Raporu (`n = 30` Katmanlı Örneklem — 4 Sistem Kıyaslaması)
 
-Bu rapor, [`golden_dataset_100.json`](file:///Users/emrekaraaydin/Desktop/agentic/rag/golden_dataset_100.json) içerisinden `random.Random(42)` ile katmanlı ve rastgele seçilen **30 soru** ([`golden_dataset_30_v3.json`](file:///Users/emrekaraaydin/Desktop/agentic/rag/golden_dataset_30_v3.json)) üzerinde aşağıdaki 4 sistemin gerçek `ground_truth` karşılaştırmasını sunmaktadır:
-- **Naive RAG** ([`naive_rag_evaluation_results.json`](file:///Users/emrekaraaydin/Desktop/agentic/rag/naive_rag_evaluation_results.json))
-- **Agentic v1 (Whole HHEM-2.1)** ([`evaluation_results.json`](file:///Users/emrekaraaydin/Desktop/agentic/rag/evaluation_results.json))
-- **Agentic v2 (Decompose + Reflect + ModernBERT-NLI)** ([`evaluation_results_nli_100.json`](file:///Users/emrekaraaydin/Desktop/agentic/rag/evaluation_results_nli_100.json))
-- **Agentic v3 (Hibrit BM25+Dense + Dinamik Belge Filtresi + BGE-M3 + Cümle Bazlı NLI)** ([`evaluation_results_v3_30.json`](file:///Users/emrekaraaydin/Desktop/agentic/rag/evaluation_results_v3_30.json))
+Bu rapor, [`golden_dataset_100.json`](golden_dataset_100.json) içerisinden `random.Random(42)` ile katmanlı ve rastgele seçilen **30 soru** ([`golden_dataset_30_v3.json`](golden_dataset_30_v3.json)) üzerinde aşağıdaki 4 sistemin gerçek `ground_truth` karşılaştırmasını sunmaktadır:
+- **Naive RAG** ([`naive_rag_evaluation_results.json`](naive_rag_evaluation_results.json))
+- **Agentic v1 (Whole HHEM-2.1)** ([`evaluation_results.json`](evaluation_results.json))
+- **Agentic v2 (Decompose + Reflect + ModernBERT-NLI)** ([`evaluation_results_nli_100.json`](evaluation_results_nli_100.json))
+- **Agentic v3 (Hibrit BM25+Dense + Dinamik Belge Filtresi + BGE-M3 + Cümle Bazlı NLI)** ([`evaluation_results_v3_30.json`](evaluation_results_v3_30.json))
 
 ---
 
 ## 1. v3 Mimari Yenilikleri (Genel / Soru-Bağımsız)
 
-1. **Çevrimdışı Deterministik BM25 + Qdrant Hibrit Arama ([`sparse.py`](file:///Users/emrekaraaydin/Desktop/agentic/rag/src/indexing/sparse.py), [`retrieve_node.py`](file:///Users/emrekaraaydin/Desktop/agentic/rag/src/nodes/retrieve_node.py)):** Madde/bölüm numaralarını (`83(5)`, `164.514(e)`, `10^25`) koruyan BM25 seyrek vektörleri (`Modifier.IDF`) ile `nomic-embed-text` yoğun vektörleri Qdrant `Fusion.RRF` ile birleştirildi.
-2. **Otomatik PDF Üs Onarımı ve Belge Profili ([`loader.py`](file:///Users/emrekaraaydin/Desktop/agentic/rag/src/indexing/loader.py), [`seed.py`](file:///Users/emrekaraaydin/Desktop/agentic/rag/src/seed/seed.py)):** PyMuPDF font bayrakları (`flags & 1`) ve `<sup>` dönüşümüyle `10 25` → `10^25` otomatik onarıldı; 5 PDF için sabit sözlük olmadan [`qdrant_catalog.json`](file:///Users/emrekaraaydin/Desktop/agentic/rag/qdrant_catalog.json) çıkarıldı ve her parçaya `[Document: <Başlık> | Page <No>]` ön eki eklendi.
-3. **Katalog Bilinçli Planlayıcı + Kaynak Filtresi ([`decompose_query_node.py`](file:///Users/emrekaraaydin/Desktop/agentic/rag/src/nodes/decompose_query_node.py)):** Yalnızca çoklu soruları alt sorgulara böldü ve açıkça eşleşen belgeler için `source` filtresi (`MatchAny`) uyguladı; OOD sorularda zorla eşleştirme yapmadı (`target_sources = []`).
-4. **Uzun Bağlamlı Cross-Encoder ([`grade_retrieval_node.py`](file:///Users/emrekaraaydin/Desktop/agentic/rag/src/nodes/grade_retrieval_node.py)):** FlashRank MiniLM yerine `BAAI/bge-reranker-v2-m3` (`max_length=1024`, `MIN_DOCS=4`) kullanıldı; net-negatif `transform_query_node` ve `reflect_missing_context_node` döngüleri (`MAX_RETRY=0`) kapatıldı.
-5. **Cümle Bazlı Çelişki-Öncelikli ModernBERT-NLI ([`grade_hallucination_node.py`](file:///Users/emrekaraaydin/Desktop/agentic/rag/src/nodes/grade_hallucination_node.py)):** `doc_title`/`source` ve kısmi-ret bypass hataları giderildi; `contra >= 0.40 & contra > entail`, `entail >= 0.30`, `supported_ratio >= 0.60` kuralı uygulandı.
+1. **Çevrimdışı Deterministik BM25 + Qdrant Hibrit Arama (`src/indexing/sparse.py`, [`retrieve_node.py`](src/nodes/retrieve_node.py)):** Madde/bölüm numaralarını (`83(5)`, `164.514(e)`, `10^25`) koruyan BM25 seyrek vektörleri (`Modifier.IDF`) ile `nomic-embed-text` yoğun vektörleri Qdrant `Fusion.RRF` ile birleştirildi.
+2. **Otomatik PDF Üs Onarımı ve Belge Profili ([`loader.py`](src/indexing/loader.py), [`seed.py`](src/seed/seed.py)):** PyMuPDF font bayrakları (`flags & 1`) ve `<sup>` dönüşümüyle `10 25` → `10^25` otomatik onarıldı; 5 PDF için sabit sözlük olmadan `qdrant_catalog.json` çıkarıldı ve her parçaya `[Document: <Başlık> | Page <No>]` ön eki eklendi.
+3. **Katalog Bilinçli Planlayıcı + Kaynak Filtresi ([`decompose_query_node.py`](src/nodes/decompose_query_node.py)):** Yalnızca çoklu soruları alt sorgulara böldü ve açıkça eşleşen belgeler için `source` filtresi (`MatchAny`) uyguladı; OOD sorularda zorla eşleştirme yapmadı (`target_sources = []`).
+4. **Uzun Bağlamlı Cross-Encoder ([`grade_retrieval_node.py`](src/nodes/grade_retrieval_node.py)):** FlashRank MiniLM yerine `BAAI/bge-reranker-v2-m3` (`max_length=1024`, `MIN_DOCS=4`) kullanıldı; net-negatif `transform_query_node` ve `reflect_missing_context_node` döngüleri (`MAX_RETRY=0`) kapatıldı.
+5. **Cümle Bazlı Çelişki-Öncelikli ModernBERT-NLI ([`grade_hallucination_node.py`](src/nodes/grade_hallucination_node.py)):** `doc_title`/`source` ve kısmi-ret bypass hataları giderildi; `contra >= 0.40 & contra > entail`, `entail >= 0.30`, `supported_ratio >= 0.60` kuralı uygulandı.
 
 ---
 

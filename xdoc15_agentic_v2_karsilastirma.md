@@ -1,9 +1,9 @@
 # `cross_doc_multi_hop` (15 Soru) Üçlü Kıyaslama: Naive RAG vs. Agentic RAG v1 vs. Agentic RAG v2
 
-Bu rapor, [`golden_dataset_100.json`](file:///Users/emrekaraaydin/Desktop/agentic/rag/golden_dataset_100.json) içindeki 15 adet iki-mevzuat karşılaştırma (`cross_doc_multi_hop`: `xdoc_01`–`xdoc_15`) sorusu üzerinde:
-- **Naive RAG** ([`naive_rag_evaluation_results.json`](file:///Users/emrekaraaydin/Desktop/agentic/rag/naive_rag_evaluation_results.json))
-- **Agentic RAG v1 (Tek Sorgu)** ([`evaluation_results.json`](file:///Users/emrekaraaydin/Desktop/agentic/rag/evaluation_results.json))
-- **Agentic RAG v2 (Decompose + Balanced Rerank + Self-Reflective Retrieval + Sentence HHEM)** ([`evaluation_results_xdoc15.json`](file:///Users/emrekaraaydin/Desktop/agentic/rag/evaluation_results_xdoc15.json))
+Bu rapor, [`golden_dataset_100.json`](golden_dataset_100.json) içindeki 15 adet iki-mevzuat karşılaştırma (`cross_doc_multi_hop`: `xdoc_01`–`xdoc_15`) sorusu üzerinde:
+- **Naive RAG** ([`naive_rag_evaluation_results.json`](naive_rag_evaluation_results.json))
+- **Agentic RAG v1 (Tek Sorgu)** ([`evaluation_results.json`](evaluation_results.json))
+- **Agentic RAG v2 (Decompose + Balanced Rerank + Self-Reflective Retrieval + Sentence HHEM)** ([`evaluation_results_xdoc15.json`](evaluation_results_xdoc15.json))
 sonuçlarını birebir kıyaslamaktadır.
 
 ## 1. Özet Karşılaştırma Tablosu (`n = 15`)
