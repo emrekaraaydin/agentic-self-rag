@@ -1,3 +1,5 @@
+"""PDF-to-Markdown ingestion helpers powered by PyMuPDF4LLM."""
+
 import logging
 from pathlib import Path
 from typing import List, Union
@@ -5,14 +7,20 @@ import pymupdf4llm
 from langchain_core.documents import Document
 import re
 logger = logging.getLogger(__name__)
+
+
+# --- Markdown Cleanup ---
 def clean_markdown_artifacts(text: str) -> str:
-    """Markdown tablolarını ve başlıklarını korur; HTML ve OCR etiketlerini temizler."""
+    """Strip HTML/OCR tags while preserving Markdown tables and headings."""
     text = re.sub(r"<!--.*?-->", " ", text, flags=re.DOTALL)
     text = re.sub(r"<[^>]+>", " ", text)
     text = re.sub(r"[ \t]+", " ", text)
     return text.strip()
 
+
+# --- PDF Loading Helpers ---
 def load_pdf_file(file_path: Union[str, Path]) -> List[Document]:
+    """Extract per-page Markdown Documents with source filename and page metadata."""
     target_path = Path(file_path)
     docs: List[Document] = []
     
@@ -25,7 +33,7 @@ def load_pdf_file(file_path: Union[str, Path]) -> List[Document]:
         for page_idx, page_data in enumerate(page_data_list):
             raw_text = page_data.get("text", "")
             
-            # ---> BURAYI ÇAĞIRIYORUZ <---
+            # Normalize extracted Markdown before indexing
             text = clean_markdown_artifacts(raw_text)
             
             page_number = page_data.get("page", page_idx + 1)
@@ -46,7 +54,7 @@ def load_pdf_file(file_path: Union[str, Path]) -> List[Document]:
         raise exc
     
 def load_all_pdfs(data_dir: Union[str, Path]) -> List[Document]:
-    # Belirtilen dizindeki tüm PDF dosyalarını tarar ve toplu doküman listesi döner
+    """Scan a directory and load all readable PDF files into Document objects."""
     target_dir = Path(data_dir)
     all_docs: List[Document] = []
     successful_files: List[str] = []

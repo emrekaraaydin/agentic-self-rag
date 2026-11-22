@@ -1,3 +1,5 @@
+"""Asynchronous dense vector retrieval node over single, rewritten, or decomposed sub-queries."""
+
 import asyncio
 import logging
 from typing import Any, Dict, List, Set, Tuple
@@ -16,8 +18,9 @@ from tenacity import (
 logger = logging.getLogger(__name__)
 
 
+# --- Query Formatting & Qdrant Retrieval Helpers ---
 def _format_nomic_query(query: str) -> str:
-    # Nomic asimetrik arama icin zorunlu gorev oneki kontrolu
+    """Prepend the required asymmetric 'search_query:' prefix for nomic-embed-text."""
     cleaned_query = query.strip()
     if cleaned_query.startswith("search_query:"):
         return cleaned_query
@@ -32,7 +35,7 @@ def _format_nomic_query(query: str) -> str:
     before_sleep=before_sleep_log(logger, logging.WARNING),
 )
 async def _fetch_documents_with_retry(query: str, top_k: int) -> List[Tuple[Document, float]]:
-    # Vektor deposundan ilgili sorgu icin benzerlik aramasi yapar
+    """Run async cosine similarity search against Qdrant with transient-error retries."""
     vector_store = get_vector_store()
     formatted_query = _format_nomic_query(query)
     return await vector_store.asimilarity_search_with_score(
@@ -45,6 +48,7 @@ def _deduplicate_scored_docs(
     limit: int,
     matched_sub_query: str = "",
 ) -> List[Document]:
+    """Sort scored documents descending, deduplicate by chunk ID, and annotate metadata."""
     sorted_docs = sorted(scored_docs, key=lambda item: float(item[1]), reverse=True)
     seen_ids: Set[str] = set()
     unique_docs: List[Document] = []
@@ -66,8 +70,9 @@ def _deduplicate_scored_docs(
     return unique_docs
 
 
+# --- Graph Node ---
 async def retrieve_node(state: GraphState) -> Dict[str, Any]:
-    # Alt sorgulari (veya donusturulen/orijinal sorguyu) eszamanli getirir ve aday havuzunu olusturur
+    """Concurrently retrieve candidate chunks for sub-queries or single/rewritten queries."""
     sub_queries: List[str] = [
         q.strip() for q in (state.get("sub_queries") or []) if q and q.strip()
     ]
@@ -78,6 +83,7 @@ async def retrieve_node(state: GraphState) -> Dict[str, Any]:
 
     sub_query_documents: Dict[str, List[Document]] = {}
 
+    # Multi-part or reflective multi-query retrieval branch
     if len(sub_queries) > 1:
         per_sq_k = max(25, RETRIEVAL_TOP_K // len(sub_queries))
         logger.info(
@@ -105,6 +111,7 @@ async def retrieve_node(state: GraphState) -> Dict[str, Any]:
         queries_used = sub_queries
         per_sub_query_counts = {sq: len(docs) for sq, docs in sub_query_documents.items()}
     else:
+        # Single-query retrieval (includes original question alongside rewritten query on retries)
         primary_query = sub_queries[0] if sub_queries else transformed_query
         search_queries: List[str] = [primary_query]
         if (

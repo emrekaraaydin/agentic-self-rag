@@ -2,6 +2,18 @@
 
 A 100% local, zero-API-cost **Agentic Corrective / Self-RAG** pipeline built with LangGraph, Qdrant, Ollama (`qwen2.5:7b-instruct`), FlashRank, `ModernBERT-large-nli`, and Chainlit — rigorously evaluated against a controlled Naive RAG baseline across **436 pages** (**2,325 chunks**) of five real legal and regulatory PDFs (**EU GDPR, EU AI Act, EU NIS2 Directive, U.S. HIPAA 2002 Privacy Rule, and Turkish KVKK Law No. 6698**).
 
+## Table of Contents
+
+- [Headline Results](#headline-results-n--100-controlled-benchmark)
+- [Architecture](#architecture)
+- [Project Structure](#project-structure)
+- [Evaluation Design](#evaluation-design-golden_dataset_100json)
+- [Experimental Results](#experimental-results)
+- [Engineering Evolution, Ablations & Node-Level ROI](#engineering-evolution-ablations--node-level-roi)
+- [Qualitative Case Studies](#qualitative-case-studies)
+- [Known Limitations & Future Work](#known-limitations--future-work)
+- [Quickstart & Reproducibility](#quickstart--reproducibility)
+
 ---
 
 ## Headline Results (`n = 100` Controlled Benchmark)
@@ -60,6 +72,68 @@ flowchart TD
 3. **EU NIS2 Directive** (`CELEX_32022L2555_EN_TXT.pdf` — 73 pages)
 4. **U.S. HIPAA 2002 Privacy Rule** (`privrulepd.pdf` — 93 pages)
 5. **Turkish KVKK Law No. 6698** (`kvkk_law_6698_en.pdf.pdf` — 38 pages, English translation)
+
+---
+
+## Project Structure
+
+```text
+.
+├── app.py                                # Chainlit UI, source citation deduplication & PDF side viewer
+├── main.py                               # Single-query CLI streaming runner for trace debugging
+├── config/
+│   └── settings.py                       # Centralized env loading, thresholds, retry budgets & cache paths
+├── src/
+│   ├── graph.py                          # LangGraph StateGraph wiring (nodes, direct & conditional edges)
+│   ├── state/state.py                    # Typed GraphState definition with append-only audit_logs
+│   ├── indexing/
+│   │   ├── loader.py                     # PyMuPDF4LLM Markdown extraction & artifact cleanup
+│   │   ├── splitter.py                   # Header-hierarchy + recursive chunking with title breadcrumbs
+│   │   └── vector_store.py               # Cached Ollama embeddings and sync/async Qdrant clients
+│   ├── seed/seed.py                      # Async ingestion, asymmetric Nomic prefixing & Qdrant upsert
+│   ├── prompts/system_prompts.py         # System prompts for planning, rewriting, synthesis & reflection
+│   ├── chains/
+│   │   ├── models.py                     # Pydantic structured-output schemas (QueryPlan, MissingContextPlan)
+│   │   └── factory.py                    # ChatOllama client builders & LCEL runnable chain factories
+│   ├── edges/routing.py                  # Conditional routers after retrieval grading & NLI verification
+│   └── nodes/
+│       ├── decompose_query_node.py       # Splits multi-statute/comparative questions into sub-queries
+│       ├── retrieve_node.py              # Async Qdrant dense similarity search across sub-queries
+│       ├── grade_retrieval_node.py       # FlashRank cross-encoder filtering & balanced sub-query merging
+│       ├── transform_query_node.py       # SLM query rewriter and parenthesis/repetition sanitizer
+│       ├── generate_node.py              # Context-grounded LLM generation with <retry_notes> injection
+│       ├── grade_hallucination_node.py   # Whole-answer ModernBERT-large-nli verification (8K sliding window)
+│       ├── reflect_missing_context_node.py # Generates targeted queries for missing multi-part context
+│       └── fallback_node.py              # Deterministic abstention messages when docs/retries exhaust
+├── tests/
+│   ├── test_routing.py                   # Offline unit tests for conditional routing & NLI logic
+│   ├── test_scenarios.py                 # Live end-to-end graph tests (facts, OOD fallback, sycophancy)
+│   └── test_ui_helpers.py                # Unit tests for page deduplication & chunk passage bolding
+├── evaluate_batch.py                     # Full benchmark runner exporting audit logs & contexts
+├── naive_rag.py                          # Controlled single-pass Naive RAG baseline (shared index & prompt)
+├── compare_agentic_vs_naive.py           # 100-question comparison generator & RAGAS dataset exporter
+├── compare_xdoc15.py                     # 3-way comparison script for 15 cross-document queries
+├── evaluate_ragas_colab.py               # Checkpointed Colab A100 RAGAS evaluator (qwen2.5:32b + bge-m3)
+├── golden_dataset_100.json               # 100-question legal benchmark dataset (7 categories)
+├── golden_dataset_30_v3.json             # 30-question stratified subset used for the v3 ablation
+├── evaluation_results*.json              # Raw Agentic v1/v2/v3 & RAGAS evaluation outputs
+├── naive_rag_evaluation_results*.json    # Raw Naive RAG & RAGAS baseline outputs
+├── ragas_results_*.csv                   # Per-question 32B RAGAS metric scores
+├── ragas_summary_*.json                  # Aggregated 32B RAGAS summaries by category
+└── *_raporu.md / xdoc15_*.md             # Detailed Turkish experiment & ablation analysis reports
+```
+
+### Module Responsibilities
+
+| Layer | Modules | Responsibility |
+| :--- | :--- | :--- |
+| **Configuration** | [`config/settings.py`](config/settings.py), [`.env.example`](.env.example), [`docker-compose.yml`](docker-compose.yml) | Manages Ollama endpoints, model context sizes, FlashRank/NLI thresholds, retry limits, and local Qdrant service. |
+| **Ingestion & Indexing** | [`src/indexing/loader.py`](src/indexing/loader.py), [`src/indexing/splitter.py`](src/indexing/splitter.py), [`src/indexing/vector_store.py`](src/indexing/vector_store.py), [`src/seed/seed.py`](src/seed/seed.py) | Extracts clean Markdown pages via `PyMuPDF4LLM`, chunks along heading boundaries (`1600`/`250`), prepends `search_document:`, and upserts to Qdrant. |
+| **Graph State & Wiring** | [`src/state/state.py`](src/state/state.py), [`src/graph.py`](src/graph.py), [`src/edges/routing.py`](src/edges/routing.py) | Defines `GraphState` schema and bounded cyclic StateGraph transitions across retrieval, generation, verification, and fallback. |
+| **Query Planning & Retrieval** | [`src/nodes/decompose_query_node.py`](src/nodes/decompose_query_node.py), [`src/nodes/retrieve_node.py`](src/nodes/retrieve_node.py), [`src/nodes/grade_retrieval_node.py`](src/nodes/grade_retrieval_node.py), [`src/nodes/transform_query_node.py`](src/nodes/transform_query_node.py) | Plans multi-part sub-queries, runs async Qdrant search, applies FlashRank cross-encoder filtering with round-robin balancing, and sanitizes rewrites. |
+| **Generation, Verification & Fallback** | [`src/nodes/generate_node.py`](src/nodes/generate_node.py), [`src/nodes/grade_hallucination_node.py`](src/nodes/grade_hallucination_node.py), [`src/nodes/reflect_missing_context_node.py`](src/nodes/reflect_missing_context_node.py), [`src/nodes/fallback_node.py`](src/nodes/fallback_node.py) | Synthesizes grounded legal answers, verifies entailment/contradiction via `ModernBERT-large-nli`, handles reflective retrieval, or triggers safe fallback. |
+| **UI & CLI Entrypoints** | [`app.py`](app.py), [`main.py`](main.py), [`chainlit.md`](chainlit.md), [`.chainlit/config.toml`](.chainlit/config.toml) | Serves the Chainlit assistant with deduplicated `[1]` PDF page viewers and highlighted chunks, plus a single-query streaming CLI tracer. |
+| **Evaluation & Tests** | [`evaluate_batch.py`](evaluate_batch.py), [`naive_rag.py`](naive_rag.py), [`compare_agentic_vs_naive.py`](compare_agentic_vs_naive.py), [`compare_xdoc15.py`](compare_xdoc15.py), [`evaluate_ragas_colab.py`](evaluate_ragas_colab.py), `tests/` | Runs reproducible 100-question benchmarks, controlled Naive RAG comparisons, Colab 32B RAGAS scoring, and offline/online pytest suites. |
 
 ---
 
@@ -207,6 +281,13 @@ pip install -r requirements.txt
 cp .env.example .env
 ```
 
+### Optional Production Latency Tuning
+To disable the two zero-recovery dense-retrieval retry loops identified in the [Node-Level ROI audit](#node-level-roi--pruning-audit-n--100) and reduce tail latency, set these overrides in `.env`:
+```env
+QUERY_REWRITE_MAX_RETRY=0
+RETRIEVAL_REFLECTION_MAX_RETRY=0
+```
+
 ### 3. Add PDFs & Seed Qdrant
 Place the five regulatory PDFs in `data/` (`CELEX_32016R0679_EN_TXT.pdf`, `OJ_L_202401689_EN_TXT.pdf`, `CELEX_32022L2555_EN_TXT.pdf`, `privrulepd.pdf`, `kvkk_law_6698_en.pdf.pdf`), then build the vector index (`2,325` chunks):
 ```bash
@@ -231,11 +312,16 @@ pytest tests/test_routing.py tests/test_ui_helpers.py -v
 python evaluate_batch.py --dataset golden_dataset_100.json --output evaluation_results_nli_100.json
 python naive_rag.py --dataset golden_dataset_100.json --output naive_rag_evaluation_results.json
 
-# Compare outputs (v1/Naive format) or run 32B RAGAS evaluation on Colab GPU
+# Compare Naive RAG vs Agentic outputs or 15 cross-document queries
 python compare_agentic_vs_naive.py
+python compare_xdoc15.py
+
+# Run independent 32B RAGAS evaluation on GPU / Google Colab A100 (qwen2.5:32b + bge-m3)
+python evaluate_ragas_colab.py
 ```
 
-### Detailed Experiment Reports (Included in Repo)
+### Detailed Experiment Reports (Detailed Turkish Analysis Notes)
+The following repository reports document intermediate runs and error analyses in Turkish:
 - [`agentic_vs_naive_karsilastirma_raporu.md`](agentic_vs_naive_karsilastirma_raporu.md) — Naive RAG vs Agentic v1 across all 7 literature categories (`n=100`)
 - [`hhem_vs_modernbert_nli_100_raporu.md`](hhem_vs_modernbert_nli_100_raporu.md) — Agentic v1 (`HHEM-2.1`) vs Agentic v2 (`ModernBERT-large-nli`, `n=100`)
 - [`xdoc15_agentic_v2_karsilastirma.md`](xdoc15_agentic_v2_karsilastirma.md) — Cross-document deep dive (`n=15`)

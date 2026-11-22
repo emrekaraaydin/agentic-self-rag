@@ -1,3 +1,5 @@
+"""Offline Qdrant ingestion pipeline for PDF loading, chunking, embedding, and batch upsert."""
+
 import asyncio
 import logging
 from pathlib import Path
@@ -19,18 +21,19 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
+# --- Batch Constants ---
 EMBED_BATCH_SIZE = 64
 UPSERT_BATCH_SIZE = 200
 
 
 async def seed_vector_store() -> None:
-    # Qdrant koleksiyonunu sıfırlar, markdown belgeleri yükler, Nomic önekiyle gömer ve Qdrant'a yazar.
+    """Recreate the Qdrant collection, ingest PDFs, embed chunks with Nomic prefixes, and upsert."""
     client: AsyncQdrantClient = get_async_qdrant_client()
     collection_name = config.settings.QDRANT_COLLECTION_NAME
 
     logger.info("Connecting to Qdrant via gRPC...")
 
-    # 1. Koleksiyon kontrolü ve temiz kurulum
+    # 1. Reset and initialize the target Qdrant collection
     collections_response = await client.get_collections()
     existing_collections = [c.name for c in collections_response.collections]
 
@@ -48,8 +51,7 @@ async def seed_vector_store() -> None:
     )
     logger.info("Collection '%s' successfully created and ready for upsert.", collection_name)
 
-    # 2. Dinamik kök dizin tespiti ve dokümanların yüklenmesi
-    # src/seed/seed.py -> 2 üst dizin proje köküdür (root/data)
+    # 2. Resolve the workspace root data/ directory and ingest PDFs
     project_root = Path(__file__).resolve().parents[2]
     data_dir = project_root / "data"
 
@@ -62,11 +64,10 @@ async def seed_vector_store() -> None:
 
     chunked_documents: List[Document] = chunk_documents(raw_documents)
 
-    # 3. Nomic asimetrik indeksleme için ön ek ekleme ve toplu embedding üretimi
+    # 3. Apply the asymmetric Nomic document prefix and generate dense embeddings in batches
     logger.info("Generating embeddings via Ollama ('%s') in batches of %d...", config.settings.EMBEDDING_MODEL, EMBED_BATCH_SIZE)
     embedding_client = get_embedding_model()
 
-    # Nomic-embed-text asimetrik arama için doküman ön eki
     texts_to_embed = [f"search_document: {doc.page_content}" for doc in chunked_documents]
     vectors: List[List[float]] = []
     total_chunks = len(texts_to_embed)
@@ -76,7 +77,7 @@ async def seed_vector_store() -> None:
         vectors.extend(batch_vectors)
         logger.info("Embedded %d/%d chunks...", min(start_idx + len(batch_texts), total_chunks), total_chunks)
 
-    # 4. Qdrant Points hazırlama (Metadata alanları doğrudan payload köküne açılır)
+    # 4. Build Qdrant points with flattened top-level metadata for payload compatibility
     points = [
         rest_models.PointStruct(
             id=doc.metadata["chunk_id"],
@@ -90,7 +91,7 @@ async def seed_vector_store() -> None:
         for doc, vector in zip(chunked_documents, vectors)
     ]
 
-    # 5. Toplu yükleme (Batched Upsert)
+    # 5. Upsert points to Qdrant in batches
     total_points = len(points)
     logger.info("Upserting %d points into Qdrant in batches of %d...", total_points, UPSERT_BATCH_SIZE)
     for start_idx in range(0, total_points, UPSERT_BATCH_SIZE):

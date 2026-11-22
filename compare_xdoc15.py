@@ -1,3 +1,5 @@
+"""Three-way comparison script across Naive RAG, Agentic v1, and Agentic v2 on 15 cross-document queries."""
+
 import json
 import os
 import statistics
@@ -9,6 +11,7 @@ os.environ["ORT_DISABLE_TELEMETRY"] = "1"
 
 from compare_agentic_vs_naive import compute_context_purity, is_semantic_refusal
 
+# --- Input & Output Paths ---
 ROOT = Path(__file__).resolve().parent
 NAIVE_PATH = ROOT / "naive_rag_evaluation_results.json"
 AGENTIC_V1_PATH = ROOT / "evaluation_results.json"
@@ -16,7 +19,9 @@ AGENTIC_V2_PATH = ROOT / "evaluation_results_xdoc15.json"
 REPORT_OUT = ROOT / "xdoc15_agentic_v2_karsilastirma.md"
 
 
+# --- Cross-Document Scoring Helpers ---
 def balanced_both_ge2(rec: Dict[str, Any]) -> bool:
+    """Return True when both required statutory PDFs appear at least twice in retrieved sources."""
     targets = rec.get("target_doc") or []
     if not isinstance(targets, list) or len(targets) != 2:
         return False
@@ -25,6 +30,7 @@ def balanced_both_ge2(rec: Dict[str, Any]) -> bool:
 
 
 def answer_status(rec: Dict[str, Any]) -> str:
+    """Classify an answer as fallback, full_refusal, partial_answer_missing_part, or complete."""
     if rec.get("fallback_status", {}).get("is_fallback"):
         return f"fallback ({rec['fallback_status'].get('reason')})"
     ans = rec.get("generated_answer", "")
@@ -46,6 +52,7 @@ def answer_status(rec: Dict[str, Any]) -> str:
 
 
 def get_hhem_scores(rec: Dict[str, Any]) -> List[float]:
+    """Extract all verifier scores logged during hallucination grading retries."""
     return [
         float(l["hhem_score"])
         for l in rec.get("audit_logs", [])
@@ -54,6 +61,7 @@ def get_hhem_scores(rec: Dict[str, Any]) -> List[float]:
 
 
 def summarize(records: List[Dict[str, Any]]) -> Dict[str, Any]:
+    """Compute hit rate, balanced 2/2 count, purity, response status counts, and latency metrics."""
     hits = sum(1 for r in records if r.get("target_doc_hit"))
     bal = sum(1 for r in records if balanced_both_ge2(r))
     pur = statistics.mean(compute_context_purity(r) for r in records)
@@ -79,7 +87,9 @@ def summarize(records: List[Dict[str, Any]]) -> Dict[str, Any]:
     }
 
 
+# --- Three-Way Comparison Report Entrypoint ---
 def main() -> None:
+    """Generate the Markdown comparison report for Naive, Agentic v1, and Agentic v2 on cross_doc_multi_hop."""
     nv_all = json.loads(NAIVE_PATH.read_text(encoding="utf-8"))
     v1_all = json.loads(AGENTIC_V1_PATH.read_text(encoding="utf-8"))
     v2 = json.loads(AGENTIC_V2_PATH.read_text(encoding="utf-8"))
@@ -99,12 +109,12 @@ def main() -> None:
     lines.append("# `cross_doc_multi_hop` (15 Soru) Üçlü Kıyaslama: Naive RAG vs. Agentic RAG v1 vs. Agentic RAG v2")
     lines.append("")
     lines.append(
-        "Bu rapor, [`golden_dataset_100.json`](file:///Users/emrekaraaydin/Desktop/agentic/rag/golden_dataset_100.json) içindeki "
+        f"Bu rapor, [`golden_dataset_100.json`](file://{ROOT}/golden_dataset_100.json) içindeki "
         "15 adet iki-mevzuat karşılaştırma (`cross_doc_multi_hop`: `xdoc_01`–`xdoc_15`) sorusu üzerinde:"
     )
-    lines.append("- **Naive RAG** ([`naive_rag_evaluation_results.json`](file:///Users/emrekaraaydin/Desktop/agentic/rag/naive_rag_evaluation_results.json))")
-    lines.append("- **Agentic RAG v1 (Tek Sorgu)** ([`evaluation_results.json`](file:///Users/emrekaraaydin/Desktop/agentic/rag/evaluation_results.json))")
-    lines.append("- **Agentic RAG v2 (Decompose + Balanced Rerank + Self-Reflective Retrieval + Sentence HHEM)** ([`evaluation_results_xdoc15.json`](file:///Users/emrekaraaydin/Desktop/agentic/rag/evaluation_results_xdoc15.json))")
+    lines.append(f"- **Naive RAG** ([`naive_rag_evaluation_results.json`](file://{ROOT}/naive_rag_evaluation_results.json))")
+    lines.append(f"- **Agentic RAG v1 (Tek Sorgu)** ([`evaluation_results.json`](file://{ROOT}/evaluation_results.json))")
+    lines.append(f"- **Agentic RAG v2 (Decompose + Balanced Rerank + Self-Reflective Retrieval + Sentence HHEM)** ([`evaluation_results_xdoc15.json`](file://{ROOT}/evaluation_results_xdoc15.json))")
     lines.append("sonuçlarını birebir kıyaslamaktadır.")
     lines.append("")
     lines.append("## 1. Özet Karşılaştırma Tablosu (`n = 15`)")

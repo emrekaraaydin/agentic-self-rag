@@ -1,9 +1,12 @@
+"""Unit tests for Chainlit citation deduplication, passage bold highlighting, and refusal skipping."""
+
 from app import (
     build_pdf_and_chunk_citation_plan,
     highlight_matching_chunk_passages,
 )
 
 
+# --- Sample Chunk Fixture ---
 AI_ACT_ART53_CHUNK = """EN
 
 OJ L, 12.7.2024
@@ -15,6 +18,7 @@ OJ L, 12.7.2024
 4. Providers of general-purpose AI models may rely on codes of practice within the meaning of Article 56 to demonstrate compliance with the obligations set out in paragraph 1 of this Article, until a harmonised standard is published. Compliance with European harmonised standards grants providers the presumption of conformity to the extent that the standards cover the obligations."""
 
 
+# --- Passage Highlighting Tests ---
 def test_highlight_matching_chunk_passages_bolds_matched_and_keeps_others_plain():
     matched_para = (
         "The free and open-source exemption does not apply to general-purpose AI models "
@@ -61,6 +65,7 @@ def test_highlight_preserves_bullet_prefix_and_balances_existing_bold():
     assert highlighted.count("**") % 2 == 0
 
 
+# --- Citation Deduplication & Refusal Tests ---
 def test_build_pdf_and_chunk_citation_plan_deduplicates_pages_and_orders_matches():
     response = (
         "Providers of general-purpose AI models must draw up technical documentation under Article 53.\n\n"

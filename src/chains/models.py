@@ -1,8 +1,12 @@
+"""Pydantic structured-output schemas for verification verdicts, query plans, and reflection."""
+
 from typing import List, Literal
 from pydantic import BaseModel, Field
 
 
 class GradeHallucinations(BaseModel):
+    """Structured factual consistency and refusal verdict emitted by the hallucination verifier."""
+
     is_refusal: bool = Field(
         ...,
         description=(
@@ -27,6 +31,8 @@ class GradeHallucinations(BaseModel):
 
 
 class QueryPlan(BaseModel):
+    """Structured multi-part decomposition plan produced by the query planner."""
+
     is_multi_part: bool = Field(
         ...,
         description=(
@@ -44,6 +50,8 @@ class QueryPlan(BaseModel):
 
 
 class MissingContextPlan(BaseModel):
+    """Structured follow-up search queries targeting missing statutes or sections in a draft answer."""
+
     missing_sub_queries: List[str] = Field(
         ...,
         description=(

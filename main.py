@@ -1,3 +1,5 @@
+"""Single-query CLI runner for streaming node-by-node graph execution traces."""
+
 import os
 os.environ["ORT_DISABLE_TELEMETRY"] = "1"
 
@@ -5,7 +7,7 @@ import asyncio
 import logging
 from src.graph import build_graph
 
-# Loglama seviyesini ayarla (Düğümlerin ve router'ların loglarını görmek için)
+# --- Logging Setup ---
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
@@ -13,12 +15,13 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
+# --- Single-Query Streaming Runner ---
 async def run_test():
-    # 1. Grafiği derle
+    """Compile the graph and stream state updates for a sample compliance query."""
+    # 1. Build the Agentic RAG workflow
     app = build_graph()
 
-    # 2. Başlangıç State'ini hazırla
-    # Soru olarak bilerek eksik/belirsiz veya veri tabanında olan bir konu ver
+    # 2. Initialize GraphState with an in-corpus sample question
     test_question = "What is the maximum statutory timeframe in hours for a data controller to notify a personal data breach to the supervisory authority under Article 33?"
     
     initial_state = {
@@ -37,7 +40,7 @@ async def run_test():
 
     logger.info("Starting graph execution with query: '%s'", test_question)
 
-    # 3. Grafiği streaming modunda çalıştır (Düğüm düğüm izleme)
+    # 3. Stream node updates to inspect decisions and audit logs
     async for output in app.astream(initial_state):
         for node_name, state_update in output.items():
             print(f"\n{'='*20} NODE: {node_name} {'='*20}")

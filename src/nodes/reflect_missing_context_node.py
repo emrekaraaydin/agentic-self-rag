@@ -1,3 +1,5 @@
+"""Reflective retrieval planner that generates targeted search queries for missing multi-part context."""
+
 import logging
 from typing import Any, Dict, List
 from langchain_core.documents import Document
@@ -15,6 +17,7 @@ from src.state.state import GraphState
 logger = logging.getLogger(__name__)
 
 
+# --- Reflection Invocation & Document Retention ---
 @retry(
     reraise=True,
     stop=stop_after_attempt(2),
@@ -23,6 +26,7 @@ logger = logging.getLogger(__name__)
     before_sleep=before_sleep_log(logger, logging.WARNING),
 )
 async def _invoke_reflector(question: str, previous_queries: str, draft_answer: str) -> MissingContextPlan:
+    """Invoke the structured missing-context reflector chain with backoff retries."""
     chain = create_missing_context_reflector_chain()
     return await chain.ainvoke(
         {
@@ -34,6 +38,7 @@ async def _invoke_reflector(question: str, previous_queries: str, draft_answer: 
 
 
 def _select_retained_documents(documents: List[Document], max_docs: int = 4) -> List[Document]:
+    """Keep top unique context documents to merge with newly retrieved evidence."""
     retained: List[Document] = []
     seen = set()
     for doc in documents:
@@ -46,8 +51,9 @@ def _select_retained_documents(documents: List[Document], max_docs: int = 4) -> 
     return retained
 
 
+# --- Graph Node ---
 async def reflect_missing_context_node(state: GraphState) -> Dict[str, Any]:
-    """Taslak yanitta eksik oldugu saptanan mevzuat/bolum icin hedefli yeniden arama sorgusu uretir."""
+    """Produce follow-up search queries for statutes or facts flagged missing in a draft answer."""
     original_question: str = (state.get("original_question") or state.get("question") or "").strip()
     draft_answer: str = (state.get("generation") or "").strip()
     prev_queries: List[str] = list(state.get("sub_queries") or [original_question])

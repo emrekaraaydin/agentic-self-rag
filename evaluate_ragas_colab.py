@@ -1,12 +1,12 @@
-"""Google Colab (A100 40GB) uyumlu, kilitlenmeye dayanıklı (checkpoint'li) yerel RAGAS scripti.
+"""Checkpointed local RAGAS evaluator for Google Colab (A100 40GB) using Ollama judges.
 
-Colab üzerinde çalıştırma adımları:
+Setup steps on Google Colab:
 
-1. Paket kurulumu (Colab'ın pandas sürümüyle çakışmaması için pandas'ı listeye eklemeyin):
+1. Install packages (omit pandas so Colab's built-in pandas version stays intact):
    %pip install -qU ragas langchain-ollama langchain-core langchain-community datasets
-   (Kurulum sonrası üst menüden Runtime -> Restart session yapın.)
+   (Restart runtime via Runtime -> Restart session after installation.)
 
-2. Ollama kurulumu ve arka planda başlatma:
+2. Install and launch Ollama in the background:
    !curl -fsSL https://ollama.com/install.sh | sh
    import os, subprocess, time
    os.environ["OLLAMA_NUM_PARALLEL"] = "2"
@@ -14,13 +14,13 @@ Colab üzerinde çalıştırma adımları:
    subprocess.Popen(["ollama", "serve"])
    time.sleep(5)
 
-3. Modellerin indirilmesi (A100 40GB VRAM için):
-   - Judge LLM: qwen2.5:32b (~19 GB VRAM, JSON/talimat sadakati en yüksek açık kaynak hakem)
-   - Embedding: bge-m3 (~1.2 GB VRAM, AnswerRelevancy & AnswerCorrectness için güçlü)
+3. Pull evaluation models (sized for A100 40GB VRAM):
+   - Judge LLM: qwen2.5:32b (~19 GB VRAM, strong JSON and instruction adherence)
+   - Embedding: bge-m3 (~1.2 GB VRAM, used for AnswerRelevancy and AnswerCorrectness)
    !ollama pull qwen2.5:32b
    !ollama pull bge-m3
 
-4. evaluation_results_v2_ragas_80.json dosyasını yükleyip çalıştırın:
+4. Upload evaluation_results_v2_ragas_80.json and run:
    !python evaluate_ragas_colab.py
 """
 import json
@@ -46,6 +46,7 @@ except ImportError:
     from ragas.metrics import AnswerRelevancy as RelevancyMetric
 
 
+# --- Configuration & Defaults ---
 INPUT_PATH = Path(os.getenv("RAGAS_INPUT_PATH", "evaluation_results_v2_ragas_80.json"))
 OUTPUT_CSV = Path(os.getenv("RAGAS_OUTPUT_CSV", "ragas_results_v2_80.csv"))
 OUTPUT_SUMMARY = Path(os.getenv("RAGAS_OUTPUT_SUMMARY", "ragas_summary_v2_80.json"))
@@ -55,12 +56,13 @@ JUDGE_MODEL = os.getenv("RAGAS_JUDGE_MODEL", "qwen2.5:32b")
 EMBED_MODEL = os.getenv("RAGAS_EMBED_MODEL", "bge-m3")
 BATCH_SIZE = int(os.getenv("RAGAS_BATCH_SIZE", "5"))
 
-# OpenAI fallback hatalarını önlemek için dummy anahtar
+# Dummy key prevents RAGAS OpenAI client initialization errors when running locally
 os.environ.setdefault("OPENAI_API_KEY", "sk-ollama-local")
 
 
+# --- Model Preload Helper ---
 def preload_ollama_models(base_url: str, judge_model: str, embed_model: str) -> None:
-    """Modelleri VRAM'e önceden yükler ve keep_alive=-1 ile kilitler (cold-start/swap kilitlenmesini önler)."""
+    """Preload judge and embedding models into VRAM with keep_alive=-1 to prevent cold-start stalls."""
     for endpoint, payload in [
         ("/api/generate", {"model": judge_model, "prompt": "", "keep_alive": -1}),
         ("/api/embed", {"model": embed_model, "input": "warmup", "keep_alive": -1}),
@@ -75,34 +77,36 @@ def preload_ollama_models(base_url: str, judge_model: str, embed_model: str) -> 
             with urllib.request.urlopen(req, timeout=180) as resp:
                 resp.read()
         except Exception as exc:
-            print(f"[Uyarı] Model ön-yükleme başarısız ({endpoint}): {exc}")
+            print(f"[Warning] Model preload failed ({endpoint}): {exc}")
 
 
+# --- Checkpointed Batch RAGAS Evaluation ---
 def main() -> None:
+    """Run checkpointed RAGAS evaluation and export CSV row scores plus JSON summary metrics."""
     if not INPUT_PATH.exists():
-        raise FileNotFoundError(f"Girdi dosyası bulunamadı: {INPUT_PATH}")
+        raise FileNotFoundError(f"Input dataset not found: {INPUT_PATH}")
 
     records = json.loads(INPUT_PATH.read_text(encoding="utf-8"))
-    print(f"Yüklenen kapsam içi soru sayısı: {len(records)}")
+    print(f"Loaded in-scope evaluation rows: {len(records)}")
 
     skipped = [r["id"] for r in records if not r.get("retrieved_contexts")]
     valid_records = [r for r in records if r.get("retrieved_contexts")]
     if skipped:
-        print(f"Boş retrieved_contexts nedeniyle RAGAS dışı bırakılanlar ({len(skipped)}): {skipped}")
+        print(f"Excluded rows due to empty retrieved_contexts ({len(skipped)}): {skipped}")
 
-    # Checkpoint / kaldığı yerden devam desteği
+    # Resume support from existing CSV checkpoints
     done_ids = set()
     existing_df = pd.DataFrame()
     if OUTPUT_CSV.exists():
         existing_df = pd.read_csv(OUTPUT_CSV)
         if "id" in existing_df.columns:
             done_ids = set(existing_df["id"].astype(str).tolist())
-            print(f"Mevcut checkpoint bulundu: {len(done_ids)} kayıt zaten tamamlanmış, kalanlar işlenecek.")
+            print(f"Found existing checkpoint: {len(done_ids)} completed rows; evaluating remaining rows.")
 
     pending_records = [r for r in valid_records if r["id"] not in done_ids]
 
     if pending_records:
-        print(f"Modeller VRAM'e ön-yükleniyor: {JUDGE_MODEL} + {EMBED_MODEL}...")
+        print(f"Preloading models into VRAM: {JUDGE_MODEL} + {EMBED_MODEL}...")
         preload_ollama_models(OLLAMA_BASE_URL, JUDGE_MODEL, EMBED_MODEL)
 
         llm = ChatOllama(
@@ -131,7 +135,7 @@ def main() -> None:
             RelevancyMetric(),
         ]
 
-        # Kilitlenmeyi önlemek için düşük eşzamanlılık (max_workers=2) ve yüksek timeout
+        # Low concurrency and generous timeouts avoid Ollama worker deadlocks
         run_config = RunConfig(
             timeout=300,
             max_retries=5,
@@ -143,7 +147,7 @@ def main() -> None:
         for b_idx in range(0, len(pending_records), BATCH_SIZE):
             batch = pending_records[b_idx : b_idx + BATCH_SIZE]
             batch_no = (b_idx // BATCH_SIZE) + 1
-            print(f"\n[Batch {batch_no}/{total_batches}] Değerlendiriliyor: {[r['id'] for r in batch]}")
+            print(f"\n[Batch {batch_no}/{total_batches}] Evaluating: {[r['id'] for r in batch]}")
 
             eval_dataset = EvaluationDataset.from_list(
                 [
@@ -186,8 +190,9 @@ def main() -> None:
                 else merged_batch
             )
             existing_df.to_csv(OUTPUT_CSV, index=False, encoding="utf-8")
-            print(f"[Batch {batch_no}/{total_batches}] Checkpoint kaydedildi -> {OUTPUT_CSV} (Toplam: {len(existing_df)})")
+            print(f"[Batch {batch_no}/{total_batches}] Checkpoint saved -> {OUTPUT_CSV} (Total: {len(existing_df)})")
 
+    # --- Summary Aggregation ---
     final_df = pd.read_csv(OUTPUT_CSV)
     metric_cols = [
         c
@@ -214,13 +219,13 @@ def main() -> None:
     }
     OUTPUT_SUMMARY.write_text(json.dumps(summary, indent=2, ensure_ascii=False), encoding="utf-8")
 
-    print("\n=== RAGAS GENEL SONUÇLAR ===")
+    print("\n=== OVERALL RAGAS RESULTS ===")
     for k, v in overall.items():
         print(f"{k:35s}: {v:.4f}")
 
-    print("\n=== KATEGORİ BAZLI ORTALAMALAR ===")
+    print("\n=== CATEGORY AVERAGES ===")
     print(final_df.groupby("category")[metric_cols].mean().round(4).to_string())
-    print(f"\nTamamlandı -> {OUTPUT_CSV} ve {OUTPUT_SUMMARY}")
+    print(f"\nCompleted -> {OUTPUT_CSV} and {OUTPUT_SUMMARY}")
 
 
 if __name__ == "__main__":

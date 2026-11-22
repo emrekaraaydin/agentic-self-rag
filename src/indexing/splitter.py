@@ -1,3 +1,5 @@
+"""Header-aware two-stage Markdown text splitter with structural breadcrumb injection."""
+
 import logging
 import uuid
 from typing import List
@@ -9,6 +11,7 @@ from langchain_text_splitters import (
 
 logger = logging.getLogger(__name__)
 
+# --- Chunking Parameters ---
 CHUNK_SIZE: int = 1600
 CHUNK_OVERLAP: int = 250
 
@@ -19,13 +22,16 @@ HEADERS_TO_SPLIT_ON: list[tuple[str, str]] = [
 ]
 
 
+# --- Splitter Factories ---
 def get_markdown_header_splitter() -> MarkdownHeaderTextSplitter:
+    """Return a splitter that segments text along Markdown heading levels."""
     return MarkdownHeaderTextSplitter(
         headers_to_split_on=HEADERS_TO_SPLIT_ON,
         strip_headers=False,
     )
 
 def get_recursive_text_splitter() -> RecursiveCharacterTextSplitter:
+    """Return a character splitter enforcing CHUNK_SIZE and CHUNK_OVERLAP bounds."""
     return RecursiveCharacterTextSplitter(
         chunk_size=CHUNK_SIZE,
         chunk_overlap=CHUNK_OVERLAP,
@@ -35,8 +41,9 @@ def get_recursive_text_splitter() -> RecursiveCharacterTextSplitter:
     )
 
 
+# --- Two-Stage Chunking Pipeline ---
 def chunk_documents(documents: List[Document]) -> List[Document]:
-    # İki aşamalı parçalama: Markdown başlık hiyerarşisi + Karakter limiti denetimi
+    """Split pages by Markdown headers, enforce chunk size limits, and prepend heading breadcrumbs."""
     if not documents:
         logger.warning("Empty document list provided for splitting.")
         return []
@@ -46,26 +53,26 @@ def chunk_documents(documents: List[Document]) -> List[Document]:
     processed_chunks: List[Document] = []
 
     for doc in documents:
-        # 1. Aşama: Sayfa metnini başlıklara göre ayır
+        # Stage 1: Split page content along Markdown headings
         header_splits = header_splitter.split_text(doc.page_content)
 
-        # Başlık içermeyen sayfalar için ham dokümanı koru
+        # Preserve pages that have no Markdown headings as a single split
         if not header_splits:
             header_splits = [doc]
         else:
             for split_doc in header_splits:
-                # Orijinal dokümanın metadata bilgilerini (source, page) yeni parçalara aktar
+                # Propagate source and page metadata to every heading block
                 for key, value in doc.metadata.items():
                     if key not in split_doc.metadata:
                         split_doc.metadata[key] = value
 
-        # 2. Aşama: Başlık bloklarını CHUNK_SIZE sınırına göre alt parçalara böl
+        # Stage 2: Sub-divide heading blocks according to CHUNK_SIZE
         sub_chunks = text_splitter.split_documents(header_splits)
 
         for chunk in sub_chunks:
             chunk.metadata["chunk_id"] = str(uuid.uuid4())
 
-            # 3. Aşama: Metadata'daki başlık zincirini metin gövdesine ön ek olarak enjekte et
+            # Stage 3: Prepend the active heading hierarchy as context breadcrumbs
             active_headers = [
                 str(chunk.metadata[header_key]).strip()
                 for _, header_key in HEADERS_TO_SPLIT_ON
@@ -76,7 +83,7 @@ def chunk_documents(documents: List[Document]) -> List[Document]:
                 header_context = " > ".join(active_headers)
                 deepest_header = active_headers[-1]
 
-                # Parça zaten en alt başlıkla başlamıyorsa başlık bağlamını metnin tepesine ekle
+                # Prefix heading hierarchy when the chunk body does not start with its deepest header
                 if not chunk.page_content.lstrip().startswith(deepest_header):
                     chunk.page_content = f"[{header_context}]\n{chunk.page_content}"
 

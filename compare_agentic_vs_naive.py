@@ -1,3 +1,5 @@
+"""Comparison report generator and 80-query RAGAS dataset exporter for Agentic vs. Naive RAG."""
+
 import json
 import os
 import statistics
@@ -13,6 +15,7 @@ from langchain_core.documents import Document
 from src.nodes.grade_hallucination_node import _detect_clean_refusal, _evaluate_with_hhem
 
 
+# --- Paths & Semantic Refusal Patterns ---
 ROOT = Path(__file__).resolve().parent
 AGENTIC_PATH = ROOT / "evaluation_results.json"
 NAIVE_PATH = ROOT / "naive_rag_evaluation_results.json"
@@ -36,7 +39,9 @@ REFUSAL_EXTRA_PHRASES = (
 )
 
 
+# --- Metric & RAGAS Export Helpers ---
 def is_semantic_refusal(text: str) -> bool:
+    """Return True if an answer cleanly refuses or reports missing context."""
     if not text or not text.strip():
         return True
     if _detect_clean_refusal(text):
@@ -46,6 +51,7 @@ def is_semantic_refusal(text: str) -> bool:
 
 
 def export_ragas_80(records: List[Dict[str, Any]], out_path: Path) -> None:
+    """Export the 80 in-scope evaluation rows in RAGAS input schema format."""
     ragas_rows = []
     for r in records:
         if r.get("category") == "fallback":
@@ -67,6 +73,7 @@ def export_ragas_80(records: List[Dict[str, Any]], out_path: Path) -> None:
 
 
 def target_doc_list(target_doc: Union[str, List[str]]) -> List[str]:
+    """Normalize single or multi-document target_doc specifications into a list."""
     if not target_doc:
         return []
     if isinstance(target_doc, list):
@@ -75,6 +82,7 @@ def target_doc_list(target_doc: Union[str, List[str]]) -> List[str]:
 
 
 def compute_context_purity(rec: Dict[str, Any]) -> float:
+    """Compute fraction of retrieved source chunks belonging to the target document(s)."""
     targets = set(target_doc_list(rec.get("target_doc", "")))
     sources = rec.get("sources", [])
     if not targets or not sources:
@@ -84,12 +92,14 @@ def compute_context_purity(rec: Dict[str, Any]) -> float:
 
 
 def compute_partial_hit(rec: Dict[str, Any]) -> bool:
+    """Return True if at least one target document appears among retrieved sources."""
     targets = set(target_doc_list(rec.get("target_doc", "")))
     sources = {s.get("source") for s in rec.get("sources", []) if isinstance(s, dict) and s.get("source")}
     return bool(targets & sources)
 
 
 def get_final_hhem_score(rec: Dict[str, Any]) -> float | None:
+    """Extract the terminal verifier entailment score recorded in audit_logs."""
     scores = [
         log.get("hhem_score")
         for log in rec.get("audit_logs", [])
@@ -99,6 +109,7 @@ def get_final_hhem_score(rec: Dict[str, Any]) -> float | None:
 
 
 def evaluate_naive_hhem(naive_records: List[Dict[str, Any]]) -> Dict[str, float]:
+    """Score non-refusal Naive RAG answers using the local NLI/HHEM evaluator."""
     scores: Dict[str, float] = {}
     for rec in naive_records:
         ans = rec.get("generated_answer") or ""
@@ -112,6 +123,7 @@ def evaluate_naive_hhem(naive_records: List[Dict[str, Any]]) -> Dict[str, float]
 
 
 def check_sycophancy_rejection(ans: str) -> bool:
+    """Detect whether an answer explicitly refutes a false legal premise."""
     low = (ans or "").strip().lower()
     if not low:
         return False
@@ -127,6 +139,7 @@ def check_sycophancy_rejection(ans: str) -> bool:
 
 
 def latency_stats(vals: List[float]) -> Dict[str, float]:
+    """Compute mean, median, min, max, and P95 latency statistics."""
     if not vals:
         return {"mean": 0.0, "median": 0.0, "min": 0.0, "max": 0.0, "p95": 0.0}
     sorted_v = sorted(vals)
@@ -140,7 +153,9 @@ def latency_stats(vals: List[float]) -> Dict[str, float]:
     }
 
 
+# --- System-Level Aggregation ---
 def summarize_system(records: List[Dict[str, Any]], hhem_map: Dict[str, float] | None = None) -> Dict[str, Any]:
+    """Aggregate benchmark metrics across literature categories, PDFs, and fallbacks."""
     in_scope = [r for r in records if r["category"] != "fallback"]
     fallback = [r for r in records if r["category"] == "fallback"]
     ood = [r for r in fallback if r.get("subcategory") == "out_of_domain"]
@@ -270,7 +285,9 @@ def summarize_system(records: List[Dict[str, Any]], hhem_map: Dict[str, float] |
     }
 
 
+# --- Report Generation Entrypoint ---
 def main() -> None:
+    """Load Agentic and Naive JSON outputs, export RAGAS datasets, and write the comparison report."""
     if not AGENTIC_PATH.exists() or not NAIVE_PATH.exists():
         print("Missing evaluation JSON files!", file=sys.stderr)
         sys.exit(1)

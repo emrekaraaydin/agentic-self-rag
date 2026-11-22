@@ -1,4 +1,8 @@
+"""System prompts for query planning, rewriting, grounded synthesis, and reflection."""
+
 from typing import Final
+
+# --- Query Rewriter Prompt ---
 REWRITER_SYSTEM_PROMPT: Final[str] = """<role>
 You are a search query simplifier for a Retrieval-Augmented Generation (RAG) system. Your task is to rewrite complex, indirect, or overly formal English questions into direct, clear, and standard search queries.
 </role>
@@ -16,6 +20,8 @@ You are a search query simplifier for a Retrieval-Augmented Generation (RAG) sys
 - Output ONLY the rewritten English query. Do not include quotes, prefixes, or explanations.
 </constraints>
 """
+
+# --- Grounded Response Generator Prompt ---
 GENERATOR_SYSTEM_PROMPT: Final[str] = """ACT AS an internal knowledge base synthesis engine. 
 Your MISSION is to ANSWER the user question using ONLY the provided internal documents.
 
@@ -35,6 +41,8 @@ Your MISSION is to ANSWER the user question using ONLY the provided internal doc
 Strict factual adherence to the provided context is mandatory. Any extrapolation, outside knowledge leakage, or unsupported speculation invalidates the generation.
 </critical>
 """
+
+# --- Hallucination Grader Schema Prompt (retained for structured model compatibility) ---
 HALLUCINATION_GRADER_SYSTEM_PROMPT: Final[str] = """<role>
 You are an objective factual consistency verifier. Your goal is to verify whether the assertions in a response are supported by the context documents.
 </role>
@@ -59,6 +67,7 @@ If the response asserts specific facts, events, names, or quotes:
 </guidelines>
 """
 
+# --- Query Decomposer Prompt ---
 DECOMPOSER_SYSTEM_PROMPT: Final[str] = """<role>
 You are a search query planner for a Retrieval-Augmented Generation (RAG) system. Your job is to determine whether a user question requires retrieving evidence across multiple distinct documents, frameworks, or separate sections, and to produce an optimal search plan.
 </role>
@@ -75,6 +84,7 @@ You are a search query planner for a Retrieval-Augmented Generation (RAG) system
 </instructions>
 """
 
+# --- Missing Context Reflector Prompt ---
 REFLECTION_SYSTEM_PROMPT: Final[str] = """<role>
 You are a self-reflective retrieval analyst. A draft RAG answer indicated that some required information from the user's question was missing from the retrieved context. Your task is to formulate 1 to 2 targeted search queries specifically for the missing part.
 </role>

@@ -1,3 +1,5 @@
+"""Offline unit tests for conditional graph routing, clean-refusal heuristics, and NLI grading."""
+
 import asyncio
 import pytest
 from langchain_core.documents import Document
@@ -12,8 +14,9 @@ from src.nodes.grade_hallucination_node import (
 from src.state.state import GraphState
 
 
+# --- Retrieval Routing Tests ---
 def test_route_after_retrieval_success():
-    # Dokuman esigi gectiginde uretime yonlendirme kontrolu
+    """Verify routing to generate_node when retrieval meets relevance threshold."""
     mock_state: GraphState = {
         "original_question": "test",
         "question": "test",
@@ -31,7 +34,7 @@ def test_route_after_retrieval_success():
 
 
 def test_route_after_retrieval_failure():
-    # Dokuman bulunamadiginda fallback_node yonlendirme kontrolu
+    """Verify routing to fallback_node when retrieval fails after rewrite retry budget."""
     mock_state: GraphState = {
         "original_question": "test",
         "question": "test",
@@ -48,6 +51,7 @@ def test_route_after_retrieval_failure():
     assert route_after_retrieval(mock_state) == "fallback_node"
 
 
+# --- Hallucination & Reflection Routing Tests ---
 @pytest.mark.parametrize(
     "has_hallucination, retry_count, expected_route",
     [
@@ -60,7 +64,7 @@ def test_route_after_retrieval_failure():
 def test_route_after_hallucination_matrix(
     has_hallucination: bool, retry_count: int, expected_route: str
 ):
-    # Halusinasyon ve tekrar deneme sayaci matrisi kontrolu
+    """Verify hallucination retry progression up to fallback cap."""
     mock_state: GraphState = {
         "original_question": "test",
         "question": "test",
@@ -115,6 +119,7 @@ def test_route_after_hallucination_skips_reflection_after_max_retry():
     assert route_after_hallucination(mock_state) == "__end__"
 
 
+# --- Clean Refusal & NLI Verification Tests ---
 def test_clean_refusal_detection():
     assert _detect_clean_refusal("The context does not provide information about this topic.")
     assert _detect_clean_refusal(

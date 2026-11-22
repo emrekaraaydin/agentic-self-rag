@@ -1,3 +1,5 @@
+"""Chainlit UI entrypoint with page-deduplicated PDF citations and chunk inspection cards."""
+
 import logging
 import os
 import re
@@ -9,6 +11,7 @@ from src.state.state import GraphState
 
 logging.getLogger("chainlit").setLevel(logging.ERROR)
 
+# --- Constants & Bilingual Matching Stopwords ---
 _STOPWORDS: Set[str] = {
     # English stopwords
     "the", "and", "for", "that", "this", "with", "from", "are", "was", "were",
@@ -38,6 +41,7 @@ _REFUSAL_MARKERS: Tuple[str, ...] = (
 )
 
 
+# --- Passage Matching & Bold Highlighting Helpers ---
 def _tokenize_for_matching(text: str) -> Set[str]:
     """Extract content terms stripped of stopwords for paragraph-to-chunk matching."""
     tokens = re.findall(r"[0-9a-zA-ZçğıöşüÇĞİÖŞÜ]+", text.lower())
@@ -45,6 +49,7 @@ def _tokenize_for_matching(text: str) -> Set[str]:
 
 
 def _is_pure_refusal_or_fallback(response_text: str) -> bool:
+    """Return True when the response is a refusal or fallback containing no positive factual claims."""
     low = response_text.strip().lower()
     if any(marker in low for marker in _REFUSAL_MARKERS):
         return True
@@ -64,6 +69,7 @@ def _is_pure_refusal_or_fallback(response_text: str) -> bool:
 
 
 def _is_skippable_heading_or_metadata(block: str) -> bool:
+    """Skip markdown headings, bracketed breadcrumb headers, and tiny non-prose blocks."""
     stripped = block.strip()
     if not stripped:
         return True
@@ -222,7 +228,9 @@ def highlight_matching_chunk_passages(
     return "".join(rebuilt_blocks)
 
 
+# --- Citation Deduplication & PDF Resolution ---
 def _normalize_page_number(page_val: Any) -> Optional[int]:
+    """Coerce numeric page metadata values into an integer page index."""
     if page_val is None or isinstance(page_val, bool):
         return None
     if isinstance(page_val, (int, float)):
@@ -442,13 +450,16 @@ def resolve_pdf_path(source_name: str) -> Optional[str]:
 
 
 def _format_match_label(matched_paras: List[int]) -> str:
+    """Format matched paragraph badges or fall back to 'General Context'."""
     if matched_paras:
         return ", ".join(f"**Paragraph {p}**" for p in matched_paras)
     return "General Context"
 
 
+# --- Chainlit Session & Event Callbacks ---
 @cl.on_chat_start
 async def on_chat_start() -> None:
+    """Initialize the compiled graph and session state containers for a new chat."""
     app_graph = build_graph()
     cl.user_session.set("graph", app_graph)
     cl.user_session.set("previous_elements", [])
@@ -462,6 +473,7 @@ async def on_chat_start() -> None:
 
 @cl.action_callback("show_chunk_details")
 async def on_show_chunk_details(action: cl.Action) -> None:
+    """Render side chunk inspection cards once per message and retire the action button."""
     store: Dict[str, List[Dict[str, Any]]] = (
         cl.user_session.get("chunk_details_store") or {}
     )
@@ -532,6 +544,7 @@ async def on_show_chunk_details(action: cl.Action) -> None:
 
 @cl.on_message
 async def on_message(message: cl.Message) -> None:
+    """Stream Agentic RAG steps, deduplicate PDF citations, and attach side PDF viewers."""
     graph = cl.user_session.get("graph")
     user_query: str = message.content
 

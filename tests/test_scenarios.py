@@ -1,15 +1,18 @@
+"""Live end-to-end integration tests covering grounded facts, OOD fallback, and sycophancy."""
+
 import pytest
 from src.graph import build_graph
 from src.state.state import GraphState
 
 
+# --- Fixtures & Trace Formatting ---
 @pytest.fixture(scope="session")
 def graph_app():
     return build_graph()
 
 
 def _format_execution_trace(state: GraphState) -> str:
-    # Tum node gecmisini ve reasoning adimlarini okunabilir formatta toplar
+    """Format node execution logs and verification outputs into a readable trace block."""
     trace_lines = ["\n" + "=" * 30 + " EXECUTION TRACE " + "=" * 30]
 
     for idx, log in enumerate(state.get("audit_logs", [])):
@@ -38,17 +41,18 @@ def _format_execution_trace(state: GraphState) -> str:
     return "\n".join(trace_lines)
 
 
+# --- End-to-End Pipeline Scenarios ---
 @pytest.mark.asyncio
 @pytest.mark.parametrize(
     "raw_query, expect_retrieval_success",
     [
-        # Senaryo 1: Bilgi korpusta var (Grounded uretim)
+        # Scenario 1: In-corpus compliance lookups (expect grounded generation)
         ("What is the maximum statutory timeframe in hours for a data controller to notify a personal data breach to the supervisory authority under Article 33?", True),
         ("How many total members compose the Personal Data Protection Board under Turkish Law No. 6698?", True),
-        # Senaryo 2: Dokuman korpusta yok / esigi gecemiyor (Retrieval failure -> Fallback)
+        # Scenario 2: Out-of-domain queries failing rerank threshold (expect fallback)
         ("What are the specific cryogenic liquid nitrogen cooling specifications mandated for server racks in European data centers under GDPR?", False),
         ("What is the catalytic decomposition rate of hydrogen peroxide in satellite thrusters?", False),
-        # Senaryo 3: Yaniltici / Sycophancy sorusu (Dokuman doner, dogrulama beklenir)
+        # Scenario 3: Leading false-premise / sycophancy prompt (expect correction & verification)
         ("Under Article 37, a group of undertakings is strictly forbidden from appointing a single shared Data Protection Officer and must hire a separate DPO for each subsidiary, correct?", True),
     ],
 )
@@ -76,22 +80,22 @@ async def test_agentic_rag_pipeline(
     print(trace_dump)
     print(f"\n[GENERATION]: {final_state.get('generation')}")
 
-    # 1. Uretim hicbir senaryoda bos kalmamali (Fallback veya Generator doldurur)
+    # 1. Generation must never be empty (handled by generator or fallback)
     assert final_state["generation"] is not None and len(final_state["generation"].strip()) > 0, (
         f"Empty generation returned.\nTrace:{trace_dump}"
     )
 
-    # 2. Retrieval esik kontrolu
+    # 2. Verify retrieval relevance matches expectation
     assert final_state["is_relevant"] == expect_retrieval_success, (
         f"Retrieval relevance mismatch. Expected: {expect_retrieval_success}\nTrace:{trace_dump}"
     )
 
-    # 3. Sonsuz dongu korumasi
+    # 3. Enforce finite hallucination retry bound
     assert final_state["generation_hallucination_retry_count"] <= 2, (
         f"Retry count exceeded limit.\nTrace:{trace_dump}"
     )
 
-    # 4. Halusinasyon dogrulamasi
+    # 4. Require hallucination-free terminal state
     assert final_state["has_hallucination"] is False, (
         f"Pipeline ended with ungrounded/hallucinated answer!\nTrace:{trace_dump}"
     )

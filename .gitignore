@@ -1,23 +1,23 @@
-# Python sanal ortam
+# Python virtual environments
 .venv/
 venv/
 ENV/
 env/
 
-# Ortam değişkenleri ve gizli anahtarlar
+# Environment variables and secrets
 .env
 .env.local
 .env.*
 !.env.example
 
-# Chainlit önbellek ve yüklenen geçici dosyalar
+# Chainlit uploads, session state & logs
 .files/
 *.log
 
-# Eski değerlendirme çıktıları
+# Archived historical evaluation outputs
 legacy_outputs/
 
-# Qdrant yerel veri tabanı depolama alanı
+# Local Qdrant storage & file locks
 qdrant_storage/
 qdrant_local_store/
 qdrant_local_storage/
@@ -25,20 +25,20 @@ qdrant_local_s*/
 *.sqlite
 *.lock
 
-# Derleme ve önbellek dosyaları
+# Python bytecode & test caches
 __pycache__/
 *.py[cod]
 *$py.class
 .pytest_cache/
 .coverage
 
-# IDE yapılandırmaları ve işletim sistemi dosyaları
+# IDE configurations & OS metadata
 .vscode/
 .idea/
 .DS_Store
 Thumbs.db
 
-# Dokümanlar ve PDF'ler
+# Regulatory source PDFs
 data/*.pdf
 
 # Local caches, macOS launchers, and stray session files

@@ -1,37 +1,37 @@
-# LangChain & LangGraph Temel Kütüphaneleri
+# LangChain & LangGraph Core Libraries
 langgraph>=0.2.0
 langchain>=0.3.0
 langchain-core>=0.3.0
 langchain-text-splitters>=0.3.0
 
-# LLM & Embedding Sağlayıcıları
+# LLM & Embedding Providers
 langchain-ollama>=0.2.0
 
-# Vektör Veritabanı İstemcileri
+# Vector Database Clients
 langchain-qdrant>=0.2.0
 qdrant-client>=1.11.0
 
-# Doküman İşleme, Yükleme ve Ayrıştırma
+# Document Loading, Extraction & Parsing
 pymupdf>=1.24.0
 pymupdf4llm>=0.0.17
 
-# Çapraz Kodlayıcı (Cross-Encoder / Re-ranking)
+# Cross-Encoder Reranking
 flashrank>=0.2.0
 
-# Halüsinasyon Denetimi (ModernBERT-large-nli)
+# Hallucination Verification (ModernBERT-large-nli)
 torch>=2.0.0
 transformers>=4.48.0
 huggingface-hub>=0.23.0
 safetensors>=0.4.0
 
-# Veri Doğrulama, Dayanıklılık ve Ortam Değişkenleri
+# Data Validation, Retry Resilience & Environment Config
 pydantic>=2.8.0
 python-dotenv>=1.0.1
 tenacity>=8.2.0
 
-# Arayüz (UI)
+# Web UI
 chainlit>=1.1.0
 
-# Test ve Kod Kalitesi (Opsiyonel / Dev)
+# Testing & Development
 pytest>=8.3.0
 pytest-asyncio>=0.24.0

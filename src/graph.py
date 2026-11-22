@@ -1,3 +1,5 @@
+"""LangGraph StateGraph construction and edge wiring for Agentic RAG."""
+
 import logging
 from langgraph.graph import END, StateGraph
 from src.nodes.decompose_query_node import decompose_query_node
@@ -18,12 +20,12 @@ logger = logging.getLogger(__name__)
 
 
 def build_graph():
-    # Agentic RAG StateGraph olusturma ve derleme adimi
+    """Construct and compile the bounded cyclic Agentic RAG StateGraph."""
     logger.info("Building Agentic RAG StateGraph...")
 
     workflow = StateGraph(GraphState)
 
-    # 1. Dugumlerin (Nodes) Eklenmesi
+    # 1. Register Graph Nodes
     workflow.add_node("decompose_query_node", decompose_query_node)
     workflow.add_node("transform_query_node", transform_query_node)
     workflow.add_node("reflect_missing_context_node", reflect_missing_context_node)
@@ -33,10 +35,10 @@ def build_graph():
     workflow.add_node("grade_hallucination_node", grade_hallucination_node)
     workflow.add_node("fallback_node", fallback_node)
 
-    # 2. Giris Noktasi (Entry Point)
+    # 2. Entry Point
     workflow.set_entry_point("decompose_query_node")
 
-    # 3. Deterministik / Dogrusal Gecisler (Direct Edges)
+    # 3. Direct Edges
     workflow.add_edge("decompose_query_node", "retrieve_node")
     workflow.add_edge("transform_query_node", "retrieve_node")
     workflow.add_edge("reflect_missing_context_node", "retrieve_node")
@@ -44,9 +46,8 @@ def build_graph():
     workflow.add_edge("generate_node", "grade_hallucination_node")
     workflow.add_edge("fallback_node", END)
 
-    # 4. Kosullu Yonlendirmeler (Conditional Edges)
-    
-    # Reranker sonrasi dokuman yeterliligi kontrolu
+    # 4. Conditional Edges
+    # Post-rerank sufficiency decision
     workflow.add_conditional_edges(
     "grade_retrieval_node",
     route_after_retrieval,
@@ -57,7 +58,7 @@ def build_graph():
     },
 )
 
-    # Halusinasyon ve eksik-baglam yansitma denetimi kontrolu
+    # Post-NLI grounding, missing-context reflection, and retry cap decision
     workflow.add_conditional_edges(
     "grade_hallucination_node",
     route_after_hallucination,
@@ -69,7 +70,7 @@ def build_graph():
     },
 )
 
-    # 5. Grafigin Derlenmesi
+    # 5. Compile Graph
     app = workflow.compile()
     logger.info("Agentic RAG StateGraph successfully compiled.")
 

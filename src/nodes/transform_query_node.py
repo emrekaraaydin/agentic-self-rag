@@ -1,3 +1,5 @@
+"""SLM-based query rewriting node with post-processing for repetitive parenthetical expansions."""
+
 import logging
 import re
 from typing import Any, Dict, List
@@ -8,8 +10,9 @@ from src.state.state import GraphState
 logger = logging.getLogger(__name__)
 
 
+# --- Rewritten Query Cleanup ---
 def _clean_rewritten_query(raw_query: str) -> str:
-    """SLM çıktısındaki iç içe parantezleri, kelime öbeği tekrarlarını ve ana sorudaki kelimelerin kopyalarını temizler."""
+    """Remove nested parentheses, phrase repetitions, and redundant terms from SLM outputs."""
     text = re.sub(r"\s+", " ", raw_query).strip()
     if "(" not in text and ")" not in text:
         return text
@@ -24,7 +27,7 @@ def _clean_rewritten_query(raw_query: str) -> str:
     has_qmark = main_part.endswith("?") or paren_tail.rstrip().endswith("?")
     main_part = main_part.rstrip("?").strip()
 
-    # Parantez içi metni iç içe parantezlerden arındırıp aday ifadelere böl
+    # Flatten nested parentheses inside the trailing expansion into comma-separated candidates
     paren_flat = re.sub(r"[()?]+", ",", paren_tail)
     raw_phrases = [p.strip() for p in paren_flat.split(",") if p.strip()]
 
@@ -35,7 +38,7 @@ def _clean_rewritten_query(raw_query: str) -> str:
     seen_lower: set[str] = set()
 
     for phrase in raw_phrases:
-        # Aynı kelime veya kelime öbeğinin kendi içinde tekrarlanmasını kırp (örn. "A B A B A B" -> "A B")
+        # Collapse consecutive word/n-gram repetitions within a phrase (e.g., "A B A B" -> "A B")
         deduped = phrase
         for _ in range(3):
             next_deduped = re.sub(
@@ -53,7 +56,7 @@ def _clean_rewritten_query(raw_query: str) -> str:
         if not low or low in seen_lower:
             continue
 
-        # Ana soruda birebir geçen veya kelimelerinin tamamı zaten ana soruda olan gereksiz tekrarları ele
+        # Discard candidate phrases already verbatim or fully covered in the main question
         phrase_words = re.findall(r"[0-9a-zA-ZçğıöşüÇĞİÖŞÜ]+", low)
         if not phrase_words:
             continue
@@ -73,7 +76,9 @@ def _clean_rewritten_query(raw_query: str) -> str:
     return f"{main_part}{suffix}"
 
 
+# --- Graph Node ---
 async def transform_query_node(state: GraphState) -> Dict[str, Any]:
+    """Rewrite a failing query with the SLM to recover after zero rerank hits."""
     logger.info("Executing async query transformation...")
     question: str = state.get("question", "")
     transformed_query: str = question

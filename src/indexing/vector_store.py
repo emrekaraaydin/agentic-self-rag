@@ -1,3 +1,5 @@
+"""Cached Ollama embedding model and sync/async Qdrant client singletons."""
+
 from functools import lru_cache
 from langchain_ollama import OllamaEmbeddings
 from langchain_qdrant import QdrantVectorStore
@@ -14,7 +16,7 @@ from config.settings import (
 
 @lru_cache(maxsize=1)
 def get_embedding_model() -> OllamaEmbeddings:
-    # Tekil embedding modeli ornegi
+    """Return a cached OllamaEmbeddings client for dense vector encoding."""
     return OllamaEmbeddings(
         model=EMBEDDING_MODEL,
         base_url=OLLAMA_BASE_URL,
@@ -23,8 +25,7 @@ def get_embedding_model() -> OllamaEmbeddings:
 
 @lru_cache(maxsize=1)
 def get_sync_qdrant_client() -> QdrantClient:
-    # LangChain QdrantVectorStore icin gRPC destekli senkron istemci
-    # LangChain asenkron sorgulari bu istemci uzerinden thread havuzuyla yonetir
+    """Return a cached gRPC-enabled sync Qdrant client (thread-pooled for async LangChain searches)."""
     return QdrantClient(
         host=QDRANT_HOST,
         port=QDRANT_PORT,
@@ -34,7 +35,7 @@ def get_sync_qdrant_client() -> QdrantClient:
 
 @lru_cache(maxsize=1)
 def get_async_qdrant_client() -> AsyncQdrantClient:
-    # Veri yukleme (seed) islemleri icin asenkron istemci
+    """Return a cached async Qdrant client used during collection creation and bulk seeding."""
     return AsyncQdrantClient(
         host=QDRANT_HOST,
         port=QDRANT_PORT,
@@ -44,7 +45,7 @@ def get_async_qdrant_client() -> AsyncQdrantClient:
 
 @lru_cache(maxsize=1)
 def get_vector_store() -> QdrantVectorStore:
-    # Calisma zamani (runtime) aramalar icin tekil vektor deposu ornegi
+    """Return the singleton QdrantVectorStore bound to the active dense collection."""
     return QdrantVectorStore(
         client=get_sync_qdrant_client(),
         collection_name=QDRANT_COLLECTION_NAME,

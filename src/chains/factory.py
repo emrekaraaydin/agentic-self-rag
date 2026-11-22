@@ -1,3 +1,5 @@
+"""Ollama chat model clients and LCEL chain factories for planning, rewriting, synthesis, and reflection."""
+
 import logging
 from typing import Any, Dict
 from langchain_core.output_parsers import StrOutputParser
@@ -16,8 +18,9 @@ from src.prompts.system_prompts import (
 logger = logging.getLogger(__name__)
 
 
+# --- Base Model Clients ---
 def get_base_llm() -> ChatOllama:
-    # 16k Baglam penceresi ve Apple Silicon icin optimize edilmis ChatOllama ornegi
+    """Return the primary ChatOllama LLM client configured with the 16K context window."""
     return ChatOllama(
         model=settings.LLM_MODEL,
         base_url=settings.OLLAMA_BASE_URL,
@@ -28,7 +31,7 @@ def get_base_llm() -> ChatOllama:
 
 
 def get_base_slm() -> ChatOllama:
-    # Sorgu donusturme ve hafif islemler icin kucuk baglamli SLM istemcisi
+    """Return the lightweight ChatOllama SLM client used for query rewriting."""
     return ChatOllama(
         model=settings.SLM_MODEL,
         base_url=settings.OLLAMA_BASE_URL,
@@ -38,20 +41,10 @@ def get_base_slm() -> ChatOllama:
     )
 
 
-# def create_hallucination_grader_chain() -> RunnableSerializable[Dict[str, Any], GradeHallucinations]:
-#     # Uretilen yanitta halusinasyon olup olmadigini denetleyen zincir (LLM tabanli - Yorum satirina alindi, Vectara HHEM-2.1 kullaniliyor)
-#     llm = get_base_llm()
-#     structured_llm = llm.with_structured_output(GradeHallucinations)
-#     prompt = ChatPromptTemplate.from_messages(
-#         [
-#             ("system", HALLUCINATION_GRADER_SYSTEM_PROMPT),
-#             ("human", "Set of facts:\n\n{documents}\n\nLLM generation: {generation}"),
-#         ]
-#     )
-#     return prompt | structured_llm
-
+# --- LCEL Runnable Chains ---
+# Note: Hallucination verification runs locally via ModernBERT-large-nli in src/nodes/grade_hallucination_node.py.
 def create_generator_chain() -> RunnableSerializable[Dict[str, Any], str]:
-    # Alinan baglama dayanarak yanit ureten zincir
+    """Create the context-grounded response generation chain."""
     llm = get_base_llm()
     prompt = ChatPromptTemplate.from_messages(
         [
@@ -63,7 +56,7 @@ def create_generator_chain() -> RunnableSerializable[Dict[str, Any], str]:
 
 
 def create_query_rewriter_chain() -> RunnableSerializable[Dict[str, Any],str]:
-    # SLM ile sorgu sadelestirme ve donusturme zinciri
+    """Create the SLM-based query simplification and rewriting chain."""
     slm = get_base_slm()
     prompt = ChatPromptTemplate.from_messages(
         [
@@ -75,7 +68,7 @@ def create_query_rewriter_chain() -> RunnableSerializable[Dict[str, Any],str]:
 
 
 def create_query_decomposer_chain() -> RunnableSerializable[Dict[str, Any], QueryPlan]:
-    """Coklu mevzuat veya karsilastirmali sorulari alt sorgulara ayiran planlayici zincir."""
+    """Create the structured query planner chain for comparative or multi-statute questions."""
     llm = get_base_llm()
     structured_llm = llm.with_structured_output(QueryPlan)
     prompt = ChatPromptTemplate.from_messages(
@@ -88,7 +81,7 @@ def create_query_decomposer_chain() -> RunnableSerializable[Dict[str, Any], Quer
 
 
 def create_missing_context_reflector_chain() -> RunnableSerializable[Dict[str, Any], MissingContextPlan]:
-    """Taslak yanitta eksik kalan mevzuat/madde icin hedefli yeniden arama sorgusu ureten zincir."""
+    """Create the structured reflection chain generating follow-up queries for missing context."""
     llm = get_base_llm()
     structured_llm = llm.with_structured_output(MissingContextPlan)
     prompt = ChatPromptTemplate.from_messages(

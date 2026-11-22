@@ -1,3 +1,5 @@
+"""Whole-answer hallucination verifier powered by ModernBERT-large-nli with sliding 8K windows."""
+
 import asyncio
 import logging
 import threading
@@ -19,6 +21,7 @@ from src.state.state import GraphState
 
 logger = logging.getLogger(__name__)
 
+# --- Singleton Model State & Heuristic Patterns ---
 _MODEL_LOCK = threading.Lock()
 _NLI_TOKENIZER: Any = None
 _NLI_MODEL: Any = None
@@ -65,7 +68,9 @@ _MISSING_CONTEXT_PATTERNS: Tuple[str, ...] = (
 )
 
 
+# --- Model Loading & Refusal Heuristics ---
 def _select_device() -> str:
+    """Select the preferred accelerator device (MPS, CUDA, or CPU fallback)."""
     if torch.backends.mps.is_available():
         return "mps"
     if torch.cuda.is_available():
@@ -109,7 +114,7 @@ def _get_nli_model() -> Tuple[Any, Any, str]:
 
 
 def _detect_clean_refusal(generation: str) -> bool:
-    """Yanıtın pozitif bir iddia içermeyen temiz bir ret (clean refusal) olup olmadığını denetler."""
+    """Return True if the response is a clean refusal with no positive factual claims."""
     low = (generation or "").strip().lower()
     if not any(pat in low for pat in _REFUSAL_PATTERNS):
         return False
@@ -119,13 +124,14 @@ def _detect_clean_refusal(generation: str) -> bool:
 
 
 def _detect_missing_context_claim(generation: str) -> bool:
-    """Üretilen yanıtta bağlamda bir bilginin veya mevzuatın eksik kaldığına dair ifade olup olmadığını saptar."""
+    """Detect whether the draft response reports missing context or statutory provisions."""
     low = (generation or "").strip().lower()
     return any(pat in low for pat in _MISSING_CONTEXT_PATTERNS)
 
 
+# --- Document Formatting & Sliding-Window NLI Scoring ---
 def _format_documents(documents: List[Document]) -> List[str]:
-    """Belgeleri isteğe bağlı doc_title üst bilgisiyle Passage bloklarına dönüştürür."""
+    """Format documents into Passage blocks with optional doc_title headers."""
     formatted: List[str] = []
     for doc in documents:
         content = (doc.page_content or "").strip()
@@ -143,6 +149,7 @@ def _split_oversized_passage(
     max_tokens: int,
     overlap_tokens: int = 96,
 ) -> List[str]:
+    """Split a single passage exceeding the NLI budget into overlapping token slices."""
     ids = tokenizer(text, add_special_tokens=False)["input_ids"]
     if len(ids) <= max_tokens:
         return [text]
@@ -163,7 +170,7 @@ def _build_nli_windows(
     max_length: int = NLI_MAX_LENGTH,
     overlap_docs: int = 1,
 ) -> Tuple[List[str], int]:
-    """8K pencereye sığan tek blok veya taşma halinde çakışmalı NLI pencereleri üretir."""
+    """Pack passages into a single 8K window or overlapping NLI windows when overflowing."""
     full_premise = "\n\n".join(passages)
     premise_tokens = len(tokenizer(full_premise, add_special_tokens=False)["input_ids"])
     hyp_tokens = len(tokenizer(hypothesis, add_special_tokens=False)["input_ids"])
@@ -208,7 +215,7 @@ def _score_nli_windows(
     passages: List[str],
     hypothesis: str,
 ) -> Tuple[float, float, float, int, int]:
-    """ModernBERT-large-nli ile (entailment, neutral, contradiction, window_count, total_tokens) döner."""
+    """Return (entailment, neutral, contradiction, window_count, total_tokens) from ModernBERT-large-nli."""
     global _NLI_DEVICE
     tokenizer, model, device = _get_nli_model()
     windows, total_tokens = _build_nli_windows(passages, hypothesis, tokenizer, max_length=NLI_MAX_LENGTH)
@@ -254,8 +261,8 @@ def _evaluate_with_nli(
     generation: str,
     question: str = "",
 ) -> Tuple[GradeHallucinations, float, Dict[str, Any]]:
-    """ModernBERT-large-nli ile tam bağlam / 8K pencere olgusal tutarlılık denetimi yapar."""
-    del question  # NLI premise/hypothesis arayüzü ile gerekmez; uyumluluk imzası korunur
+    """Run whole-context / 8K sliding-window factual consistency verification using ModernBERT-large-nli."""
+    del question  # Unused by the NLI premise/hypothesis interface; retained for signature compatibility
     is_refusal = _detect_clean_refusal(generation)
     passages = _format_documents(documents)
 
@@ -323,12 +330,13 @@ def _evaluate_with_nli(
     )
 
 
-# Mevcut karşılaştırma scriptleri ile geriye dönük uyumluluk takma adı
+# Backward-compatible alias imported by legacy comparison scripts
 _evaluate_with_hhem = _evaluate_with_nli
 
 
+# --- Graph Node ---
 async def grade_hallucination_node(state: GraphState) -> Dict[str, Any]:
-    """Üretilen yanıtın bağlam havuzuna sadık kalıp kalmadığını ModernBERT-large-nli ile denetler."""
+    """Verify whether the generated answer is grounded in retrieved evidence using ModernBERT-large-nli."""
     logger.info("Executing async ModernBERT-large-nli hallucination verification...")
 
     generation: str = state.get("generation") or ""
@@ -362,7 +370,7 @@ async def grade_hallucination_node(state: GraphState) -> Dict[str, Any]:
             ],
         }
 
-    # Eksik mevzuat / kısmi ret durumunda çoklu-parçalı soruda yeniden arama (Self-Reflective Re-Retrieval)
+    # Trigger reflective re-retrieval on multi-part answers when missing context is reported
     if (
         _detect_missing_context_claim(generation)
         and is_multi_part

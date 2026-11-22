@@ -1,3 +1,5 @@
+"""Conditional edge routers controlling cyclic retries and fallback transitions."""
+
 import logging
 from typing import Literal
 from config import settings
@@ -7,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 
 def route_after_retrieval(state: GraphState,) -> Literal["generate_node", "transform_query_node", "fallback_node"]:
-    # Reranker sonrasi dokumanlarin yeterliligi
+    """Route to generation when docs pass reranking, or rewrite/fallback otherwise."""
     is_relevant: bool = state.get("is_relevant", False)
     query_rewrite_retry_count: int = state.get(
         "query_rewrite_retry_count", 0
@@ -31,7 +33,8 @@ def route_after_retrieval(state: GraphState,) -> Literal["generate_node", "trans
 def route_after_hallucination(
     state: GraphState,
 ) -> Literal["reflect_missing_context_node", "generate_node", "fallback_node", "__end__"]:
-    # Eksik mevzuat / kismi ret durumunda yeniden arama kontrolu
+    """Route verified answers to END, missing multi-part answers to reflection, or hallucinated drafts to retry/fallback."""
+    # Check reflective re-retrieval budget when partial missing context is flagged
     if (
         state.get("needs_additional_retrieval", False)
         and state.get("retrieval_reflection_retry_count", 0) < settings.RETRIEVAL_REFLECTION_MAX_RETRY
@@ -39,7 +42,7 @@ def route_after_hallucination(
         logger.info("Missing context detected in multi-part response. Routing to reflect_missing_context_node.")
         return "reflect_missing_context_node"
 
-    # Halusinasyon denetimi
+    # Check NLI hallucination flag and bounded regeneration budget
     has_hallucination: bool = state.get("has_hallucination", False)
     generation_hallucination_retry_count: int = state.get(
         "generation_hallucination_retry_count", 0

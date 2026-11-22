@@ -1,3 +1,5 @@
+"""Batch benchmark evaluator for running the Agentic RAG graph over JSON test datasets."""
+
 import os
 
 os.environ["ORT_DISABLE_TELEMETRY"] = "1"
@@ -12,6 +14,7 @@ from typing import Any, Dict, List, Optional, Union
 
 from src.graph import build_graph
 
+# --- Configuration & Fallback Constants ---
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
@@ -34,8 +37,9 @@ VALID_FALLBACK_MESSAGES = {
 }
 
 
+# --- Dataset & Metric Helpers ---
 def load_dataset(file_path: Path) -> List[Dict[str, Any]]:
-    # Veri seti dosyasının varlığını doğrula ve diskten oku
+    """Verify dataset file existence and load JSON test items from disk."""
     if not file_path.exists():
         raise FileNotFoundError(f"Dataset file not found at: {file_path}")
     with open(file_path, "r", encoding="utf-8") as file:
@@ -43,7 +47,7 @@ def load_dataset(file_path: Path) -> List[Dict[str, Any]]:
 
 
 def extract_context_texts(documents: List[Any]) -> List[str]:
-    # Gelen doküman yapısından ham metinleri ayıkla
+    """Extract raw text strings from LangChain Documents or serialized dicts."""
     contexts: List[str] = []
     for doc in documents:
         if hasattr(doc, "page_content"):
@@ -59,7 +63,7 @@ def check_fallback_status(
     answer: str,
     audit_logs: List[Dict[str, Any]],
 ) -> Dict[str, Any]:
-    # Fallback node tetiklenme durumunu ve üretilen metni doğrula
+    """Inspect audit logs and answer text to determine whether fallback triggered."""
     node_triggered = False
     trigger_reason: Optional[str] = None
     retry_count = 0
@@ -88,7 +92,7 @@ def check_target_doc_retrieved(
     sources: List[Dict[str, Any]],
     documents: List[Any],
 ) -> bool:
-    # Hedef dokümanın retrieval / rerank aşamasından geçip geçmediğini denetle
+    """Check whether all expected target PDF source filenames survived retrieval and reranking."""
     if not target_doc:
         return False
 
@@ -108,13 +112,14 @@ def check_target_doc_retrieved(
     return target_doc in retrieved_sources_set
 
 
+# --- Batch Evaluation Loop ---
 async def run_batch_evaluation(
     dataset_path: Path = DATASET_PATH,
     output_path: Path = OUTPUT_PATH,
     category_filter: Optional[str] = None,
     subcategory_filter: Optional[str] = None,
 ) -> None:
-    # Grafiği derle ve veri setini yükle
+    """Execute the compiled Agentic RAG graph over the benchmark dataset and save JSON traces."""
     logger.info("Initializing graph application...")
     app = build_graph()
     dataset = load_dataset(dataset_path)
@@ -127,7 +132,7 @@ async def run_batch_evaluation(
 
     evaluation_records: List[Dict[str, Any]] = []
 
-    # Metrik takip sayaçları
+    # Aggregate evaluation counters
     metrics = {
         "total": total_queries,
         "completed": 0,
@@ -149,7 +154,7 @@ async def run_batch_evaluation(
 
         logger.info("[%d/%d] Running ID: %s | Category: %s", idx, total_queries, query_id, category)
 
-        # GraphState şemasına birebir uyumlu başlangıç durumu
+        # Initial GraphState payload matching workflow expectations
         initial_state = {
             "original_question": raw_question,
             "question": raw_question,
@@ -187,7 +192,7 @@ async def run_batch_evaluation(
         audit_logs = final_state.get("audit_logs") or []
         contexts = extract_context_texts(retrieved_documents)
 
-        # Fallback analizi
+        # Evaluate deterministic fallback triggers
         fallback_data = check_fallback_status(generated_answer, audit_logs)
         is_fallback_case = category == "fallback"
 
@@ -198,7 +203,7 @@ async def run_batch_evaluation(
         elif fallback_data["is_fallback"]:
             metrics["fallback_false_positive"] += 1
 
-        # Retrieval isabet kontrolü
+        # Evaluate target PDF retrieval hit on in-scope queries
         hit_target_doc = False
         if not is_fallback_case and target_doc:
             metrics["target_doc_eligible"] += 1
@@ -210,7 +215,7 @@ async def run_batch_evaluation(
             if hit_target_doc:
                 metrics["target_doc_hits"] += 1
 
-        # Ragas ve benchmark formatına uygun kayıt yapısı
+        # Persist RAGAS-compatible evaluation record with full audit trace
         record = {
             "id": query_id,
             "domain": item.get("domain", ""),
@@ -244,17 +249,19 @@ async def run_batch_evaluation(
             with open(output_path, "w", encoding="utf-8") as file:
                 json.dump(evaluation_records, file, ensure_ascii=False, indent=2)
 
-    # Sonuçları diske yaz
+    # Flush final benchmark JSON to disk
     with open(output_path, "w", encoding="utf-8") as file:
         json.dump(evaluation_records, file, ensure_ascii=False, indent=2)
 
     logger.info("Batch execution finished. Exported %d records to %s", len(evaluation_records), output_path)
 
-    # Konsol özet raporu
+    # Print console summary table
     _print_evaluation_summary(metrics)
 
 
+# --- Console Summary & CLI Parsing ---
 def _print_evaluation_summary(metrics: Dict[str, Any]) -> None:
+    """Print high-level latency, target-document hit, and fallback recall metrics."""
     completed = metrics["completed"]
     avg_latency = (metrics["total_latency"] / completed) if completed > 0 else 0.0
 

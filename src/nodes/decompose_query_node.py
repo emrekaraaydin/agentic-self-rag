@@ -1,3 +1,5 @@
+"""Query planning node that splits comparative or multi-statute questions into sub-queries."""
+
 import logging
 from typing import Any, Dict, List
 from tenacity import (
@@ -15,6 +17,7 @@ from src.state.state import GraphState
 logger = logging.getLogger(__name__)
 
 
+# --- Decomposer Invocation & Query Cleaning ---
 @retry(
     reraise=True,
     stop=stop_after_attempt(2),
@@ -23,11 +26,13 @@ logger = logging.getLogger(__name__)
     before_sleep=before_sleep_log(logger, logging.WARNING),
 )
 async def _invoke_decomposer(question: str) -> QueryPlan:
+    """Invoke the structured query decomposer chain with exponential backoff."""
     chain = create_query_decomposer_chain()
     return await chain.ainvoke({"question": question})
 
 
 def _dedupe_clean_queries(queries: List[str], limit: int) -> List[str]:
+    """Strip whitespace, preserve order, deduplicate case-insensitively, and cap length."""
     cleaned: List[str] = []
     seen = set()
     for q in queries:
@@ -41,8 +46,9 @@ def _dedupe_clean_queries(queries: List[str], limit: int) -> List[str]:
     return cleaned
 
 
+# --- Graph Node ---
 async def decompose_query_node(state: GraphState) -> Dict[str, Any]:
-    """Karsilastirmali/coklu mevzuat sorularini bagimsiz alt sorgulara ayirir."""
+    """Decompose multi-statute or comparative queries into independent sub-queries."""
     question: str = (state.get("question") or "").strip()
     is_multi_part = False
     sub_queries: List[str] = [question] if question else []

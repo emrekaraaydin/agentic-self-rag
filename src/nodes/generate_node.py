@@ -1,3 +1,5 @@
+"""Context-grounded LLM response generation node with hallucination retry feedback."""
+
 import logging
 from typing import Any, Dict, List
 from langchain_core.documents import Document
@@ -14,6 +16,7 @@ from src.state.state import GraphState
 logger = logging.getLogger(__name__)
 
 
+# --- Generation Retry Helpers ---
 @retry(
     reraise=True,
     stop=stop_after_attempt(3),
@@ -22,6 +25,7 @@ logger = logging.getLogger(__name__)
     before_sleep=before_sleep_log(logger, logging.WARNING),
 )
 async def _invoke_generator_chain_with_retry(context: str, question: str, retry_notes: str) -> str:
+    """Invoke the generator LCEL chain with transient-error backoff retries."""
     generator_chain = create_generator_chain()
     return await generator_chain.ainvoke(
         {"context": context, "question": question, "retry_notes": retry_notes}
@@ -29,6 +33,7 @@ async def _invoke_generator_chain_with_retry(context: str, question: str, retry_
 
 
 def _build_retry_notes(state: GraphState) -> str:
+    """Build strict grounding constraints when regenerating after an NLI failure."""
     if not state.get("hallucination_reasoning"):
         return ""
 
@@ -37,7 +42,10 @@ def _build_retry_notes(state: GraphState) -> str:
     )
     return f"<retry_notes>\n- {constraint_message}\n</retry_notes>"
 
+
+# --- Graph Node ---
 async def generate_node(state: GraphState) -> Dict[str, Any]:
+    """Synthesize a grounded response strictly from ranked context documents."""
     logger.info("Executing async response generation...")
 
     question: str = state["question"]

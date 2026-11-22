@@ -1,3 +1,5 @@
+"""FlashRank cross-encoder reranking node supporting single, balanced sub-query, and reflective merge modes."""
+
 import asyncio
 import logging
 import math
@@ -14,9 +16,11 @@ from config.settings import (
 from src.state.state import GraphState
 
 logger = logging.getLogger(__name__)
+
+# --- Cross-Encoder Initialization & Helpers ---
 ranker_instance = Ranker(
-    model_name="ms-marco-MiniLM-L-12-v2",  # 12 katmanlı gerçek Cross-Encoder (~34MB)
-    max_length=1024,                       # 1600 karakterlik chunk'ların tamamını okuması için!
+    model_name="ms-marco-MiniLM-L-12-v2",  # 12-layer cross-encoder (~34MB)
+    max_length=1024,                       # Fits full 1600-char chunks without truncation
     cache_dir=str(FLASHRANK_CACHE_DIR),
 )
 
@@ -24,10 +28,12 @@ _SUBQUERY_PAD_FLOOR = 0.005
 
 
 def _doc_chunk_id(doc: Document) -> str:
+    """Return a stable unique identifier for a retrieved Document chunk."""
     return str(doc.metadata.get("chunk_id") or doc.metadata.get("id") or doc.page_content)
 
 
 async def _rerank_candidates(query: str, docs: List[Document]) -> List[Dict[str, Any]]:
+    """Run FlashRank cross-encoder scoring asynchronously via worker thread."""
     if not docs:
         return []
     passages = [
@@ -42,6 +48,7 @@ def _round_robin_merge(
     buckets: List[List[Document]],
     max_docs: int,
 ) -> List[Document]:
+    """Interleave ranked sub-query buckets round-robin while deduplicating by chunk ID."""
     merged: List[Document] = []
     seen_ids: Set[str] = set()
     max_bucket_len = max((len(b) for b in buckets), default=0)
@@ -61,6 +68,7 @@ def _round_robin_merge(
 
 
 def _build_sources(selected_documents: List[Document]) -> List[Dict[str, Any]]:
+    """Convert selected Documents into serializable source dicts for UI citations and audit logs."""
     return [
         {
             "index": idx + 1,
@@ -76,6 +84,7 @@ def _build_sources(selected_documents: List[Document]) -> List[Dict[str, Any]]:
 
 
 def _item_to_document(item: Dict[str, Any], matched_sub_query: str = "") -> Document:
+    """Reconstruct a LangChain Document with attached FlashRank rerank score metadata."""
     doc_metadata = dict(item.get("metadata", {}))
     doc_metadata["rerank_score"] = float(item["score"])
     if matched_sub_query and not doc_metadata.get("matched_sub_query"):
@@ -83,8 +92,9 @@ def _item_to_document(item: Dict[str, Any], matched_sub_query: str = "") -> Docu
     return Document(page_content=item["text"], metadata=doc_metadata)
 
 
+# --- Graph Node (Reflective Merge, Balanced Sub-Query, Single-Query) ---
 async def grade_retrieval_node(state: GraphState) -> Dict[str, Any]:
-    # Aday dokumanlari Cross-Encoder ile puanlayip tekil veya alt-sorgu dengeli en iyi dokumanlari secer
+    """Score candidate chunks with FlashRank and select relevant single or balanced multi-query evidence."""
     query: str = state["question"]
     documents: List[Document] = state.get("documents", [])
     sub_query_documents: Dict[str, List[Document]] = state.get("sub_query_documents") or {}

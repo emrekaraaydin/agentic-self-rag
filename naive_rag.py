@@ -1,3 +1,5 @@
+"""Controlled single-pass Naive RAG baseline sharing the same Qdrant index and generator prompt."""
+
 import os
 
 os.environ["ORT_DISABLE_TELEMETRY"] = "1"
@@ -31,6 +33,7 @@ from src.chains.factory import get_base_llm
 from src.indexing.vector_store import get_vector_store
 from src.prompts.system_prompts import GENERATOR_SYSTEM_PROMPT
 
+# --- Configuration ---
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
@@ -42,6 +45,7 @@ DATASET_PATH = Path("golden_dataset_100.json")
 OUTPUT_PATH = Path("naive_rag_evaluation_results.json")
 
 
+# --- Vector Retrieval Helpers ---
 def _format_nomic_query(query: str) -> str:
     """Apply the search_query prefix required by nomic-embed-text."""
     cleaned_query = query.strip()
@@ -113,6 +117,7 @@ async def retrieve_documents(
     return selected_documents, sources
 
 
+# --- Answer Generation & Single-Pass Pipeline ---
 @retry(
     reraise=True,
     stop=stop_after_attempt(3),
@@ -177,6 +182,7 @@ async def run_naive_rag(question: str) -> Dict[str, Any]:
     }
 
 
+# --- Batch Evaluation & CLI Entrypoint ---
 def _print_evaluation_summary(metrics: Dict[str, Any]) -> None:
     """Print summary statistics matching evaluate_batch.py."""
     completed = metrics["completed"]
